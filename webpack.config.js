@@ -3,10 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const BundleAnalyzerPlugin =
-	require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = (env, argv) => {
 	const isProduction = argv.mode === 'production';
@@ -36,6 +35,7 @@ module.exports = (env, argv) => {
 						isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
 						'css-loader',
 						'sass-loader',
+						'postcss-loader',
 					],
 				},
 			],
@@ -44,16 +44,47 @@ module.exports = (env, argv) => {
 			new HtmlWebpackPlugin({
 				template: './public/index.html',
 			}),
-			isProduction && new BundleAnalyzerPlugin(),
 			isProduction &&
 				new MiniCssExtractPlugin({
 					filename: '[name].[contenthash].css',
 				}),
 			new CleanWebpackPlugin(),
+			isProduction &&
+				new CompressionPlugin({
+					filename: '[path][base].br',
+					algorithm: 'brotliCompress',
+					test: /\.(js|css|html|svg)$/,
+					compressionOptions: { level: 11 },
+					threshold: 10240,
+					minRatio: 0.8,
+					deleteOriginalAssets: false,
+				}),
+			isProduction &&
+				new CompressionPlugin({
+					filename: '[path][base].gz',
+					algorithm: 'gzip',
+					test: /\.(js|css|html|svg)$/,
+					threshold: 10240,
+					minRatio: 0.8,
+					deleteOriginalAssets: false,
+				}),
 		].filter(Boolean),
 		optimization: {
 			minimize: isProduction,
-			minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+			minimizer: [
+				new TerserPlugin({
+					terserOptions: {
+						compress: {
+							drop_console: true,
+						},
+						format: {
+							comments: false,
+						},
+					},
+					extractComments: false,
+				}),
+				new CssMinimizerPlugin(),
+			],
 			splitChunks: {
 				chunks: 'all',
 			},
@@ -64,6 +95,7 @@ module.exports = (env, argv) => {
 			},
 			port: 3000,
 			hot: true,
+			open: true,
 		},
 		resolve: {
 			extensions: ['.js', '.jsx'],
