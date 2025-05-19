@@ -416,7 +416,7 @@ function Navbar() {
           </div>
         </Sidebar>
         <img src="/logo.png" alt="Fynix Logo" className="h-10" />
-        <p className="font-bold text-xl">XYZ School</p>
+        <p className="font-bold text-xl">AI School</p>
       </div>
       <div className="flex items-center gap-2">
         <Flex

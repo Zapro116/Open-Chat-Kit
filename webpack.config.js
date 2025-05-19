@@ -232,6 +232,7 @@ module.exports = (env, argv) => {
       hot: true,
       open: true,
       historyApiFallback: true,
+      allowedHosts: "all",
       client: {
         overlay: {
           errors: true,

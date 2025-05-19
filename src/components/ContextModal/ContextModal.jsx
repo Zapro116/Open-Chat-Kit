@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Modal, TextInput, Textarea } from "@mantine/core";
+import { Button, Modal, TextInput, Textarea } from "@mantine/core";
 
 import useModalStore from "../../store/modalStore";
 import MultiStepper from "../MultiStepper/MultiStepper";
 import AddKnowledgeBase from "./AddKnowledgeBase/AddKnowledgeBase";
 import CreateKnowledgeBase from "./CreateKnowledgeBase/CreateKnowledgeBase";
+import SelectProvider from "./SelectProvider/SelectProvider";
+import useKnowledgeBaseStore from "../../store/knowledgeBaseStore";
 
 const ContextModal = () => {
   const { modals, closeModal } = useModalStore();
@@ -14,11 +16,40 @@ const ContextModal = () => {
     description: "",
     content: "",
   });
+  const { knowledgeBaseName, selectedProvider, providerConfigs } =
+    useKnowledgeBaseStore();
 
   const steps = [
     // { label: "Basic Info", content: <AddKnowledgeBase /> },
-    { label: "Content", content: <CreateKnowledgeBase /> },
-    { label: "Review", content: <div>Review</div> },
+    {
+      label: "Content",
+      content: <CreateKnowledgeBase />,
+      onNext: async () => {
+        if (knowledgeBaseName.length === 0) {
+          return;
+        }
+      },
+    },
+    {
+      label: "Select a provider",
+      content: <SelectProvider />,
+      onNext: () => {
+        if (!selectedProvider) {
+          return;
+        }
+
+        const config = providerConfigs[selectedProvider];
+        if (!config.cloneUrl || !config.personalAccessToken) {
+          return;
+        }
+
+        console.log(
+          "Saving knowledge base with provider:",
+          selectedProvider,
+          config
+        );
+      },
+    },
   ];
 
   const handleInputChange = (field, value) => {
@@ -44,97 +75,24 @@ const ContextModal = () => {
     }
   };
 
-  const renderStepContent = () => {
-    switch (active) {
-      case 0:
-        return (
-          <div className="space-y-4">
-            <TextInput
-              label="Title"
-              placeholder="Enter context title"
-              value={formData.title}
-              onChange={(e) => handleInputChange("title", e.target.value)}
-              styles={{
-                input: {
-                  backgroundColor: "rgb(39 39 42)",
-                  borderColor: "rgb(63 63 70)",
-                  color: "rgb(212 212 216)",
-                },
-                label: {
-                  color: "rgb(212 212 216)",
-                },
-              }}
-            />
-            <Textarea
-              label="Description"
-              placeholder="Enter context description"
-              value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              styles={{
-                input: {
-                  backgroundColor: "rgb(39 39 42)",
-                  borderColor: "rgb(63 63 70)",
-                  color: "rgb(212 212 216)",
-                },
-                label: {
-                  color: "rgb(212 212 216)",
-                },
-              }}
-            />
-          </div>
-        );
-      case 1:
-        return (
-          <Textarea
-            label="Content"
-            placeholder="Enter context content"
-            minRows={5}
-            value={formData.content}
-            onChange={(e) => handleInputChange("content", e.target.value)}
-            styles={{
-              input: {
-                backgroundColor: "rgb(39 39 42)",
-                borderColor: "rgb(63 63 70)",
-                color: "rgb(212 212 216)",
-              },
-              label: {
-                color: "rgb(212 212 216)",
-              },
-            }}
-          />
-        );
-      case 2:
-        return (
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-zinc-300 font-medium">Title</h3>
-              <p className="text-zinc-400">{formData.title}</p>
-            </div>
-            <div>
-              <h3 className="text-zinc-300 font-medium">Description</h3>
-              <p className="text-zinc-400">{formData.description}</p>
-            </div>
-            <div>
-              <h3 className="text-zinc-300 font-medium">Content</h3>
-              <p className="text-zinc-400">{formData.content}</p>
-            </div>
-          </div>
-        );
-      default:
-        return null;
-    }
+  const handleComplete = () => {
+    // closeModal("contextModal");
   };
 
-  const handleComplete = () => {
-    console.log("Form submitted:", formData);
-    // closeModal("contextModal");
+  const modalTitle = {
+    0: "Create Knowledge Base",
+    1: "Select a provider",
   };
 
   return (
     <Modal
       opened={modals.contextModal}
       onClose={() => closeModal("contextModal")}
-      title={<div className="flex justify-center w-full">HI</div>}
+      title={
+        <div className="flex justify-center w-full text-textDefault">
+          {modalTitle[active]}
+        </div>
+      }
       styles={{
         modal: {
           backgroundColor: "rgb(24 24 27)",
@@ -156,8 +114,23 @@ const ContextModal = () => {
       <div className="space-y-6">
         <MultiStepper
           steps={steps}
+          navigationClassName="flex !justify-end w-full"
           onComplete={handleComplete}
           showStepper={false}
+          customNextButton={(handleNext, loading) => {
+            return (
+              <Button
+                onClick={() => {
+                  active === 0 && knowledgeBaseName.length > 0 && handleNext();
+                  active === steps.length - 1 && handleComplete();
+                }}
+                loading={loading}
+                className="!bg-textPurple hover:!bg-textLightPurple"
+              >
+                {active === steps.length - 1 ? "Save" : "Next"}
+              </Button>
+            );
+          }}
           initialStep={active}
           onStepChange={setActive}
         />
