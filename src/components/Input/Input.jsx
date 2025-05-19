@@ -175,7 +175,7 @@ function Input({
 
   return (
     <div
-      className={`flex flex-col p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow-sm ${className}`}
+      className={`flex flex-col p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white  shadow-sm ${className}`}
     >
       {/* Attachment Previews */}
       {attachments.length > 0 && (
