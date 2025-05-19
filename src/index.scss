@@ -1,9 +1,144 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 html,
 body,
 #root {
-	height: 100%;
+  height: 100%;
+}
+
+/* Add global styles here */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f7f6;
+  color: #333;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+:root {
+  --text-purple-color: #5122cc;
+  --background-primary: #6737e7;
+  --text-dark-dimmed-color: #8b8b8b;
+  --text-light-purple-color: #ac8dff;
+  --text-dimmed-color: #4f4f4f;
+  --background-gray-light-hover: rgba(134, 142, 150, 0.12);
+  --navbar-text-color: #424242;
+  --navbar-text-active-color: #000;
+  --navbar-icons-color: #707eae;
+  --body-bg-color: #f6f8fb;
+  --title-text-color: #000;
+  --title-text-active-color: rgba(132, 85, 255, 1);
+  --title-text-homepage-color: #fff;
+  --title-text-homepage-active-color: #c9c9c9;
+  --card-color: #fff;
+  --card-border-color: rgba(201, 208, 227, 0.6);
+  --card-title-color: #424242;
+  --table-header-color: #f6f8fb;
+  --pagination-tabs-bg-active-color: #5122cc;
+  --text-default-color: #1f1f1f;
+  --border-default-color: #c9d0e3;
+  --bg-default-color: #f6f8fb;
+  --charts-cta-color: #000;
+  --selected-cta-bg-color: #eef0f6;
+  --pr-status-reviewed-bg-color: rgba(21, 184, 166, 0.85);
+  --pr-status-reviewed-text-color: #0d9488;
+  --pr-status-pending-bg-color: rgba(245, 158, 11, 0.8);
+  --pr-status-pending-text-color: #ca8a04;
+  --pr-status-in-progress-bg-color: rgba(83, 35, 205, 0.6);
+  --pr-status-in-progress-text-color: #5122cc;
+  --pr-status-failed-bg-color: rgba(234, 6, 6, 0.6);
+  --pr-status-failed-text-color: #ea0606;
+  --date-range-endpoint-color: rgba(81, 34, 204, 1);
+  --date-in-range-color: rgba(81, 34, 204, 0.6);
+  --config-tag-bg-color: #f6f8fb;
+  --config-slider-rating-color: #a8a8a8;
+  --stat-icon-theme-color: rgba(134, 142, 150, 0.12);
+  --bg-popover-color: #eef0f6;
+  --code-header: #f3f5f9;
+  --code-header-selected: #868e961f;
+  --code-tab-color: #424242;
+  --code-shadow-color: rgba(246, 248, 251, 0.71);
+  --products-gradient-color: linear-gradient(
+    100deg,
+    #f6f8fb 0%,
+    #e5f6ff 33.49%,
+    #e8dfff 100%
+  );
+  --products-breadcrumb-color: #000;
+  --bg-popover-color: #eef0f6;
+  --code-header: #f3f5f9;
+  --code-header-selected: #868e961f;
+  --code-tab-color: #424242;
+  --code-shadow-color: rgba(246, 248, 251, 0.71);
+  --background-primary-hover: #3d1a99;
+  --background-disabled: #dadeec;
+}
+
+:root[data-mantine-color-scheme="dark"] {
+  --text-purple-color: #8455ff;
+  --text-dark-dimmed-color: #8b8b8b;
+  --text-light-purple-color: #ac8dff;
+  --text-dimmed-color: #8b8b8b;
+  --background-gray-light-hover: rgba(134, 142, 150, 0.12);
+  --navbar-text-color: #a8a8a8;
+  --navbar-text-active-color: #fff;
+  --navbar-icons-color: #a8a8a8;
+  --body-bg-color: #1f1f1f;
+  --title-text-color: #c9c9c9;
+  --title-text-active-color: #a380ff;
+  --title-text-homepage-color: #fff;
+  --title-text-homepage-active-color: #a8a8a8;
+  --card-color: #141414;
+  --card-border-color: #424242;
+  --mantine-color-body: var(--card-color);
+  --card-title-color: #ababab;
+  --table-header-color: #1f1f1f;
+  --pagination-tabs-bg-active-color: #8455ff;
+  --text-default-color: #fff;
+  --border-default-color: #424242;
+  --bg-default-color: #000;
+  --charts-cta-color: #fff;
+  --selected-cta-bg-color: #242424;
+  --pr-status-reviewed-bg-color: rgba(21, 184, 166, 0.95);
+  --pr-status-reviewed-text-color: #2dd4bf;
+  --pr-status-pending-bg-color: rgba(245, 158, 11, 0.95);
+  --pr-status-pending-text-color: #fbcf33;
+  --pr-status-in-progress-bg-color: rgba(164, 128, 255, 0.8);
+  --pr-status-in-progress-text-color: #a380ff;
+  --pr-status-failed-bg-color: rgba(248, 114, 114, 0.6);
+  --pr-status-failed-text-color: #f87171;
+  --date-range-endpoint-color: rgba(132, 85, 255, 1);
+  --date-in-range-color: rgba(132, 85, 255, 0.6);
+  --config-tag-bg-color: #1f1f1f;
+  --config-slider-rating-color: #696969;
+  --stat-icon-theme-color: rgba(134, 142, 150, 0.2);
+  --bg-popover-color: #2e2e2e;
+  --code-header: #1e1e1e;
+  --code-header-selected: #2e2e2e;
+  --code-tab-color: #fff;
+  --code-shadow-color: #1b1b1b;
+  --products-gradient-color: linear-gradient(
+    100deg,
+    #1f1f1f 0%,
+    #101921 33.49%,
+    #18112d 100%
+  );
+  --products-breadcrumb-color: #c9c9c9;
+  --bg-popover-color: #2e2e2e;
+  --code-header: #1e1e1e;
+  --code-header-selected: #2e2e2e;
+  --code-tab-color: #fff;
+  --code-shadow-color: #1b1b1b;
+  --background-primary-hover: #8455ff;
+  --background-disabled: #2e2e2e;
 }

@@ -12,11 +12,18 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@mantine/core": "^8.0.1",
+    "@mantine/hooks": "^8.0.1",
+    "@mantine/notifications": "^8.0.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.0",
+    "@tabler/icons-react": "^3.33.0",
     "copy-webpack-plugin": "^13.0.0",
     "core-js": "^3.0.0",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-textarea-autosize": "^8.5.9",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
