@@ -7,7 +7,7 @@ const ModelSelector = () => {
 
   console.log(selectedModel);
   const models = [
-    { value: "gpt-4o", label: "GPT-4" },
+    { value: "gpt-4o", label: "GPT-4o" },
     { value: "gpt-3.5", label: "GPT-3.5" },
     { value: "claude", label: "Claude" },
   ];

@@ -5,7 +5,11 @@ import Navbar from "../components/Navbar/Navbar";
 import ModelSelector from "../components/ModelSelector/ModelSelector";
 import { QuickStartPrompts } from "../components/QuickStarterprompts/QuickStartPrompts";
 import { getRandomPrompts } from "../MockData/MockQuickStartPrompts";
+
 import { useMantineColorScheme } from "@mantine/core";
+
+import ContextModal from "../components/ContextModal/ContextModal";
+import useModalStore from "../store/modalStore";
 
 // Helper functions to generate standard action configurations
 const getStandardImageUploadAction = (overrideProps = {}) => ({
@@ -20,6 +24,9 @@ const getStandardImageUploadAction = (overrideProps = {}) => ({
 function LandingPage() {
   const [message, setMessage] = useState();
   const { colorScheme } = useMantineColorScheme();
+
+  const { openModal } = useModalStore();
+
   const handleSendMessage = (message, attachments) => {
     console.log("Message:", message);
     console.log("Attachments:", attachments);
@@ -77,8 +84,7 @@ function LandingPage() {
                   <button
                     key={config.id}
                     title={config.tooltip}
-                    onClick={handleAlertClick("Add context clicked!")}
-                    // text-zinc-300 bg-zinc-800 hover:bg-zinc-700 border-zinc-700
+                    onClick={() => openModal("contextModal")}
                     className={`p-2 h-[36px] text-sm  rounded-md flex items-center transition-colors duration-150 border  ${
                       colorScheme === "dark" ? "border-zinc-700" : ""
                     }`}
@@ -103,6 +109,8 @@ function LandingPage() {
           </div>
         </div>
       </div>
+
+      <ContextModal />
     </>
   );
 }
