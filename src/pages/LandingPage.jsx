@@ -40,7 +40,7 @@ const LandingPage = () => {
           <Input
             onSendMessage={handleSendMessage}
             placeholder="How Fynix can help you today?"
-            className="dark bg-zinc-900 border border-zinc-700 rounded-lg w-2/3"
+            className="dark bg-zinc-800 border border-zinc-700 rounded-lg w-2/3"
             textAreaClassName="bg-transparent placeholder-zinc-500 text-zinc-300 border-transparent focus:ring-1 focus:ring-purple-500 focus:border-purple-500 rounded-md"
             buttonClassName="bg-purple-600 hover:bg-purple-700 text-white rounded-md"
             actionButtonContainerClassName="gap-1.5"

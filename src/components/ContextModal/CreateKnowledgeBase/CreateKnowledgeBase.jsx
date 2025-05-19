@@ -1,6 +1,5 @@
 import React from "react";
-import { TextInput, Textarea, FileInput, Button, Group } from "@mantine/core";
-import { IconUpload } from "@tabler/icons-react";
+import { TextInput } from "@mantine/core";
 import useKnowledgeBaseStore from "../../../store/knowledgeBaseStore";
 
 function CreateKnowledgeBase() {

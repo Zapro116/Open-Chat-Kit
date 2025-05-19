@@ -3,7 +3,6 @@ import { Button, Modal, TextInput, Textarea } from "@mantine/core";
 
 import useModalStore from "../../store/modalStore";
 import MultiStepper from "../MultiStepper/MultiStepper";
-import AddKnowledgeBase from "./AddKnowledgeBase/AddKnowledgeBase";
 import CreateKnowledgeBase from "./CreateKnowledgeBase/CreateKnowledgeBase";
 import SelectProvider from "./SelectProvider/SelectProvider";
 import useKnowledgeBaseStore from "../../store/knowledgeBaseStore";
