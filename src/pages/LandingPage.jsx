@@ -3,6 +3,8 @@ import Input from "../components/Input/Input"; // Assuming Input.jsx is in src/c
 import { IconPhoto, IconWorld, IconBook } from "@tabler/icons-react";
 import Navbar from "../components/Navbar/Navbar";
 import ModelSelector from "../components/ModelSelector/ModelSelector";
+import { QuickStartPrompts } from "../components/QuickStarterprompts/QuickStartPrompts";
+import { getRandomPrompts } from "../MockData/MockQuickStartPrompts";
 
 // Helper functions to generate standard action configurations
 const getStandardImageUploadAction = (overrideProps = {}) => ({
@@ -74,6 +76,17 @@ function LandingPage() {
               },
             ]}
           />
+          <div className="flex flex-col items-center justify-center w-full">
+            <div className="flex flex-col w-2/3 mt-5">
+              <QuickStartPrompts
+                prompts={getRandomPrompts()}
+                onPromptClick={(prompt) => {
+                  console.log(prompt);
+                }}
+                columns={3}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
