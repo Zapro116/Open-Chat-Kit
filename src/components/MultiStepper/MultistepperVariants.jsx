@@ -208,7 +208,7 @@ function MultistepperVariants() {
             steps={steps}
             {...commonStepProps}
             onStepChange={(step) => console.log(`V5 Active step: ${step + 1}`)}
-            className="bg-white p-6 rounded-xl shadow-lg"
+            className="bg-white rounded-xl shadow-lg"
             stepIndicator="custom"
             customStepIndicator={(index, isComplete, isActive) => (
               <Badge

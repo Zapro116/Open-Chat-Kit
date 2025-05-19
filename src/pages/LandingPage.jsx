@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar/Navbar";
 import ModelSelector from "../components/ModelSelector/ModelSelector";
 import { QuickStartPrompts } from "../components/QuickStarterprompts/QuickStartPrompts";
 import { getRandomPrompts } from "../MockData/MockQuickStartPrompts";
+import ContextModal from "../components/ContextModal/ContextModal";
+import useModalStore from "../store/modalStore";
 
 // Helper functions to generate standard action configurations
 const getStandardImageUploadAction = (overrideProps = {}) => ({
@@ -16,7 +18,9 @@ const getStandardImageUploadAction = (overrideProps = {}) => ({
   ...overrideProps,
 });
 
-function LandingPage() {
+const LandingPage = () => {
+  const { openModal } = useModalStore();
+
   const handleSendMessage = (message, attachments) => {
     console.log("Message:", message);
     console.log("Attachments:", attachments);
@@ -66,7 +70,7 @@ function LandingPage() {
                   <button
                     key={config.id}
                     title={config.tooltip}
-                    onClick={handleAlertClick("Add context clicked!")}
+                    onClick={() => openModal("contextModal")}
                     className="p-2 h-[36px] text-sm text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded-md flex items-center transition-colors duration-150 border border-zinc-700"
                   >
                     <IconBook size={16} className="mr-1.5 opacity-80" />
@@ -89,8 +93,10 @@ function LandingPage() {
           </div>
         </div>
       </div>
+
+      <ContextModal />
     </>
   );
-}
+};
 
 export default LandingPage;
