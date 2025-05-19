@@ -380,7 +380,7 @@ const MultiStepper = ({
   );
 
   return (
-    <Paper sx={styles.root} className={`p-6 ${className}`}>
+    <Paper sx={styles.root} className={className}>
       <Box
         sx={styles.container}
         className={`${containerClassName} ${containerLayoutClasses}`}
