@@ -50,6 +50,12 @@ const renderActionComponentButton = (
       effectiveDisabled || currentAttachments.length >= maxAttachmentsCount;
   }
 
+  const defaultClasses =
+    "p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150";
+  const buttonClasses = config.className
+    ? `${defaultClasses} ${config.className}`
+    : defaultClasses;
+
   return (
     <button
       key={config.id}
@@ -57,7 +63,7 @@ const renderActionComponentButton = (
       title={config.tooltip}
       onClick={effectiveOnClick}
       disabled={effectiveDisabled}
-      className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+      className={buttonClasses}
     >
       <config.icon size={20} />
     </button>
@@ -80,6 +86,7 @@ const DEFAULT_TEXTAREA_MAX_ROWS = 6;
  * @property {boolean} [disabled] - Explicitly disable the button. If actionType is 'imageUpload' or 'documentUpload', the button will also be disabled if maxAttachments is reached.
  * @property {(config: ActionComponentConfig) => React.ReactNode} [customRender] - Optional function to render a custom component.
  * @property {'left' | 'right'} [position] - Position of the action button relative to the textarea. Defaults to 'left'.
+ * @property {string} [className] - Custom CSS class for the action button. Will be merged with default classes.
  */
 
 /**
@@ -101,8 +108,9 @@ function Input({
   buttonClassName = "",
   attachmentPreviewClassName = "",
   actionButtonContainerClassName = "",
+  message = "",
+  setMessage = () => {},
 }) {
-  const [message, setMessage] = useState("");
   const [attachments, setAttachments] = useState([]);
   const fileInputRef = useRef(null); // Combined file input ref
 
@@ -173,6 +181,25 @@ function Input({
     (config) => config.position === "right"
   );
 
+  /** @param {React.ClipboardEvent<HTMLTextAreaElement>} event */
+  const handlePaste = (event) => {
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    const imageFiles = Array.from(items)
+      .filter((item) => item.type.startsWith("image/"))
+      .map((item) => item.getAsFile())
+      .filter(Boolean);
+
+    if (imageFiles.length > 0) {
+      event.preventDefault();
+      const newFiles = imageFiles.slice(0, maxAttachments - attachments.length);
+      if (newFiles.length > 0) {
+        setAttachments((prev) => [...prev, ...newFiles]);
+      }
+    }
+  };
+
   return (
     <div
       className={`flex flex-col p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white  shadow-sm ${className}`}
@@ -183,28 +210,31 @@ function Input({
           className={`mb-2 flex flex-wrap gap-2 p-2 border-b border-gray-200 dark:border-gray-700 ${attachmentPreviewClassName}`}
         >
           {attachments.map((file, index) => (
-            <div
-              key={index}
-              className="relative group flex items-center p-1.5 pr-6 bg-gray-100 dark:bg-gray-700 rounded-md text-xs text-gray-700 dark:text-gray-300"
-            >
+            <div key={index} className="relative group flex items-center">
               {file.type.startsWith("image/") ? (
-                <IconPhoto
-                  size={16}
-                  className="mr-1.5 text-gray-500 dark:text-gray-400"
-                />
+                <div className="flex items-center gap-2">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={file.name}
+                    className="w-12 h-12 object-cover rounded"
+                  />
+                </div>
               ) : (
-                <IconPaperclip
-                  size={16}
-                  className="mr-1.5 text-gray-500 dark:text-gray-400"
-                />
+                <>
+                  <IconPaperclip
+                    size={16}
+                    className="mr-1.5 text-gray-500 dark:text-gray-400"
+                  />
+                  <span className="truncate max-w-xs" title={file.name}>
+                    {file.name}
+                  </span>
+                </>
               )}
-              <span className="truncate max-w-xs" title={file.name}>
-                {file.name}
-              </span>
+
               <button
                 onClick={() => removeAttachment(index)}
                 title="Remove attachment"
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-red-600"
+                className="absolute top-1 right-1 -mt-2.5 -mr-2.5 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-red-600"
               >
                 <IconX size={12} />
               </button>
@@ -217,6 +247,7 @@ function Input({
         value={message}
         onChange={handleMessageChange}
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         minRows={minRows}
         maxRows={maxRows}
         placeholder={placeholder}
@@ -299,6 +330,8 @@ function Input({
  * @property {string} [buttonClassName] - Custom CSS class for the send button.
  * @property {string} [attachmentPreviewClassName] - Custom CSS class for the attachment preview area.
  * @property {string} [actionButtonContainerClassName] - Custom CSS class for the action buttons container.
+ * @property {string} [message] - The current message value.
+ * @property {(message: string) => void} [setMessage] - Function to update the message value.
  */
 Input.propTypes = {
   onSendMessage: PropTypes.func.isRequired,
@@ -317,6 +350,7 @@ Input.propTypes = {
       disabled: PropTypes.bool,
       customRender: PropTypes.func,
       position: PropTypes.oneOf(["left", "right"]),
+      className: PropTypes.string,
     })
   ),
   maxAttachments: PropTypes.number,
@@ -327,6 +361,8 @@ Input.propTypes = {
   buttonClassName: PropTypes.string,
   attachmentPreviewClassName: PropTypes.string,
   actionButtonContainerClassName: PropTypes.string,
+  message: PropTypes.string,
+  setMessage: PropTypes.func,
 };
 
 export default Input;

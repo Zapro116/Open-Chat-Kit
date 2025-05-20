@@ -9,7 +9,7 @@ export const QuickStartPrompts = ({
   className = "",
   buttonClassName = "",
   tooltipPosition = "bottom",
-  tooltipDelay = 800,
+  tooltipDelay = 400,
   buttonProps,
 }) => {
   return (
@@ -25,9 +25,9 @@ export const QuickStartPrompts = ({
               {...buttonProps}
               styles={{
                 root: {
-                  borderColor: "var(--text-purple-color)",
+                  borderColor: "var(--border-default-color)",
                   "&:hover": {
-                    borderColor: "var(--text-purple-color)",
+                    borderColor: "var(--border-default-color)",
                   },
                 },
               }}
@@ -43,9 +43,9 @@ export const QuickStartPrompts = ({
                 label={item.prompt}
                 position={tooltipPosition}
                 openDelay={tooltipDelay}
-                className="!bg-bgSelectedColor text-textDefault"
+                className="!bg-bgPopoverColor !text-textDefault p-1"
               >
-                <p className="text-start text-wrap text-sm font-normal text-textLightDimmedColor line-clamp-2">
+                <p className="text-start text-wrap text-sm font-normal text-textDefault line-clamp-2">
                   {item.prompt}
                 </p>
               </Tooltip>

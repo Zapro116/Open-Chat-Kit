@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Input from "../components/Input/Input"; // Assuming Input.jsx is in src/components/Input/
 import { IconPhoto, IconWorld, IconBook } from "@tabler/icons-react";
 import Navbar from "../components/Navbar/Navbar";
@@ -7,6 +7,7 @@ import { QuickStartPrompts } from "../components/QuickStarterprompts/QuickStartP
 import { getRandomPrompts } from "../MockData/MockQuickStartPrompts";
 import ContextModal from "../components/ContextModal/ContextModal";
 import useModalStore from "../store/modalStore";
+import useKnowledgeBaseStore from "../store/knowledgeBaseStore";
 
 // Helper functions to generate standard action configurations
 const getStandardImageUploadAction = (overrideProps = {}) => ({
@@ -20,6 +21,10 @@ const getStandardImageUploadAction = (overrideProps = {}) => ({
 
 const LandingPage = () => {
   const { openModal } = useModalStore();
+  const { webSearchEnabled, setWebSearchEnabled, message, setMessage } =
+    useKnowledgeBaseStore();
+
+  const randomPrompts = useMemo(() => getRandomPrompts(), []);
 
   const handleSendMessage = (message, attachments) => {
     console.log("Message:", message);
@@ -27,7 +32,9 @@ const LandingPage = () => {
     alert(`Message: ${message}\nAttachments: ${attachments.length}`);
   };
 
-  const handleAlertClick = (message) => () => alert(message);
+  const handleWebSearchClick = () => {
+    setWebSearchEnabled(!webSearchEnabled);
+  };
 
   return (
     <>
@@ -38,10 +45,12 @@ const LandingPage = () => {
           {/* Variant 1: Exact Fynix UI Replica */}
 
           <Input
+            message={message}
+            setMessage={setMessage}
             onSendMessage={handleSendMessage}
             placeholder="How Fynix can help you today?"
             className="dark bg-zinc-800 border border-zinc-700 rounded-lg w-2/3"
-            textAreaClassName="bg-transparent placeholder-zinc-500 text-zinc-300 border-transparent focus:ring-1 focus:ring-purple-500 focus:border-purple-500 rounded-md"
+            textAreaClassName="bg-transparent placeholder-zinc-500 text-zinc-300 !border-transparent focus:ring-0 focus:border-purple-500 rounded-md"
             buttonClassName="bg-purple-600 hover:bg-purple-700 text-white rounded-md"
             actionButtonContainerClassName="gap-1.5"
             actionComponentsConfig={[
@@ -53,7 +62,10 @@ const LandingPage = () => {
                 id: "web-search-fynix",
                 icon: IconWorld,
                 tooltip: "Web Search",
-                onClick: handleAlertClick("Web Search clicked!"),
+                onClick: handleWebSearchClick,
+                className: webSearchEnabled
+                  ? "!bg-textPurple !text-textDefault"
+                  : "",
                 position: "left",
               },
               {
@@ -83,9 +95,9 @@ const LandingPage = () => {
           <div className="flex flex-col items-center justify-center w-full">
             <div className="flex flex-col w-2/3 mt-5">
               <QuickStartPrompts
-                prompts={getRandomPrompts()}
+                prompts={randomPrompts}
                 onPromptClick={(prompt) => {
-                  console.log(prompt);
+                  setMessage(prompt);
                 }}
                 columns={3}
               />
