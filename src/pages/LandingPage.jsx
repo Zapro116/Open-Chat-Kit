@@ -1,10 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Input from "../components/Input/Input"; // Assuming Input.jsx is in src/components/Input/
 import { IconPhoto, IconWorld, IconBook } from "@tabler/icons-react";
 import Navbar from "../components/Navbar/Navbar";
 import ModelSelector from "../components/ModelSelector/ModelSelector";
 import { QuickStartPrompts } from "../components/QuickStarterprompts/QuickStartPrompts";
 import { getRandomPrompts } from "../MockData/MockQuickStartPrompts";
+
+import { useMantineColorScheme } from "@mantine/core";
+
 import ContextModal from "../components/ContextModal/ContextModal";
 import useModalStore from "../store/modalStore";
 import useKnowledgeBaseStore from "../store/knowledgeBaseStore";
@@ -19,7 +22,9 @@ const getStandardImageUploadAction = (overrideProps = {}) => ({
   ...overrideProps,
 });
 
-const LandingPage = () => {
+function LandingPage() {
+  const { colorScheme } = useMantineColorScheme();
+
   const { openModal } = useModalStore();
   const { webSearchEnabled, setWebSearchEnabled, message, setMessage } =
     useKnowledgeBaseStore();
@@ -42,7 +47,6 @@ const LandingPage = () => {
         <Navbar />
         <div className="flex flex-col items-center justify-center h-screen">
           <p className="text-2xl font-bold mb-3">Hi, Ask me anything...</p>
-          {/* Variant 1: Exact Fynix UI Replica */}
 
           <Input
             message={message}
@@ -83,7 +87,9 @@ const LandingPage = () => {
                     key={config.id}
                     title={config.tooltip}
                     onClick={() => openModal("contextModal")}
-                    className="p-2 h-[36px] text-sm text-zinc-300 bg-zinc-800 hover:bg-zinc-700 rounded-md flex items-center transition-colors duration-150 border border-zinc-700"
+                    className={`p-2 h-[36px] text-sm  rounded-md flex items-center transition-colors duration-150 border  ${
+                      colorScheme === "dark" ? "border-zinc-700" : ""
+                    }`}
                   >
                     <IconBook size={16} className="mr-1.5 opacity-80" />
                     Add context
@@ -109,6 +115,6 @@ const LandingPage = () => {
       <ContextModal />
     </>
   );
-};
+}
 
 export default LandingPage;

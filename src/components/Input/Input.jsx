@@ -4,7 +4,13 @@ import React, {
   // useCallback, FC, ChangeEvent, KeyboardEvent are TS-specific, not needed in JS or handled by JSDoc
 } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { IconPaperclip, IconPhoto, IconSend, IconX } from "@tabler/icons-react";
+import {
+  IconPaperclip,
+  IconPhoto,
+  IconSend,
+  IconSend2,
+  IconX,
+} from "@tabler/icons-react";
 import PropTypes from "prop-types"; // For runtime prop type validation
 
 // Helper function to render an individual action component or button
@@ -202,7 +208,7 @@ function Input({
 
   return (
     <div
-      className={`flex flex-col p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white  shadow-sm ${className}`}
+      className={`flex flex-col p-3 border  rounded-lg  shadow-sm ${className}`}
     >
       {/* Attachment Previews */}
       {attachments.length > 0 && (
@@ -251,7 +257,7 @@ function Input({
         minRows={minRows}
         maxRows={maxRows}
         placeholder={placeholder}
-        className={`flex-grow resize-none p-2.5 mb-4 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 ${textAreaClassName}`}
+        className={`flex-grow resize-none p-2.5 mb-4 border border-gray-300  rounded-md focus:ring-2 focus:border-transparent outline-none bg-transparent  ${textAreaClassName}`}
       />
 
       <div className="flex justify-between items-end gap-2">
@@ -307,7 +313,7 @@ function Input({
             disabled={message.trim() === "" && attachments.length === 0}
             className={`p-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${buttonClassName}`}
           >
-            <IconSend size={20} />
+            <IconSend2 size={20} />
           </button>
         </div>
       </div>
