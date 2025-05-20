@@ -7,7 +7,10 @@ const useKnowledgeBaseStore = create((set) => ({
   content: "",
   files: [],
   selectedModel: "gpt-4",
-
+  webSearchEnabled: false,
+  setWebSearchEnabled: (webSearchEnabled) => set({ webSearchEnabled }),
+  message: "",
+  setMessage: (message) => set({ message }),
   // Form state
   isSubmitting: false,
   error: null,

@@ -124,7 +124,7 @@ const ContextModal = () => {
                   active === steps.length - 1 && handleComplete();
                 }}
                 loading={loading}
-                className="!bg-textPurple hover:!bg-textLightPurple"
+                className="!bg-textPurple  hover:!bg-textLightPurple"
               >
                 {active === steps.length - 1 ? "Save" : "Next"}
               </Button>
