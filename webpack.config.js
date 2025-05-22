@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -146,6 +148,12 @@ module.exports = (env, argv) => {
         "process.env.NODE_ENV": JSON.stringify(
           isProduction ? "production" : "development"
         ),
+        ...Object.keys(process.env)
+          .filter((key) => key.startsWith("REACT_APP_"))
+          .reduce((env, key) => {
+            env[`process.env.${key}`] = JSON.stringify(process.env[key]);
+            return env;
+          }, {}),
         __DEV__: !isProduction,
       }),
       ...(isProduction
