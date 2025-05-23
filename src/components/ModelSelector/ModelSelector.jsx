@@ -8,8 +8,8 @@ const ModelSelector = () => {
   console.log(selectedModel);
   const models = [
     { value: "gpt-4o", label: "GPT-4o" },
-    { value: "gpt-3.5", label: "GPT-3.5" },
-    { value: "claude", label: "Claude" },
+    { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
+    { value: "claude-3-5-sonnet", label: "Claude 3.5 Sonnet" },
   ];
 
   return (
@@ -18,8 +18,10 @@ const ModelSelector = () => {
       value={selectedModel}
       onChange={setSelectedModel}
       size="sm"
-      color="white"
-      className=" rounded"
+      className="rounded max-w-[180px] bg-bgCardColor"
+      classNames={{
+        input: "!bg-bgCardColor focus:!ring-0 focus:!border-borderDefault",
+      }}
     />
   );
 };

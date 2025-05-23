@@ -28,13 +28,16 @@ function SelectProvider() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <p className="text-sm text-gray-500">Select a provider</p>
+        <p className="text-sm !text-textDimmedColor">Select a provider</p>
         <Select
           data={providers}
           value={selectedProvider}
           onChange={setSelectedProvider}
           placeholder="Select a provider"
-          classNames={{ Input: "bg-bgCardColor" }}
+          classNames={{
+            Input: "bg-bgCardColor",
+            dropdown: "!bg-bgCardColor",
+          }}
           clearable
           checkIconPosition="right"
           styles={{

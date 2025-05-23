@@ -18,6 +18,7 @@
     "@mantine/notifications": "^8.0.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.0",
     "@tabler/icons-react": "^3.33.0",
+    "axios": "^1.9.0",
     "copy-webpack-plugin": "^13.0.0",
     "core-js": "^3.0.0",
     "dotenv": "^16.5.0",

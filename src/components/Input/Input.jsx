@@ -213,7 +213,7 @@ function Input({
       {/* Attachment Previews */}
       {attachments.length > 0 && (
         <div
-          className={`mb-2 flex flex-wrap gap-2 p-2 border-b border-gray-200 dark:border-gray-700 ${attachmentPreviewClassName}`}
+          className={`mb-2 flex flex-wrap gap-2 p-2 border-b  ${attachmentPreviewClassName}`}
         >
           {attachments.map((file, index) => (
             <div key={index} className="relative group flex items-center">
@@ -227,10 +227,7 @@ function Input({
                 </div>
               ) : (
                 <>
-                  <IconPaperclip
-                    size={16}
-                    className="mr-1.5 text-gray-500 dark:text-gray-400"
-                  />
+                  <IconPaperclip size={16} className="mr-1.5 " />
                   <span className="truncate max-w-xs" title={file.name}>
                     {file.name}
                   </span>
@@ -257,7 +254,7 @@ function Input({
         minRows={minRows}
         maxRows={maxRows}
         placeholder={placeholder}
-        className={`flex-grow resize-none p-2.5 mb-4 border border-gray-300  rounded-md focus:ring-2 focus:border-transparent outline-none bg-transparent  ${textAreaClassName}`}
+        className={`flex-grow resize-none mb-4 focus:border-transparent outline-none bg-transparent ${textAreaClassName}`}
       />
 
       <div className="flex justify-between items-end gap-2">
@@ -311,7 +308,7 @@ function Input({
             type="button"
             onClick={handleSendMessageInternal}
             disabled={message.trim() === "" && attachments.length === 0}
-            className={`p-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${buttonClassName}`}
+            className={`p-2  disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 ${buttonClassName}`}
           >
             <IconSend2 size={20} />
           </button>

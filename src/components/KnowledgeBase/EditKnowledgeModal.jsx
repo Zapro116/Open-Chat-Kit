@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Group, Text, Button, TextInput, Modal } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useAuth } from "@clerk/clerk-react";
-import { KNOWLEDGE_BASE_LABEL } from "../../utils/contants";
+import { KNOWLEDGE_BASE_EDIT_LABEL } from "../../utils/contants";
 // import { updateKnowledgeBase } from "../api/knowledgeBaseApi";
 
 const initialErrorState = {
@@ -175,7 +175,7 @@ export const EditKnowledgeModal = ({
     <Modal
       opened={opened}
       onClose={handleClose}
-      title={`Edit ${KNOWLEDGE_BASE_LABEL}`}
+      title={`Edit ${KNOWLEDGE_BASE_EDIT_LABEL}`}
       classNames={modalClassNames}
       centered
       trapFocus={false}

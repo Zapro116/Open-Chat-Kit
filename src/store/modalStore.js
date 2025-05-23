@@ -3,8 +3,7 @@ import { create } from "zustand";
 const useModalStore = create((set) => ({
   modals: {
     contextModal: false,
-    newModal: false, // Add your new modal here
-    // Add more modals here as needed
+    addKnowledgeModal: false,
   },
 
   // Open a specific modal
