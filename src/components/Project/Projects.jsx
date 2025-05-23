@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import ListItem from "../ListItem/ListItem";
 import { IconFolder } from "@tabler/icons-react";
+import { PROJECT_ROUTE } from "../../utils/contants";
+import { useNavigate } from "react-router-dom";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const fetchProjects = async () => {
     try {
@@ -75,6 +79,9 @@ function Projects() {
           key={project.team_id}
           name={project.name}
           icon={<IconFolder size={20} />}
+          onClick={() => {
+            navigate(`/${PROJECT_ROUTE}/${project.team_id}`);
+          }}
         />
       ))}
     </div>

@@ -4,8 +4,9 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import { HOME_ROUTE, LOGIN_ROUTE, SIGNUP_ROUTE } from "./utils/apiEndpoints";
-import { KNOWLEDGE_BASE_ROUTE } from "./utils/contants";
+import { KNOWLEDGE_BASE_ROUTE, PROJECT_ROUTE } from "./utils/contants";
 import KnowledgeBaseDetails from "./components/KnowledgeBase/KnowledgeBaseDetails";
+import ProjectDetails from "./components/Project/ProjectDetails";
 
 function App() {
   return (
@@ -17,6 +18,10 @@ function App() {
         <Route
           path={`/${KNOWLEDGE_BASE_ROUTE}/:kb_id`}
           element={<KnowledgeBaseDetails />}
+        />
+        <Route
+          path={`/${PROJECT_ROUTE}/:project_id`}
+          element={<ProjectDetails />}
         />
       </Routes>
     </Router>

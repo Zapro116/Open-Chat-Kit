@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchKnowledgeBaseStatus } from "../../api/knowledgeBaseApi";
 import { useAuth } from "@clerk/clerk-react";
 import Navbar from "../Navbar/Navbar";
@@ -12,12 +12,14 @@ import {
 } from "@tabler/icons-react";
 import { Button } from "@mantine/core";
 import { KNOWLEDGE_BASE_EDIT_LABEL } from "../../utils/contants";
+import { KnowledgeBaseDetailCard } from "./KnowledgeBaseDetailCard";
 
 function KnowledgeBaseDetails() {
   const { kb_id } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [knowledgeBase, setKnowledgeBase] = useState(null);
+  const navigate = useNavigate();
 
   const abortControllerRef = useRef(null);
 
@@ -34,9 +36,7 @@ function KnowledgeBaseDetails() {
       abortControllerRef.current = new AbortController();
 
       // Get the authentication token
-      const token = await getToken({
-        template: "neon",
-      });
+      const token = await getToken();
 
       // Use the API function to fetch knowledge base status
       const knowledgeBaseData = await fetchKnowledgeBaseStatus(
@@ -44,6 +44,8 @@ function KnowledgeBaseDetails() {
         kb_id,
         abortControllerRef.current.signal
       );
+
+      console.log({ knowledgeBaseData });
 
       if (knowledgeBaseData) {
         setKnowledgeBase(knowledgeBaseData);
@@ -66,7 +68,7 @@ function KnowledgeBaseDetails() {
   }, [loadKnowledgeBase]);
 
   const handleBackClick = () => {
-    // navigate(-1);
+    navigate(-1);
   };
 
   const handleResyncKnowledgeBase = () => {
@@ -78,11 +80,11 @@ function KnowledgeBaseDetails() {
   };
 
   return (
-    <div className="h-full w-full relative">
+    <div className="w-full h-full">
       <Navbar />
       <div className="container mx-auto px-4 py-4 knowledge-base-details">
         {/* Header with back button and knowledge base name */}
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-4 mt-[72px]">
           <button
             className="text-textDefault mr-2 hover:bg-bgSelectedColor p-1 rounded"
             onClick={handleBackClick}
@@ -90,15 +92,17 @@ function KnowledgeBaseDetails() {
             <IconArrowLeft size={20} />
           </button>
           <h2 className="text-xl font-semibold text-textDefault">
-            {knowledgeBase?.name}
+            {knowledgeBase?.name ?? "Loading..."}
           </h2>
-          <button
-            className="text-textDefault ml-2 hover:bg-bgSelectedColor p-1 rounded"
-            onClick={handleEditKnowledgeBase}
-            title="Edit Knowledge Base"
-          >
-            <IconPencil size={16} />
-          </button>
+          {knowledgeBase?.name && (
+            <button
+              className="text-textDefault ml-2 hover:bg-bgSelectedColor p-1 rounded"
+              onClick={handleEditKnowledgeBase}
+              title="Edit Knowledge Base"
+            >
+              <IconPencil size={16} />
+            </button>
+          )}
         </div>
 
         {/* Main content */}
@@ -115,7 +119,7 @@ function KnowledgeBaseDetails() {
                     className="text-white bg-backgroundPrimary hover:bg-backgroundPrimaryHover transition-transform p-1.5 rounded"
                     onClick={handleResyncKnowledgeBase}
                     title="Resync Knowledge Base"
-                    disabled={isResyncing}
+                    // disabled={isResyncing}
                   >
                     <IconRefresh size={16} />
                   </button>
@@ -128,7 +132,7 @@ function KnowledgeBaseDetails() {
                   </button>
                   <button
                     className="text-white bg-backgroundPrimary hover:bg-backgroundPrimaryHover transition-transform p-1.5 rounded"
-                    onClick={openDeleteModal}
+                    // onClick={openDeleteModal}
                     title="Delete Knowledge Base"
                   >
                     <IconTrash size={16} />
@@ -136,7 +140,7 @@ function KnowledgeBaseDetails() {
                 </div>
               )}
             </div>
-            {/* <KnowledgeBaseDetailCard knowledgeBase={knowledgeBase} /> */}
+            <KnowledgeBaseDetailCard knowledgeBase={knowledgeBase} />
             {knowledgeBase?.update_token && (
               <div className="mt-4">
                 <Button

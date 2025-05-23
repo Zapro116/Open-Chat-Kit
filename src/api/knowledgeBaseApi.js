@@ -1,4 +1,17 @@
 export const getKnowledgeBases = async () => {
+  // const payload = {
+  //     team_id: "",
+  //     kb_ids: [],
+  //   };
+
+  //   const response = await ingestionBaseAxios(token).post(
+  //     `/kb/status`,
+  //     payload,
+  //     {
+  //       signal: signal,
+  //     }
+  //   );
+
   const response = {
     data: {
       identifier: "2f3bd8a9-9e42-408d-924d-c1d5428e4ead",
@@ -326,5 +339,95 @@ export const fetchKnowledgeBaseStatus = async (token, kbId, signal) => {
       console.error("Error fetching knowledge base status:", error);
     }
     return null;
+  }
+};
+
+export const fetchTeamKnowledgeBases = async (token, teamId, signal) => {
+  try {
+    // Use the ingestionBaseAxios to call the kb/status endpoint
+    //   const response = await ingestionBaseAxios(token).post(
+    //     `/kb/status`,
+    //     {
+    //       team_id: teamId,
+    //       kb_ids: [],
+    //     },
+    //     {
+    //       signal: signal,
+    //     }
+    //   );
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const response = {
+      data: {
+        identifier: "2fd540cb-ecf4-4f65-905f-350704d16f0e",
+        success: true,
+        errors: null,
+        data: {
+          knowledge_bases: {
+            personal: [],
+            team: [
+              {
+                kb_id: 138,
+                name: "Azure 2",
+                state: "update_error",
+                update_token: false,
+                created_at: "2025-05-12T16:55:39.117935Z",
+                last_indexed_at: "2025-05-12T16:55:39.342820Z",
+                ingestion_status: "failed",
+                success_percentage: 0,
+                is_enabled: true,
+                is_creator: true,
+                is_updatable: false,
+                integration: {
+                  id: 1,
+                  type: "azure_devops",
+                  name: "Azure DevOps",
+                  image_name: "azure_devops.svg",
+                  integration_help_url:
+                    "https://docs.fynix.ai/fynix-code-assistant/knowledge-source/connect-repositories/#-connecting-azure-devops-to-fynix-pat-token-and-clone-url",
+                },
+              },
+            ],
+            organization: [],
+          },
+        },
+        failed_entries: null,
+        pagination: null,
+      },
+    };
+
+    // Process the API response
+    if (
+      response.data &&
+      response.data.data &&
+      response.data.data.knowledge_bases
+    ) {
+      const { knowledge_bases } = response.data.data;
+      const combinedKnowledgeBases = [
+        ...(knowledge_bases.personal || {}),
+        ...(knowledge_bases.team || {}),
+        ...(knowledge_bases.organization || {}),
+      ];
+      const seenIds = new Set();
+      const allKnowledgeBases = combinedKnowledgeBases.filter((kb) => {
+        if (seenIds.has(kb.kb_id)) {
+          return false;
+        }
+        seenIds.add(kb.kb_id);
+        return true;
+      });
+      console.log("Combined knowledge bases:", allKnowledgeBases);
+      return allKnowledgeBases;
+    }
+
+    console.log("No knowledge bases found in API response");
+    return [];
+  } catch (error) {
+    if (error.name === "AbortError") {
+      console.log("Fetch team knowledge bases request was aborted");
+    } else {
+      console.error("Error fetching team knowledge bases:", error);
+    }
+    throw error;
   }
 };

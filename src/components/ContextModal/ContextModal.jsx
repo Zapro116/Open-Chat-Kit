@@ -6,8 +6,10 @@ import MultiStepper from "../MultiStepper/MultiStepper";
 import CreateKnowledgeBase from "./CreateKnowledgeBase/CreateKnowledgeBase";
 import SelectProvider from "./SelectProvider/SelectProvider";
 import useKnowledgeBaseStore from "../../store/knowledgeBaseStore";
+import SearchKnowledgeBase from "../KnowledgeBase/SearchKnowledgeBase";
+import { KNOWLEDGE_BASE_EDIT_LABEL } from "../../utils/contants";
 
-const ContextModal = () => {
+const ContextModal = ({ showExistingKb = false }) => {
   const { modals, closeModal } = useModalStore();
   const [active, setActive] = useState(0);
   const [formData, setFormData] = useState({
@@ -19,15 +21,16 @@ const ContextModal = () => {
     useKnowledgeBaseStore();
 
   const steps = [
-    // { label: "Basic Info", content: <AddKnowledgeBase /> },
+    ...(showExistingKb
+      ? [
+          {
+            content: <SearchKnowledgeBase />,
+          },
+        ]
+      : []),
     {
       label: "Content",
       content: <CreateKnowledgeBase />,
-      onNext: async () => {
-        if (knowledgeBaseName.length === 0) {
-          return;
-        }
-      },
     },
     {
       label: "Select a provider",
@@ -78,9 +81,57 @@ const ContextModal = () => {
     // closeModal("contextModal");
   };
 
-  const modalTitle = {
-    0: "Create Knowledge Base",
-    1: "Select a provider",
+  const modalTitle = showExistingKb
+    ? {
+        0: `Add a ${KNOWLEDGE_BASE_EDIT_LABEL}`,
+        1: `Create ${KNOWLEDGE_BASE_EDIT_LABEL}`,
+        2: `Select a ${KNOWLEDGE_BASE_EDIT_LABEL} provider`,
+      }
+    : {
+        0: `Create ${KNOWLEDGE_BASE_EDIT_LABEL}`,
+        1: `Select a ${KNOWLEDGE_BASE_EDIT_LABEL} provider`,
+      };
+
+  const nextButtonText = showExistingKb
+    ? {
+        0: `Create new ${KNOWLEDGE_BASE_EDIT_LABEL}`,
+        1: "Next",
+        2: "Save",
+      }
+    : {
+        0: "Next",
+        1: "Save",
+      };
+
+  const handleNextButtonClick = (handleNext, active, loading) => {
+    if (showExistingKb) {
+      switch (active) {
+        case 0:
+          handleNext();
+          break;
+        case 1:
+          if (!knowledgeBaseName?.trim()) {
+            return;
+          }
+          handleNext();
+          break;
+        case 2:
+          handleComplete();
+          break;
+      }
+    } else {
+      switch (active) {
+        case 0:
+          if (!knowledgeBaseName?.trim()) {
+            return;
+          }
+          handleNext();
+          break;
+        case 1:
+          handleComplete();
+          break;
+      }
+    }
   };
 
   return (
@@ -92,41 +143,29 @@ const ContextModal = () => {
           {modalTitle[active]}
         </div>
       }
-      styles={{
-        modal: {
-          backgroundColor: "rgb(24 24 27)",
-          color: "rgb(212 212 216)",
-        },
-        title: {
-          color: "rgb(212 212 216)",
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-        },
-        header: {
-          display: "flex",
-          justifyContent: "center",
-        },
+      classNames={{
+        body: "bg-bgCardColor",
+        header: "!bg-bgCardColor",
       }}
       centered
     >
       <div className="space-y-6">
         <MultiStepper
           steps={steps}
+          className="!bg-bgCardColor"
           navigationClassName="flex !justify-end w-full"
           onComplete={handleComplete}
           showStepper={false}
           customNextButton={(handleNext, loading) => {
             return (
               <Button
-                onClick={() => {
-                  active === 0 && knowledgeBaseName.length > 0 && handleNext();
-                  active === steps.length - 1 && handleComplete();
-                }}
+                onClick={() =>
+                  handleNextButtonClick(handleNext, active, loading)
+                }
                 loading={loading}
                 className="!bg-textPurple  hover:!bg-textLightPurple"
               >
-                {active === steps.length - 1 ? "Save" : "Next"}
+                {nextButtonText[active]}
               </Button>
             );
           }}

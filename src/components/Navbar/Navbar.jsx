@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Accordion, Button, Flex, useMantineColorScheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconMenu2, IconMoon, IconSunHigh } from "@tabler/icons-react";
@@ -13,7 +13,7 @@ import {
   PROJECT_LABEL,
 } from "../../utils/contants";
 import { useNavigate } from "react-router-dom";
-import { LOGIN_ROUTE } from "../../utils/apiEndpoints";
+import { HOME_ROUTE, LOGIN_ROUTE } from "../../utils/apiEndpoints";
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { AccordionControl } from "../AccordianControl/AccordionControl";
 import Projects from "../Project/Projects";
@@ -23,6 +23,13 @@ function Navbar() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const [opened, { open, close }] = useDisclosure(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (LOGO_URL) {
+      const img = new Image();
+      img.src = LOGO_URL;
+    }
+  }, [LOGO_URL]);
 
   const handleColorSchemeToggle = () => {
     const newColorScheme = colorScheme === "light" ? "dark" : "light";
@@ -83,22 +90,26 @@ function Navbar() {
             ))}
           </div>
         </Sidebar>
-        {LOGO_URL ? (
+        {LOGO_URL && (
           <img
             src={LOGO_URL}
             srcSet={`${LOGO_URL} 1x, ${LOGO_URL} 2x`}
             alt="Fynix Logo"
-            className="h-10"
+            className="h-10 cursor-pointer"
             loading="lazy"
+            onClick={() => navigate(HOME_ROUTE)}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "fallback-logo.png"; // TODO: add a fallback image
             }}
           />
-        ) : (
-          <div className="h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
         )}
-        <p className="font-bold text-xl">{BRAND_NAME}</p>
+        <p
+          className="font-bold text-xl cursor-pointer"
+          onClick={() => navigate(HOME_ROUTE)}
+        >
+          {BRAND_NAME}
+        </p>
       </div>
       <div className="flex items-center gap-2">
         <Flex

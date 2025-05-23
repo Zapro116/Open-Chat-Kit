@@ -11,6 +11,9 @@ const useKnowledgeBaseStore = create((set) => ({
   setWebSearchEnabled: (webSearchEnabled) => set({ webSearchEnabled }),
   message: "",
   setMessage: (message) => set({ message }),
+
+  context: null,
+  setContext: (context) => set({ context: context }),
   // Form state
   isSubmitting: false,
   error: null,
