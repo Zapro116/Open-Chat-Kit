@@ -9,8 +9,8 @@ import useKnowledgeBaseStore from "../../store/knowledgeBaseStore";
 import SearchKnowledgeBase from "../KnowledgeBase/SearchKnowledgeBase";
 import { KNOWLEDGE_BASE_EDIT_LABEL } from "../../utils/contants";
 
-const ContextModal = ({ showExistingKb = false }) => {
-  const { modals, closeModal } = useModalStore();
+const ContextModal = () => {
+  const { modals, closeModal, showExistingKbInContextModal } = useModalStore();
   const [active, setActive] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
@@ -21,7 +21,7 @@ const ContextModal = ({ showExistingKb = false }) => {
     useKnowledgeBaseStore();
 
   const steps = [
-    ...(showExistingKb
+    ...(showExistingKbInContextModal
       ? [
           {
             content: <SearchKnowledgeBase />,
@@ -81,7 +81,7 @@ const ContextModal = ({ showExistingKb = false }) => {
     // closeModal("contextModal");
   };
 
-  const modalTitle = showExistingKb
+  const modalTitle = showExistingKbInContextModal
     ? {
         0: `Add a ${KNOWLEDGE_BASE_EDIT_LABEL}`,
         1: `Create ${KNOWLEDGE_BASE_EDIT_LABEL}`,
@@ -92,7 +92,7 @@ const ContextModal = ({ showExistingKb = false }) => {
         1: `Select a ${KNOWLEDGE_BASE_EDIT_LABEL} provider`,
       };
 
-  const nextButtonText = showExistingKb
+  const nextButtonText = showExistingKbInContextModal
     ? {
         0: `Create new ${KNOWLEDGE_BASE_EDIT_LABEL}`,
         1: "Next",
@@ -104,7 +104,7 @@ const ContextModal = ({ showExistingKb = false }) => {
       };
 
   const handleNextButtonClick = (handleNext, active, loading) => {
-    if (showExistingKb) {
+    if (showExistingKbInContextModal) {
       switch (active) {
         case 0:
           handleNext();

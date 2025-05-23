@@ -4,7 +4,13 @@ const useModalStore = create((set) => ({
   modals: {
     contextModal: false,
     addKnowledgeModal: false,
+    addProjectModal: false,
   },
+  showExistingKbInContextModal: false,
+
+  // Action to set the showExistingKbInContextModal state
+  setShowExistingKbInContextModal: (value) =>
+    set(() => ({ showExistingKbInContextModal: value })),
 
   // Open a specific modal
   openModal: (modalName) =>

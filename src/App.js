@@ -3,10 +3,16 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import { HOME_ROUTE, LOGIN_ROUTE, SIGNUP_ROUTE } from "./utils/apiEndpoints";
+import {
+  HOME_ROUTE,
+  LOGIN_ROUTE,
+  SETTINGS_ROUTE,
+  SIGNUP_ROUTE,
+} from "./utils/apiEndpoints";
 import { KNOWLEDGE_BASE_ROUTE, PROJECT_ROUTE } from "./utils/contants";
 import KnowledgeBaseDetails from "./components/KnowledgeBase/KnowledgeBaseDetails";
 import ProjectDetails from "./components/Project/ProjectDetails";
+import Settings from "./components/Settings/Settings";
 
 function App() {
   return (
@@ -23,6 +29,7 @@ function App() {
           path={`/${PROJECT_ROUTE}/:project_id`}
           element={<ProjectDetails />}
         />
+        <Route path={SETTINGS_ROUTE} element={<Settings />} />
       </Routes>
     </Router>
   );
