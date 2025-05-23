@@ -32,7 +32,7 @@ function ProjectDetails() {
   const [deletingKbId, setDeletingKbId] = useState(null);
   const [refreshKnowledgeBases, setRefreshKnowledgeBases] = useState(false);
 
-  const { openModal, closeModal } = useModalStore();
+  const { openModal, setShowExistingKbInContextModal } = useModalStore();
 
   //   const [isEditing, setIsEditing] = useState(false);
 
@@ -118,6 +118,7 @@ function ProjectDetails() {
 
   const handleAddKnowledgeSource = () => {
     // navigate(`/${KNOWLEDGE_BASE_ROUTE}`);
+    setShowExistingKbInContextModal(false);
     openModal("contextModal");
   };
 

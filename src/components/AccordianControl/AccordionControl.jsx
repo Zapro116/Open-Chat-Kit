@@ -1,22 +1,11 @@
 import React from "react";
-import {
-  Accordion,
-  Center,
-  ActionIcon,
-  AccordionControlProps,
-} from "@mantine/core";
+import { Accordion, Center, ActionIcon } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
-
-// interface AccordionControlComponentProps extends AccordionControlProps {
-//   setOpenedAccordian: (
-//     value: () => { knowledge: boolean; projects: boolean }
-//   ) => void;
-//   accordionType: "knowledge" | "projects";
-// }
+import useModalStore from "../../store/modalStore";
 
 export function AccordionControl(props) {
-  const { accordionType, setOpenedAccordian, ...restProps } = props;
-  // const { setCurrentPopup, setAddKnowledgeDetails } = useKnowledgeSourceStore();
+  const { accordionType, ...restProps } = props;
+  const { openModal, setShowExistingKbInContextModal } = useModalStore();
   return (
     <Center classNames={{ label: "!p-0" }}>
       <Accordion.Control
@@ -28,17 +17,12 @@ export function AccordionControl(props) {
         variant="subtle"
         color="gray"
         onClick={() => {
-          // if (accordionType === "knowledge") {
-          //   setCurrentPopup("addKnowledgeThroughName");
-          //   setAddKnowledgeDetails({
-          //     sendProjectId: false,
-          //   });
-          // } else {
-          //   setOpenedAccordian(() => ({
-          //     knowledge: false,
-          //     projects: true,
-          //   }));
-          // }
+          if (accordionType === "knowledge") {
+            setShowExistingKbInContextModal(false);
+            openModal("contextModal");
+          } else {
+            openModal("addProjectModal");
+          }
         }}
       >
         <IconPlus size={16} />

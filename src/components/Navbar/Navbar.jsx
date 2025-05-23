@@ -18,6 +18,7 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { AccordionControl } from "../AccordianControl/AccordionControl";
 import Projects from "../Project/Projects";
 import KnowledgeBase from "../KnowledgeBase/KnowledgeBase";
+import { AddProjectModal } from "../Project/AddProjectModal";
 
 function Navbar() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
@@ -53,14 +54,18 @@ function Navbar() {
             <div className="history-content overflow-y-auto">
               <Accordion chevronPosition="right" maw={400} mx="auto">
                 <Accordion.Item value="projects">
-                  <AccordionControl>{PROJECT_LABEL}</AccordionControl>
+                  <AccordionControl accordionType="projects">
+                    {PROJECT_LABEL}
+                  </AccordionControl>
                   <Accordion.Panel>
                     <Projects />
                   </Accordion.Panel>
                 </Accordion.Item>
 
                 <Accordion.Item value="knowledge">
-                  <AccordionControl>{KNOWLEDGE_BASE_LABEL}</AccordionControl>
+                  <AccordionControl accordionType="knowledge">
+                    {KNOWLEDGE_BASE_LABEL}
+                  </AccordionControl>
                   <Accordion.Panel>
                     <KnowledgeBase />
                   </Accordion.Panel>
@@ -154,6 +159,7 @@ function Navbar() {
           </Button>
         </SignedOut>
       </div>
+      <AddProjectModal />
     </div>
   );
 }

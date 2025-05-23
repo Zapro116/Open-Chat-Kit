@@ -25,7 +25,7 @@ const getStandardImageUploadAction = (overrideProps = {}) => ({
 function LandingPage() {
   const { colorScheme } = useMantineColorScheme();
 
-  const { openModal } = useModalStore();
+  const { openModal, setShowExistingKbInContextModal } = useModalStore();
   const {
     webSearchEnabled,
     setWebSearchEnabled,
@@ -105,7 +105,10 @@ function LandingPage() {
                     <button
                       key={config.id}
                       title={config.tooltip}
-                      onClick={() => openModal("contextModal")}
+                      onClick={() => {
+                        openModal("contextModal");
+                        setShowExistingKbInContextModal(true);
+                      }}
                       className={`p-2 h-[36px] text-sm  rounded-md flex items-center transition-colors duration-150 border  ${
                         colorScheme === "dark" ? "border-zinc-700" : ""
                       }`}
@@ -131,7 +134,7 @@ function LandingPage() {
         </div>
       </div>
 
-      <ContextModal showExistingKb={true} />
+      <ContextModal />
     </>
   );
 }
