@@ -13,6 +13,9 @@ import {
 import { Button } from "@mantine/core";
 import { KNOWLEDGE_BASE_EDIT_LABEL } from "../../utils/contants";
 import { KnowledgeBaseDetailCard } from "./KnowledgeBaseDetailCard";
+import useModalStore from "../../store/modalStore";
+import { ShareKnowledgeBaseModal } from "./share/ShareKnowledgeBaseModal";
+import DeleteKnowledgeModal from "./DeleteKnowledgeModal";
 
 function KnowledgeBaseDetails() {
   const { kb_id } = useParams();
@@ -23,9 +26,8 @@ function KnowledgeBaseDetails() {
 
   const abortControllerRef = useRef(null);
 
+  const { openModal, modals, closeModal } = useModalStore();
   const { getToken } = useAuth();
-
-  console.log(kb_id);
 
   const loadKnowledgeBase = useCallback(async () => {
     try {
@@ -79,6 +81,16 @@ function KnowledgeBaseDetails() {
     // navigate(-1);
   };
 
+  const handleShareKnowledgeBase = () => {
+    // navigate(-1);
+    openModal("shareKnowledgeBaseModal");
+  };
+
+  const handleDeleteKnowledgeBase = () => {
+    // navigate(-1);
+    openModal("deleteKnowledgeBaseModal");
+  };
+
   return (
     <div className="w-full h-full">
       <Navbar />
@@ -125,14 +137,14 @@ function KnowledgeBaseDetails() {
                   </button>
                   <button
                     className="text-white bg-backgroundPrimary hover:bg-backgroundPrimaryHover transition-transform p-1.5 rounded"
-                    onClick={() => setShareModalOpen(true)}
+                    onClick={handleShareKnowledgeBase}
                     title="Share Knowledge Base"
                   >
                     <IconShare size={16} />
                   </button>
                   <button
                     className="text-white bg-backgroundPrimary hover:bg-backgroundPrimaryHover transition-transform p-1.5 rounded"
-                    // onClick={openDeleteModal}
+                    onClick={handleDeleteKnowledgeBase}
                     title="Delete Knowledge Base"
                   >
                     <IconTrash size={16} />
@@ -156,6 +168,20 @@ function KnowledgeBaseDetails() {
           </div>
         </div>
       </div>
+      <ShareKnowledgeBaseModal
+        opened={modals?.shareKnowledgeBaseModal}
+        onClose={() => closeModal("shareKnowledgeBaseModal")}
+        knowledgeBase={knowledgeBase}
+      />
+      <DeleteKnowledgeModal
+        opened={modals?.deleteKnowledgeBaseModal}
+        setOpened={() => closeModal("deleteKnowledgeBaseModal")}
+        knowledge={knowledgeBase}
+        onDelete={(knowledge) => {
+          console.log(knowledge);
+          // setDeleteKnowledge(null);
+        }}
+      />
     </div>
   );
 }

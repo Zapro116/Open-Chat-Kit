@@ -16,6 +16,7 @@ import { ProjectDetailCard } from "./ProjectDetailCard";
 import useModalStore from "../../store/modalStore";
 import AddKnowledgeModal from "../KnowledgeBase/AddKnowledgeModal";
 import ContextModal from "../ContextModal/ContextModal";
+import { MultiSelectKnowledgeModal } from "../KnowledgeBase/MultiSelectKnowledgeModal";
 
 const OWNER_SLUG = "owner";
 
@@ -32,7 +33,8 @@ function ProjectDetails() {
   const [deletingKbId, setDeletingKbId] = useState(null);
   const [refreshKnowledgeBases, setRefreshKnowledgeBases] = useState(false);
 
-  const { openModal, setShowExistingKbInContextModal } = useModalStore();
+  const { openModal, setShowExistingKbInContextModal, closeModal, modals } =
+    useModalStore();
 
   //   const [isEditing, setIsEditing] = useState(false);
 
@@ -113,7 +115,7 @@ function ProjectDetails() {
   };
 
   const handleOpenExistingKnowledgeModal = () => {
-    // navigate(`/${KNOWLEDGE_BASE_ROUTE}`);
+    openModal("multiSelectKnowledgeModal");
   };
 
   const handleAddKnowledgeSource = () => {
@@ -341,6 +343,12 @@ function ProjectDetails() {
       </div>
       <AddKnowledgeModal />
       <ContextModal />
+      <MultiSelectKnowledgeModal
+        teamId={project?.id}
+        opened={modals?.multiSelectKnowledgeModal}
+        onClose={() => closeModal("multiSelectKnowledgeModal")}
+        onSubmit={() => {}}
+      />
     </div>
   );
 }

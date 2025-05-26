@@ -2,20 +2,44 @@ import React from "react";
 import { IconUserCircle } from "@tabler/icons-react";
 import { SETTINGS_ROUTE } from "./apiEndpoints";
 
-export const BRAND_NAME = process.env.REACT_APP_BRAND_NAME;
-export const LOGO_URL = process.env.REACT_APP_LOGO_URL;
+export const initialSiteConfig = {
+  BRAND_NAME: process.env.REACT_APP_BRAND_NAME,
+  LOGO_URL: process.env.REACT_APP_LOGO_URL,
+  PROJECT_LABEL: process.env.REACT_APP_PROJECTS_LABEL ?? "Projects",
+  PROJECT_EDIT_LABEL: process.env.REACT_APP_EDIT_PROJECTS_LABEL ?? "Project",
+  PROJECT_ROUTE: process.env.REACT_APP_PROJECTS_ROUTE ?? "project",
+  ENABLE_PROJECTS: JSON.parse(process.env.REACT_APP_ENABLE_PROJECTS ?? "false"),
+  KNOWLEDGE_BASE_LABEL:
+    process.env.REACT_APP_KNOWLEDGE_BASE_LABEL ?? "Knowledge Bases",
+  KNOWLEDGE_BASE_EDIT_LABEL:
+    process.env.REACT_APP_EDIT_KNOWLEDGE_BASE_LABEL ?? "Knowledge Base",
+  KNOWLEDGE_BASE_ROUTE:
+    process.env.REACT_APP_KNOWLEDGE_BASE_ROUTE ?? "knowledge",
+  ENABLE_KNOWLEDGE_BASES: JSON.parse(
+    process.env.REACT_APP_ENABLE_KNOWLEDGE_BASES ?? "false"
+  ),
+  ENABLE_HISTORY: JSON.parse(process.env.REACT_APP_ENABLE_HISTORY ?? "false"),
+  ENABLE_CHATS: JSON.parse(process.env.REACT_APP_ENABLE_CHATS ?? "false"),
+};
 
-export const PROJECT_LABEL = process.env.REACT_APP_PROJECTS_LABEL ?? "Projects";
-export const PROJECT_EDIT_LABEL =
-  process.env.REACT_APP_EDIT_PROJECTS_LABEL ?? "Project";
-export const PROJECT_ROUTE = process.env.REACT_APP_PROJECTS_ROUTE ?? "project";
+export const BRAND_NAME = initialSiteConfig.BRAND_NAME;
+export const LOGO_URL = initialSiteConfig.LOGO_URL;
 
-export const KNOWLEDGE_BASE_LABEL =
-  process.env.REACT_APP_KNOWLEDGE_BASE_LABEL ?? "Knowledge Bases";
+export const PROJECT_LABEL = initialSiteConfig.PROJECT_LABEL;
+export const PROJECT_EDIT_LABEL = initialSiteConfig.PROJECT_EDIT_LABEL;
+export const PROJECT_ROUTE = initialSiteConfig.PROJECT_ROUTE;
+export const ENABLE_PROJECTS = initialSiteConfig.ENABLE_PROJECTS;
+
+export const KNOWLEDGE_BASE_LABEL = initialSiteConfig.KNOWLEDGE_BASE_LABEL;
 export const KNOWLEDGE_BASE_EDIT_LABEL =
-  process.env.REACT_APP_EDIT_KNOWLEDGE_BASE_LABEL ?? "Knowledge Base";
-export const KNOWLEDGE_BASE_ROUTE =
-  process.env.REACT_APP_KNOWLEDGE_BASE_ROUTE ?? "knowledge";
+  initialSiteConfig.KNOWLEDGE_BASE_EDIT_LABEL;
+export const KNOWLEDGE_BASE_ROUTE = initialSiteConfig.KNOWLEDGE_BASE_ROUTE;
+export const ENABLE_KNOWLEDGE_BASES = initialSiteConfig.ENABLE_KNOWLEDGE_BASES;
+
+console.log(initialSiteConfig.ENABLE_KNOWLEDGE_BASES);
+
+export const ENABLE_HISTORY = initialSiteConfig.ENABLE_HISTORY;
+export const ENABLE_CHATS = initialSiteConfig.ENABLE_CHATS;
 
 export const historyData = {
   April: [

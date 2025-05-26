@@ -5,6 +5,9 @@ const useModalStore = create((set) => ({
     contextModal: false,
     addKnowledgeModal: false,
     addProjectModal: false,
+    multiSelectKnowledgeModal: false,
+    shareKnowledgeBaseModal: false,
+    deleteKnowledgeBaseModal: false,
   },
   showExistingKbInContextModal: false,
 

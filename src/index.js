@@ -7,6 +7,8 @@ import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import { ClerkProvider } from "@clerk/clerk-react";
+import { SiteConfigProvider } from "./contexts/SiteConfigContext";
+
 const PUBLISHABLE_KEY = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
@@ -16,13 +18,17 @@ if (!PUBLISHABLE_KEY) {
 const rootElement = document.getElementById("root");
 const root = ReactDOM.createRoot(rootElement);
 
-const renderApp = (Component) => {
+const renderApp = (AppComponent) => {
   root.render(
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <MantineProvider>
-        <Component />
-      </MantineProvider>
-    </ClerkProvider>
+    <React.StrictMode>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <MantineProvider>
+          <SiteConfigProvider>
+            <AppComponent />
+          </SiteConfigProvider>
+        </MantineProvider>
+      </ClerkProvider>
+    </React.StrictMode>
   );
 };
 

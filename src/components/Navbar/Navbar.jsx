@@ -6,6 +6,9 @@ import Sidebar from "../Sidebar/Sidebar";
 import List from "../List/List";
 import {
   BRAND_NAME,
+  ENABLE_HISTORY,
+  ENABLE_KNOWLEDGE_BASES,
+  ENABLE_PROJECTS,
   historyData,
   KNOWLEDGE_BASE_LABEL,
   LOGO_URL,
@@ -53,46 +56,51 @@ function Navbar() {
           <div className="p-2">
             <div className="history-content overflow-y-auto">
               <Accordion chevronPosition="right" maw={400} mx="auto">
-                <Accordion.Item value="projects">
-                  <AccordionControl accordionType="projects">
-                    {PROJECT_LABEL}
-                  </AccordionControl>
-                  <Accordion.Panel>
-                    <Projects />
-                  </Accordion.Panel>
-                </Accordion.Item>
+                {ENABLE_PROJECTS && (
+                  <Accordion.Item value="projects">
+                    <AccordionControl accordionType="projects">
+                      {PROJECT_LABEL}
+                    </AccordionControl>
+                    <Accordion.Panel>
+                      <Projects />
+                    </Accordion.Panel>
+                  </Accordion.Item>
+                )}
 
-                <Accordion.Item value="knowledge">
-                  <AccordionControl accordionType="knowledge">
-                    {KNOWLEDGE_BASE_LABEL}
-                  </AccordionControl>
-                  <Accordion.Panel>
-                    <KnowledgeBase />
-                  </Accordion.Panel>
-                </Accordion.Item>
+                {ENABLE_KNOWLEDGE_BASES && (
+                  <Accordion.Item value="knowledge">
+                    <AccordionControl accordionType="knowledge">
+                      {KNOWLEDGE_BASE_LABEL}
+                    </AccordionControl>
+                    <Accordion.Panel>
+                      <KnowledgeBase />
+                    </Accordion.Panel>
+                  </Accordion.Item>
+                )}
               </Accordion>
             </div>
-            {Object.entries(historyData).map(([month, itemObjects]) => (
-              <div key={month} className="mb-3">
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1 mb-1.5">
-                  {month}
-                </p>
-                <List
-                  items={itemObjects.map((item) => ({
-                    key: item.id,
-                    label: (
-                      <div
-                        className={`flex items-center p-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-sm ${item.className}`}
-                      >
-                        <span className="mr-2">{item.icon}</span>
-                        <span>{item.content}</span>
-                      </div>
-                    ),
-                  }))}
-                  listStyleType="none"
-                />
-              </div>
-            ))}
+            {ENABLE_HISTORY &&
+              Object.entries(historyData).map(([month, itemObjects]) => (
+                <div key={month} className="mb-3">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1 mb-1.5">
+                    {month}
+                  </p>
+                  <List
+                    items={itemObjects.map((item) => ({
+                      key: item.id,
+                      label: (
+                        <div
+                          className={`flex items-center p-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-sm ${item.className}`}
+                        >
+                          <span className="mr-2">{item.icon}</span>
+                          <span>{item.content}</span>
+                        </div>
+                      ),
+                    }))}
+                    listStyleType="none"
+                  />
+                </div>
+              ))}
           </div>
         </Sidebar>
         {LOGO_URL && (

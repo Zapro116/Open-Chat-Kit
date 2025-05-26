@@ -14,7 +14,7 @@ function DeleteKnowledgeModal({ opened, setOpened, knowledge, onDelete }) {
       }}
     >
       <Text size="sm" mb="lg">
-        Do you want to delete "{knowledge.name}" knowledge base?
+        Do you want to delete "{knowledge?.name}" knowledge base?
       </Text>
       <Group justify="flex-end" mt="md">
         <Button
