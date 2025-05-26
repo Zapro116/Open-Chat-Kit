@@ -11,6 +11,8 @@ import { useMantineColorScheme } from "@mantine/core";
 import ContextModal from "../components/ContextModal/ContextModal";
 import useModalStore from "../store/modalStore";
 import useKnowledgeBaseStore from "../store/knowledgeBaseStore";
+import { ENABLE_CHATS, ENABLE_KNOWLEDGE_BASES } from "../utils/contants";
+import { useUser } from "@clerk/clerk-react";
 
 // Helper functions to generate standard action configurations
 const getStandardImageUploadAction = (overrideProps = {}) => ({
@@ -24,6 +26,7 @@ const getStandardImageUploadAction = (overrideProps = {}) => ({
 
 function LandingPage() {
   const { colorScheme } = useMantineColorScheme();
+  const { user } = useUser();
 
   const { openModal, setShowExistingKbInContextModal } = useModalStore();
   const {
@@ -47,12 +50,27 @@ function LandingPage() {
     setWebSearchEnabled(!webSearchEnabled);
   };
 
+  if (!ENABLE_CHATS) {
+    return (
+      <div className="relative">
+        <Navbar />
+        <div className="flex flex-col items-center justify-center h-screen bg-bgCardColor">
+          <p className="text-2xl font-bold mb-3">
+            Chat is not enabled for this instance
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="relative">
         <Navbar />
         <div className="flex flex-col items-center justify-center h-screen bg-bgCardColor">
-          <p className="text-2xl font-bold mb-3">Hi, Ask me anything...</p>
+          <p className="text-2xl font-bold mb-3">
+            Hi{user?.firstName && ` ${user?.firstName}`}, Ask me anything...
+          </p>
 
           <Input
             message={message}
@@ -84,40 +102,44 @@ function LandingPage() {
                 position: "left",
                 customRender: () => <ModelSelector />,
               },
-              {
-                id: "add-context-fynix",
-                tooltip: "Add Context",
-                position: "right",
-                customRender: (config) =>
-                  context && context?.name ? (
-                    <div className="flex items-center gap-1 border border-borderDefault rounded-md pl-3">
-                      <div className="text-sm text-textDefault py-2">
-                        {context.name}
-                      </div>
-                      <div
-                        className="flex items-center p-2 hover:text-textDangerColor h-full cursor-pointer"
-                        onClick={() => setContext(null)}
-                      >
-                        <IconX size={16} className="opacity-80" />
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      key={config.id}
-                      title={config.tooltip}
-                      onClick={() => {
-                        openModal("contextModal");
-                        setShowExistingKbInContextModal(true);
-                      }}
-                      className={`p-2 h-[36px] text-sm  rounded-md flex items-center transition-colors duration-150 border  ${
-                        colorScheme === "dark" ? "border-zinc-700" : ""
-                      }`}
-                    >
-                      <IconBook size={16} className="mr-1.5 opacity-80" />
-                      Add context
-                    </button>
-                  ),
-              },
+              ...(ENABLE_KNOWLEDGE_BASES
+                ? [
+                    {
+                      id: "add-context-fynix",
+                      tooltip: "Add Context",
+                      position: "right",
+                      customRender: (config) =>
+                        context && context?.name ? (
+                          <div className="flex items-center gap-1 border border-borderDefault rounded-md pl-3">
+                            <div className="text-sm text-textDefault py-2">
+                              {context.name}
+                            </div>
+                            <div
+                              className="flex items-center p-2 hover:text-textDangerColor h-full cursor-pointer"
+                              onClick={() => setContext(null)}
+                            >
+                              <IconX size={16} className="opacity-80" />
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            key={config.id}
+                            title={config.tooltip}
+                            onClick={() => {
+                              openModal("contextModal");
+                              setShowExistingKbInContextModal(true);
+                            }}
+                            className={`p-2 h-[36px] text-sm  rounded-md flex items-center transition-colors duration-150 border  ${
+                              colorScheme === "dark" ? "border-zinc-700" : ""
+                            }`}
+                          >
+                            <IconBook size={16} className="mr-1.5 opacity-80" />
+                            Add context
+                          </button>
+                        ),
+                    },
+                  ]
+                : []),
             ]}
           />
           <div className="flex flex-col items-center justify-center w-full">

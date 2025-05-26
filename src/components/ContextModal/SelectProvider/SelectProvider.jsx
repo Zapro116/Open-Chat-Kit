@@ -1,5 +1,5 @@
-import { Input, Select } from "@mantine/core";
-import React from "react";
+import { FileInput, Input, Select } from "@mantine/core";
+import React, { useState } from "react";
 import useKnowledgeBaseStore from "../../../store/knowledgeBaseStore";
 
 function SelectProvider() {
@@ -9,10 +9,11 @@ function SelectProvider() {
     providerConfigs,
     setProviderConfig,
   } = useKnowledgeBaseStore();
+  const [file, setFile] = useState(null);
 
   const providers = [
     { value: "quip", label: "Quip" },
-    { value: "google_docs", label: "Google Docs" },
+    { value: "local", label: "Local File" },
   ];
 
   const handleProviderConfigChange = (field, value) => {
@@ -61,7 +62,7 @@ function SelectProvider() {
           }}
         />
       </div>
-      {selectedProvider !== null && currentProviderConfig && (
+      {selectedProvider === "quip" && currentProviderConfig && (
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <div className="text-sm text-textDimmedColor">Clone Url</div>
@@ -90,6 +91,23 @@ function SelectProvider() {
                 )
               }
               type="password"
+              styles={{
+                input: { backgroundColor: "var(--bg-card-color)" },
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {selectedProvider === "local" && (
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <div className="text-sm text-textDimmedColor">Files</div>
+            <FileInput
+              placeholder="Select a file"
+              value={file}
+              onChange={(e) => setFile(e)}
+              clearable
               styles={{
                 input: { backgroundColor: "var(--bg-card-color)" },
               }}
