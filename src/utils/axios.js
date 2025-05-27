@@ -1,14 +1,15 @@
 import axios from "axios";
 
 // Create an Axios instance
-const instance = axios.create({
-  baseURL: "https://api.example.com", // Replace with your API's base URL
-  timeout: 10000, // Optional: set a timeout for requests
-  headers: {
-    "Content-Type": "application/json",
-    // You can add other common headers here
-  },
-});
+const cerebrumAxios = (token) =>
+  axios.create({
+    baseURL: "http://localhost:8081/", // Replace with your API's base URL
+    timeout: 10000, // Optional: set a timeout for requests
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 // Request interceptor
 // instance.interceptors.request.use(
@@ -43,4 +44,4 @@ const instance = axios.create({
 //   }
 // );
 
-export default instance;
+export { cerebrumAxios };
