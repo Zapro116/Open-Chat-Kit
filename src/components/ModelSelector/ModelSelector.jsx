@@ -1,16 +1,45 @@
-import React from "react";
-import { Select } from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import { Loader, Select } from "@mantine/core";
 import useModelStore from "../../store/modelStore";
+import { useAuth } from "@clerk/clerk-react";
+import { getModels } from "../../api/websiteApi";
 
 const ModelSelector = () => {
   const { selectedModel, setSelectedModel } = useModelStore();
+  const [models, setModels] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { getToken } = useAuth();
 
-  console.log(selectedModel);
-  const models = [
-    { value: "gpt-4o", label: "GPT-4o" },
-    { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
-    { value: "claude-3-5-sonnet", label: "Claude 3.5 Sonnet" },
-  ];
+  const fetchModels = async () => {
+    try {
+      setLoading(true);
+      const token = await getToken({
+        template: "neon2",
+      });
+      const response = await getModels(token);
+      const transformedModels = response.data?.data?.models
+        ?.filter((model) => model.enabled)
+        .map((model) => ({
+          value: model.slug,
+          label: model.name,
+          accept_image: model.accept_image,
+        }));
+      setModels(transformedModels);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchModels();
+  }, []);
+
+  if (loading)
+    return (
+      <Loader type="dots" color="var(--pagination-tabs-bg-active-color)" />
+    );
 
   return (
     <Select
@@ -22,6 +51,7 @@ const ModelSelector = () => {
       classNames={{
         input: "!bg-bgCardColor focus:!ring-0 focus:!border-borderDefault",
       }}
+      checkIconPosition="right"
     />
   );
 };

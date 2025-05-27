@@ -1,5 +1,3 @@
-import axios from "../utils/axios";
-
 export const fetchProjectsById = async (token, project_id, signal) => {
   //   const response = await axios.get(`${API_ENDPOINTS.PROJECTS}/${project_id}`, {
   //     headers: {
