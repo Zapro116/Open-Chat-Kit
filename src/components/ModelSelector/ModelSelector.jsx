@@ -11,8 +11,14 @@ const ModelSelector = () => {
   const { getToken } = useAuth();
 
   const fetchModels = async () => {
+    const backupModels = [
+      { label: "gpt-4o", value: "gpt-4o" },
+      { label: "gpt-3.5-turbo", value: "gpt-3.5-turbo" },
+      { label: "claude-3-5-sonnet", value: "claude-3-5-sonnet" },
+    ];
     try {
       setLoading(true);
+
       const token = await getToken({
         template: "neon2",
       });
@@ -20,13 +26,14 @@ const ModelSelector = () => {
       const transformedModels = response.data?.data?.models
         ?.filter((model) => model.enabled)
         .map((model) => ({
-          value: model.slug,
-          label: model.name,
-          accept_image: model.accept_image,
+          value: model?.slug,
+          label: model?.name,
+          accept_image: model?.accept_image,
         }));
-      setModels(transformedModels);
+      setModels(transformedModels ?? backupModels);
     } catch (error) {
       console.error(error);
+      setModels(backupModels);
     } finally {
       setLoading(false);
     }

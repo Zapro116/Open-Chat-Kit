@@ -55,9 +55,7 @@ function LandingPage() {
       <div className="relative">
         <Navbar />
         <div className="flex flex-col items-center justify-center h-screen bg-bgCardColor">
-          <p className="text-2xl font-bold mb-3">
-            Chat is not enabled for this instance
-          </p>
+          <p className="text-2xl font-bold mb-3">Chat is not enabled</p>
         </div>
       </div>
     );
