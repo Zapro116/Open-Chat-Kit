@@ -1,4 +1,4 @@
-# React Base App
+# School Demo App
 
 A robust starting point for building modern web applications with React. This project is configured with key technologies to provide a solid foundation for development:
 
@@ -65,6 +65,20 @@ To get started with this project, follow these steps:
 
     # Add other environment variables as needed
     ```
+
+4.  **Build the Docker image:**
+
+    ```bash
+    docker build -t school-demo-app .
+    ```
+
+5.  **Run the Docker container:**
+
+    ```bash
+    docker run -p 80:80 school-demo-app
+    ```
+
+6.  **Visit http://localhost**
 
 ## Available Scripts
 
