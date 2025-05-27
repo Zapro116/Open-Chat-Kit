@@ -17,7 +17,7 @@ import {
 } from "../../utils/contants";
 import { useNavigate } from "react-router-dom";
 import { HOME_ROUTE, LOGIN_ROUTE } from "../../utils/apiEndpoints";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, useAuth, UserButton } from "@clerk/clerk-react";
 import { AccordionControl } from "../AccordianControl/AccordionControl";
 import Projects from "../Project/Projects";
 import KnowledgeBase from "../KnowledgeBase/KnowledgeBase";
@@ -27,6 +27,7 @@ function Navbar() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const [opened, { open, close }] = useDisclosure(false);
   const navigate = useNavigate();
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     if (LOGO_URL) {
@@ -55,29 +56,31 @@ function Navbar() {
         >
           <div className="p-2">
             <div className="history-content overflow-y-auto">
-              <Accordion chevronPosition="right" maw={400} mx="auto">
-                {ENABLE_PROJECTS && (
-                  <Accordion.Item value="projects">
-                    <AccordionControl accordionType="projects">
-                      {PROJECT_LABEL}
-                    </AccordionControl>
-                    <Accordion.Panel>
-                      <Projects />
-                    </Accordion.Panel>
-                  </Accordion.Item>
-                )}
+              {isSignedIn && (
+                <Accordion chevronPosition="right" maw={400} mx="auto">
+                  {ENABLE_PROJECTS && (
+                    <Accordion.Item value="projects">
+                      <AccordionControl accordionType="projects">
+                        {PROJECT_LABEL}
+                      </AccordionControl>
+                      <Accordion.Panel>
+                        <Projects />
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  )}
 
-                {ENABLE_KNOWLEDGE_BASES && (
-                  <Accordion.Item value="knowledge">
-                    <AccordionControl accordionType="knowledge">
-                      {KNOWLEDGE_BASE_LABEL}
-                    </AccordionControl>
-                    <Accordion.Panel>
-                      <KnowledgeBase />
-                    </Accordion.Panel>
-                  </Accordion.Item>
-                )}
-              </Accordion>
+                  {ENABLE_KNOWLEDGE_BASES && (
+                    <Accordion.Item value="knowledge">
+                      <AccordionControl accordionType="knowledge">
+                        {KNOWLEDGE_BASE_LABEL}
+                      </AccordionControl>
+                      <Accordion.Panel>
+                        <KnowledgeBase />
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  )}
+                </Accordion>
+              )}
             </div>
             {ENABLE_HISTORY &&
               Object.entries(historyData).map(([month, itemObjects]) => (

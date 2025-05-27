@@ -42,7 +42,7 @@ export const ProjectMembers = ({
   };
 
   useEffect(() => {
-    setTeamId(params.id);
+    setTeamId(params.project_id);
     return () => {
       setTeamId("");
     };
@@ -148,8 +148,8 @@ export const ProjectMembers = ({
           ) : (
             members.some(
               (member) =>
-                member.id === user.id &&
-                member.role?.toLowerCase() === OWNER_SLUG
+                member?.id === user?.id &&
+                member?.role?.toLowerCase() === OWNER_SLUG
             ) && (
               <Button
                 variant="transparent"
