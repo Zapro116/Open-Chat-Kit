@@ -2,6 +2,8 @@ import React from "react";
 import { IconPhoto, IconUserCircle } from "@tabler/icons-react";
 import { SETTINGS_ROUTE } from "./apiEndpoints";
 
+export const baseCerebrumUrl = "http://localhost:8081";
+
 export const initialSiteConfig = {
   BRAND_NAME: process.env.REACT_APP_BRAND_NAME,
   LOGO_URL: process.env.REACT_APP_LOGO_URL,
@@ -443,3 +445,8 @@ export const getStandardImageUploadAction = (overrideProps = {}) => ({
   position: "left",
   ...overrideProps,
 });
+
+export const ASSISTANT_ROLE = "assistant";
+export const USER_ROLE = "user";
+export const DEFAULT_MODEL_SLUG_NAME = "gpt-4o";
+export const DEFAULT_PRODUCT_NAME = "co_pilot";

@@ -11,3 +11,16 @@ export const getOrgMembers = async (token, params, signal) => {
     signal: signal || undefined,
   });
 };
+
+export const chatASKApi = async (token, requestBody, controller) => {
+  return fetch(`http://localhost:8081/v2.0/ask`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    credentials: "include",
+    body: JSON.stringify(requestBody),
+    signal: controller?.signal,
+  });
+};
