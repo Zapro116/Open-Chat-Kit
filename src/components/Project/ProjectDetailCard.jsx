@@ -8,11 +8,7 @@ import {
   Group,
   Button,
 } from "@mantine/core";
-import {
-  IconBook,
-  IconTrash,
-  IconLoader,
-} from "@tabler/icons-react";
+import { IconBook, IconTrash, IconLoader } from "@tabler/icons-react";
 import { useAuth } from "@clerk/clerk-react";
 import { fetchKnowledgeBaseStatus } from "../../api/knowledgeBaseApi";
 
@@ -38,7 +34,7 @@ export const ProjectDetailCard = ({
     last_indexed_at,
     success_percentage: initialSuccessPercentage,
     integration,
-    is_creator
+    is_creator,
   } = knowledgeBase;
 
   // State to track the current success percentage and state
@@ -76,7 +72,7 @@ export const ProjectDetailCard = ({
       let token;
       try {
         token = await getToken({
-          template: "neon",
+          template: "neon2",
         });
       } catch (tokenError) {
         console.error("Error getting authentication token:", tokenError);
@@ -90,7 +86,7 @@ export const ProjectDetailCard = ({
 
       // Fetch the knowledge base status
       const updatedKnowledgeBase = await fetchKnowledgeBaseStatus(
-        token,
+        token?.token ?? token,
         kb_id,
         abortControllerRef.current.signal
       );
@@ -211,8 +207,7 @@ export const ProjectDetailCard = ({
             </Badge>
           </div>
         </div>
-        {
-          is_creator && 
+        {is_creator && (
           <div className="flex items-center gap-2">
             <button
               className={`p-1 rounded transition-colors ${
@@ -241,7 +236,7 @@ export const ProjectDetailCard = ({
               )}
             </button>
           </div>
-        }
+        )}
       </div>
 
       <div className="flex flex-col gap-2 ml-10">

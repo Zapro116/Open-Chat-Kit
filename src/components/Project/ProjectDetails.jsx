@@ -139,7 +139,7 @@ function ProjectDetails() {
 
       // Get the authentication token
       const token = await getToken({
-        template: "neon",
+        template: "neon2",
       });
 
       // Use the API function to fetch knowledge bases for this team/project
@@ -187,8 +187,8 @@ function ProjectDetails() {
         const abortController = new AbortController();
 
         // Get the authentication token
-        const token = await getToken({
-          template: "neon",
+        const { token } = await getToken({
+          template: "neon2",
         });
 
         console.log(
@@ -197,7 +197,7 @@ function ProjectDetails() {
 
         // Call the API to revoke the knowledge base
         await revokeKnowledgeBase(
-          token,
+          token?.token ?? token,
           {
             kb_ids: [knowledgeBase.kb_id],
             team_id: [projectId],

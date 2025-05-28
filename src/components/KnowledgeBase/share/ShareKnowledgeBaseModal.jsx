@@ -64,7 +64,7 @@ export const ShareKnowledgeBaseModal = ({ opened, onClose, knowledgeBase }) => {
           //     }
           //   }
           // };
-          const token = await getToken({ template: "neon" });
+          const token = await getToken({ template: "neon2" });
 
           // Fetch shared access details from the API
           const response = await lockSmithBaseAxios(token).get(
@@ -182,7 +182,7 @@ export const ShareKnowledgeBaseModal = ({ opened, onClose, knowledgeBase }) => {
     setSubmitError(null);
 
     try {
-      const token = await getToken({ template: "neon" });
+      const { token } = await getToken({ template: "neon2" });
 
       // Create a new AbortController for this request
       // if (abortControllerRef.current) {

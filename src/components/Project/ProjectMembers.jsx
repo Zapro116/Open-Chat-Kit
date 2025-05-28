@@ -45,7 +45,7 @@ export const ProjectMembers = ({
 
   const handleDeleteMember = async (member) => {
     const token = await getToken({
-      template: "neon",
+      template: "neon2",
     });
     // const deletedUser = await deleteTeamMember(token, params.id, member.id);
     // if (deletedUser.data.success) {
