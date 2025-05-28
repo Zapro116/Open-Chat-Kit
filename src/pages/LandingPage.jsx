@@ -54,7 +54,13 @@ function LandingPage() {
       const token = await getToken({
         template: "neon2",
       });
-      await handleSendMessage(message, attachments, token, navigate);
+      await handleSendMessage(
+        message,
+        attachments,
+        token,
+        navigate,
+        user?.emailAddresses[0].emailAddress
+      );
     } catch (err) {
       console.log(err);
     }
@@ -159,7 +165,7 @@ function LandingPage() {
               <QuickStartPrompts
                 prompts={randomPrompts}
                 onPromptClick={(prompt) => {
-                  setMessage(prompt);
+                  setPromptText(prompt);
                 }}
                 columns={3}
               />

@@ -8,9 +8,18 @@ import {
   DEFAULT_PRODUCT_NAME,
   USER_ROLE,
 } from "../utils/contants";
-import { extractJsonObjectsFromStreamUtil } from "../Utils/StreamUtils";
+import {
+  extractJsonObjectsFromStreamUtil,
+  processTypeData,
+} from "../Utils/StreamUtils";
 
-const handleSendMessage = async (message, attachments, token, navigate) => {
+const handleSendMessage = async (
+  message,
+  attachments,
+  token,
+  navigate,
+  email
+) => {
   const { selectedModel } = useModelStore.getState();
   const {
     messages,
@@ -41,10 +50,21 @@ const handleSendMessage = async (message, attachments, token, navigate) => {
     lastIndex: null,
     role: USER_ROLE,
   };
+  const assistantMessage = {
+    id: latestMessageId + 1,
+    content: "",
+    dbConversationId: null,
+    parentId: null,
+    commands: null,
+    //isStreaming:false,
+    lastIndex: null,
+    role: ASSISTANT_ROLE,
+  };
 
   // appendMessage(userMessage);
   const exisitingMessages = messages;
   exisitingMessages.push(userMessage);
+  exisitingMessages.push(assistantMessage);
   setMessages(exisitingMessages);
   console.log(messages);
 
@@ -54,7 +74,7 @@ const handleSendMessage = async (message, attachments, token, navigate) => {
       currentThreadId,
       false,
       selectedModel,
-      ""
+      email
     );
     console.log(requestBody);
     const { controller } = useChatStore.getState();
@@ -82,9 +102,15 @@ const handleSendMessage = async (message, attachments, token, navigate) => {
       if (done) break;
 
       const chunk = decoder.decode(value, { stream: true });
-      console.log(chunk);
+      // console.log(chunk);
 
-      await populateResponseFromStream(chunk, responseData, navigate);
+      await populateResponseFromStream(
+        chunk,
+        responseData,
+        navigate,
+        messages,
+        setMessages
+      );
     }
   } catch (e) {
     console.log(e);
@@ -94,7 +120,9 @@ const handleSendMessage = async (message, attachments, token, navigate) => {
 export async function populateResponseFromStream(
   lines,
   responseData,
-  navigate
+  navigate,
+  messages,
+  setMessages
 ) {
   const parsedJsonArray = extractJsonObjectsFromStreamUtil(lines);
   const { setCurrentThreadId, currentThreadId } = useChatStore.getState();
@@ -139,14 +167,6 @@ export async function populateResponseFromStream(
 
     // Handle last AI message
     if (jsonObject?.type === "last_ai_message" && jsonObject?.payload) {
-      //   const params = {
-      //     getCurrentChatLength,
-      //     getMessages,
-      //     jsonObject,
-      //     setMessages,
-      //   };
-      //   processTypeLastAIMessage(params);
-      // }
       // // Handle data content
       // if (jsonObject?.type === "data" && jsonObject?.payload?.content) {
       //   const params = {
@@ -168,17 +188,12 @@ export async function populateResponseFromStream(
       //   };
       //   processTypeData(params);
     }
+    if (jsonObject?.type === "data" && jsonObject?.payload?.content) {
+      processTypeData(jsonObject, responseData, messages, setMessages);
+    }
 
     // Handle error_code = MODEL_REQUEST_LIMIT_REACHED
     if (jsonObject?.error_code === "MODEL_REQUEST_LIMIT_REACHED") {
-      const params = {
-        getMessages,
-        setIsRunning,
-        setMessages,
-        responseData,
-        jsonObject,
-      };
-
       //   processTypeError(params);
     }
   }
@@ -263,7 +278,7 @@ async function createRequestBody(
 
   return {
     action_id: 1,
-    requested_by: email !== "" ? email : "hariomchaurasia@gofynd.com",
+    requested_by: email,
     product: DEFAULT_PRODUCT_NAME,
     data: {
       messages: messagesArray,
