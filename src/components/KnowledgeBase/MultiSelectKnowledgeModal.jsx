@@ -38,7 +38,7 @@ export const MultiSelectKnowledgeModal = ({
 
         try {
           const token = await getToken({
-            template: "neon",
+            template: "neon2",
           });
 
           const fetchedKnowledgeBases = await getKnowledgeBases(
@@ -86,8 +86,8 @@ export const MultiSelectKnowledgeModal = ({
   // Mock API function to add knowledge bases to a project
   const addKnowledgeBaseToProject = async (teamId, knowledgeBases) => {
     try {
-      const token = await getToken({
-        template: "neon",
+      const { token } = await getToken({
+        template: "neon2",
       });
 
       const kbIds = knowledgeBases.map((knowledgeBase) => knowledgeBase?.kb_id);
@@ -241,7 +241,7 @@ export const MultiSelectKnowledgeModal = ({
             variant="outline"
             onClick={onClose}
             disabled={submitting}
-            className="!border-borderDefault !text-textDefault hover:text-textDefault hover:bg-bgCardColor" 
+            className="!border-borderDefault !text-textDefault hover:text-textDefault hover:bg-bgCardColor"
           >
             Cancel
           </Button>
