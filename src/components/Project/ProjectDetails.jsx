@@ -17,6 +17,8 @@ import useModalStore from "../../store/modalStore";
 import AddKnowledgeModal from "../KnowledgeBase/AddKnowledgeModal";
 import ContextModal from "../ContextModal/ContextModal";
 import { MultiSelectKnowledgeModal } from "../KnowledgeBase/MultiSelectKnowledgeModal";
+import { HOME_ROUTE } from "../../utils/apiEndpoints";
+import AddProjectMember from "./AddProjectMember";
 
 const OWNER_SLUG = "owner";
 
@@ -104,14 +106,14 @@ function ProjectDetails() {
       setLoading(false);
       abortControllerRef.current = null;
     }
-  }, [getToken, project_id]);
+  }, [project_id]);
 
   useEffect(() => {
     loadProject();
-  }, [loadProject]);
+  }, []);
 
   const handleBackClick = () => {
-    navigate(-1);
+    navigate(HOME_ROUTE);
   };
 
   const handleOpenExistingKnowledgeModal = () => {
@@ -349,6 +351,7 @@ function ProjectDetails() {
         onClose={() => closeModal("multiSelectKnowledgeModal")}
         onSubmit={() => {}}
       />
+      <AddProjectMember />
     </div>
   );
 }

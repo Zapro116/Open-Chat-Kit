@@ -9,6 +9,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { Button, Select, Loader } from "@mantine/core";
+import useModalStore from "../../store/modalStore";
 /**
  * ProjectMembers component for displaying and managing project members
  * @param {Array} members - List of project members
@@ -25,20 +26,14 @@ export const ProjectMembers = ({
   const [updatedUsers, setUpdatedUsers] = useState({});
   const { getToken } = useAuth();
   const { user } = useUser();
-  const [currentPopup, setCurrentPopup] = useState(null);
-  const [addKnowledgeDetails, setAddKnowledgeDetails] = useState({
-    sendProjectId: false,
-  });
+  const { openModal, closeModal, modals } = useModalStore();
   const [teamId, setTeamId] = useState("");
 
   const OWNER_SLUG = "owner";
 
   // Handle add member button click
   const handleAddMemberClick = async () => {
-    setCurrentPopup("add_members");
-    setAddKnowledgeDetails({
-      sendProjectId: true,
-    });
+    openModal("addProjectMemberModal");
   };
 
   useEffect(() => {

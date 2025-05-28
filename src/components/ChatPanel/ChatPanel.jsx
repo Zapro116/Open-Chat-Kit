@@ -26,9 +26,9 @@ function ChatPanel() {
     <div className="relative h-full">
       <Navbar />
       <div className="flex flex-col h-[inherit] bg-bgCardColor">
-        <div className="pt-[72px] h-full">
-          <div className="chat-container"></div>
-          <div className="flex justify-center">
+        <div className="flex flex-col pt-[72px] h-full relative">
+          <div className="flex-1"></div>
+          <div className="flex justify-center absolute bottom-1 w-full">
             <Input
               message={message}
               setMessage={setMessage}
