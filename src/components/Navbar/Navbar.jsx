@@ -17,7 +17,13 @@ import {
 } from "../../utils/contants";
 import { useNavigate } from "react-router-dom";
 import { HOME_ROUTE, LOGIN_ROUTE } from "../../utils/apiEndpoints";
-import { SignedIn, SignedOut, useAuth, UserButton } from "@clerk/clerk-react";
+import {
+  OrganizationSwitcher,
+  SignedIn,
+  SignedOut,
+  useAuth,
+  UserButton,
+} from "@clerk/clerk-react";
 import { AccordionControl } from "../AccordianControl/AccordionControl";
 import Projects from "../Project/Projects";
 import KnowledgeBase from "../KnowledgeBase/KnowledgeBase";
@@ -128,6 +134,22 @@ function Navbar() {
         </p>
       </div>
       <div className="flex items-center gap-2">
+        <SignedIn>
+          <Flex className="px-1 py-0.5 rounded-md border border-borderDefault">
+            <OrganizationSwitcher
+              appearance={{
+                elements: {
+                  organizationSwitcherTrigger: {
+                    color: "var(--navbar-icons-color)",
+                    "&:hover": {
+                      color: "var(--text-default-color)",
+                    },
+                  },
+                },
+              }}
+            />
+          </Flex>
+        </SignedIn>
         <Flex
           justify="center"
           align="center"

@@ -49,6 +49,9 @@ console.log(initialSiteConfig.ENABLE_KNOWLEDGE_BASES);
 export const ENABLE_HISTORY = initialSiteConfig.ENABLE_HISTORY;
 export const ENABLE_CHATS = initialSiteConfig.ENABLE_CHATS;
 
+export const CEREBRUM_BASE_URL = "http://localhost:8081/";
+export const LOCKSMITH_BASE_URL = "http://localhost:8083/";
+
 export const historyData = {
   April: [
     {

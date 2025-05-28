@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button, Modal } from "@mantine/core";
 import { useAuth } from "@clerk/clerk-react";
-// import { createProject as apiCreateProject } from "../api/projectApi";
 import { useNavigate } from "react-router-dom";
 import useModalStore from "../../store/modalStore"; // Import the store
+import { PROJECT_EDIT_LABEL, PROJECT_ROUTE } from "../../utils/contants";
+import { createProject as apiCreateProject } from "../../api/projectApi";
 
 const initialFormState = {
   projectName: "",
@@ -21,7 +22,7 @@ const initialApiErrorState = {
   message: "",
 };
 
-export const AddProjectModal = ({ onAddProject }) => {
+export const AddProjectModal = () => {
   // Remove opened and close from props
   const projectNameInputRef = useRef(null);
   const abortControllerRef = useRef(null);
@@ -110,10 +111,10 @@ export const AddProjectModal = ({ onAddProject }) => {
         });
 
         // Use the API function to create a new project
-        // const createdProject = await apiCreateProject(token, data, abortSignal);
+        const createdProject = await apiCreateProject(token, data, abortSignal);
+        console.log({ createdProject });
 
-        // console.log("Project created successfully:", createdProject);
-        // return { success: true, data: createdProject };
+        return { success: true, data: createdProject };
       } catch (error) {
         if (error.name === "AbortError") {
           throw new Error("API call aborted");
@@ -135,20 +136,17 @@ export const AddProjectModal = ({ onAddProject }) => {
         abortControllerRef.current = new AbortController();
 
         // Call the API to create a project
-        // const response = await createProject(
-        //   formData,
-        //   abortControllerRef.current.signal
-        // );
+        const response = await createProject(
+          formData,
+          abortControllerRef.current.signal
+        );
+        console.log({ response });
 
-        // console.log("Project created successfully:", response);
-        // // The response.data is already in the correct format with id, projectName, and projectDescription
-        // onAddProject(response.data);
-        // // Reset form and close modal on success
-        // setFormData(initialFormState);
-        // setErrors(initialErrorState);
-        closeModal("addProjectModal"); // Use closeModal from store
+        setFormData(initialFormState);
+        setErrors(initialErrorState);
+        closeModal("addProjectModal");
         if (response?.data?.id) {
-          navigate(`/projects/${response.data.id}`);
+          navigate(`/${PROJECT_ROUTE}/${response.data.id}`);
         }
       } catch (error) {
         // Check if this was an abort error
@@ -168,14 +166,7 @@ export const AddProjectModal = ({ onAddProject }) => {
         abortControllerRef.current = null;
       }
     }
-  }, [
-    validateForm,
-    formData,
-    createProject,
-    closeModal,
-    onAddProject,
-    navigate,
-  ]); // Add closeModal to dependency array
+  }, [validateForm, formData, createProject, closeModal, navigate]); // Add closeModal to dependency array
 
   // Simple object for modal class names - no need for useMemo
   const modalClassNames = {
@@ -187,7 +178,7 @@ export const AddProjectModal = ({ onAddProject }) => {
     <Modal
       opened={modals.addProjectModal} // Use store state
       onClose={() => closeModal("addProjectModal")} // Use closeModal from store
-      title="Add a Project"
+      title={`Add a ${PROJECT_EDIT_LABEL}`}
       classNames={modalClassNames}
       centered
       trapFocus={false} // Disable Mantine's focus trap to allow our custom focus
@@ -200,12 +191,12 @@ export const AddProjectModal = ({ onAddProject }) => {
             htmlFor="projectName"
             className="text-xs block mb-2 font-medium text-textTitleColor"
           >
-            Project Name <span>*</span>
+            {`${PROJECT_EDIT_LABEL} Name`} <span>*</span>
           </label>
           <input
             id="projectName"
             type="text"
-            placeholder="Enter your project name"
+            placeholder={`Enter your ${PROJECT_EDIT_LABEL} name`}
             value={formData.projectName}
             onChange={handleChange}
             ref={projectNameInputRef}
@@ -223,11 +214,11 @@ export const AddProjectModal = ({ onAddProject }) => {
             htmlFor="projectDescription"
             className="text-xs block mb-2 font-medium text-textTitleColor"
           >
-            Project Description
+            {`${PROJECT_EDIT_LABEL} Description`}
           </label>
           <textarea
             id="projectDescription"
-            placeholder="Describe your project goals, vision, etc.."
+            placeholder={`Describe your ${PROJECT_EDIT_LABEL} goals, vision, etc..`}
             value={formData.projectDescription}
             onChange={handleChange}
             rows={4}
