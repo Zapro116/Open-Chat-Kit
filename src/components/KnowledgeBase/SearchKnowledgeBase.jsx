@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Input } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { getKnowledgeBases } from "../../api/knowledgeBaseApi";
-import useKnowledgeBaseStore from "../../store/knowledgeBaseStore";
 import useModalStore from "../../store/modalStore";
+import useChatStore from "../../store/chatStore";
 
 function SearchKnowledgeBase() {
   const [search, setSearch] = useState("");
   const [knowledgeBases, setKnowledgeBases] = useState([]);
   const { closeModal } = useModalStore();
 
-  const { setContext } = useKnowledgeBaseStore();
+  const { setContext } = useChatStore();
 
   const handleSearch = (e) => {
     setSearch(e.target.value);

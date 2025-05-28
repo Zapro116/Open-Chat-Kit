@@ -8,6 +8,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { SiteConfigProvider } from "./contexts/SiteConfigContext";
+import { initGA } from "./utils/analytics";
 
 const PUBLISHABLE_KEY = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -31,6 +32,8 @@ const renderApp = (AppComponent) => {
     </React.StrictMode>
   );
 };
+
+initGA();
 
 // Initial render
 renderApp(App);
