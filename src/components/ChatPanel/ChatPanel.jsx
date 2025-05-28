@@ -13,8 +13,15 @@ import Navbar from "../Navbar/Navbar";
 import "./ChatPanel.scss";
 
 function ChatPanel() {
-  const { message, setMessage, webSearchEnabled, context, setContext } =
-    useChatStore();
+  const {
+    messages,
+    setMessage,
+    webSearchEnabled,
+    context,
+    setContext,
+    promptText,
+    setPromptText,
+  } = useChatStore();
   const { colorScheme } = useMantineColorScheme();
   const { chatId } = useParams();
 
@@ -27,11 +34,32 @@ function ChatPanel() {
       <Navbar />
       <div className="flex flex-col h-[inherit] bg-bgCardColor">
         <div className="flex flex-col pt-[72px] h-full relative">
-          <div className="flex-1"></div>
+          <div className="flex-1 flex justify-center">
+            <div className="flex flex-col gap-2.5 w-2/3 py-2">
+              {messages?.map((message) => (
+                <div
+                  key={message.id}
+                  className={`w-2/3 ${
+                    message.role === "assistant" ? "mr-auto" : "ml-auto"
+                  }`}
+                >
+                  <div
+                    className={`text-md text-textDefault w-fit rounded-lg p-3 ${
+                      message.role === "assistant"
+                        ? "mr-auto"
+                        : "ml-auto bg-bgBodyColor"
+                    }`}
+                  >
+                    {message.content}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="flex justify-center absolute bottom-1 w-full">
             <Input
-              message={message}
-              setMessage={setMessage}
+              message={promptText}
+              setMessage={setPromptText}
               onSendMessage={handleSendMessage}
               placeholder="How can I help you today?"
               className="dark bg-bgCardColor border border-borderDefault rounded-lg w-2/3"
