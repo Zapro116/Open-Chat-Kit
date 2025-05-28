@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Input from "../components/Input/Input"; // Assuming Input.jsx is in src/components/Input/
 import { IconPhoto, IconWorld, IconBook, IconX } from "@tabler/icons-react";
 import Navbar from "../components/Navbar/Navbar";
@@ -10,23 +10,22 @@ import { useMantineColorScheme } from "@mantine/core";
 
 import ContextModal from "../components/ContextModal/ContextModal";
 import useModalStore from "../store/modalStore";
-import useKnowledgeBaseStore from "../store/knowledgeBaseStore";
-import { ENABLE_CHATS, ENABLE_KNOWLEDGE_BASES } from "../utils/contants";
-import { useUser } from "@clerk/clerk-react";
+import {
+  ENABLE_CHATS,
+  ENABLE_KNOWLEDGE_BASES,
+  getStandardImageUploadAction,
+} from "../utils/contants";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import useChatStore from "../store/chatStore";
+import { logPageView } from "../utils/analytics";
+import useModelStore from "../store/modelStore";
 
 // Helper functions to generate standard action configurations
-const getStandardImageUploadAction = (overrideProps = {}) => ({
-  id: "upload-image",
-  actionType: "imageUpload",
-  icon: IconPhoto,
-  tooltip: "Upload Image",
-  position: "left",
-  ...overrideProps,
-});
 
 function LandingPage() {
   const { colorScheme } = useMantineColorScheme();
   const { user } = useUser();
+  const { getToken } = useAuth();
 
   const { openModal, setShowExistingKbInContextModal } = useModalStore();
   const {
@@ -36,14 +35,47 @@ function LandingPage() {
     setMessage,
     context,
     setContext,
-  } = useKnowledgeBaseStore();
+    setFiles,
+  } = useChatStore();
+  const { selectedModel } = useModelStore();
 
   const randomPrompts = useMemo(() => getRandomPrompts(), []);
 
-  const handleSendMessage = (message, attachments) => {
+  useEffect(() => {
+    logPageView();
+  }, []);
+
+  const handleSendMessage = async (message, attachments) => {
     console.log("Message:", message);
     console.log("Attachments:", attachments);
-    alert(`Message: ${message}\nAttachments: ${attachments.length}`);
+    setFiles(attachments);
+    console.log(`Message: ${message}\nAttachments: ${attachments.length}`);
+    const { token } = await getToken();
+    const payload = {
+      action_id: 1,
+      data: [message],
+      model: selectedModel,
+      stream: false,
+      rag: "url_scrape",
+      user_id: user?.id,
+      requested_by: user?.emailAddresses?.emailAddress ?? "",
+      metadata: {
+        additionalProp1: {},
+      },
+      product: "school_demo",
+      thread_id: "",
+      regenerate: false,
+    };
+    const response = await fetch("https://localhost:8081/v2.0/ask", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    console.log("Response:", data);
   };
 
   const handleWebSearchClick = () => {

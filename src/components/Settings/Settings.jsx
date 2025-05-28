@@ -6,6 +6,7 @@ import {
   IconInfoCircle,
 } from "@tabler/icons-react";
 import Navbar from "../Navbar/Navbar";
+import { logPageView } from "../../utils/analytics";
 
 // Mock API call functions
 const fetchActivePlan = () => {
@@ -43,6 +44,10 @@ function Settings() {
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [loadingInvoices, setLoadingInvoices] = useState(true);
   const [activeTab, setActiveTab] = useState("billing"); // 'billing' or 'usage'
+
+  useEffect(() => {
+    logPageView();
+  }, []);
 
   useEffect(() => {
     setLoadingPlan(true);

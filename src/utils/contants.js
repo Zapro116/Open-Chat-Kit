@@ -1,5 +1,5 @@
 import React from "react";
-import { IconUserCircle } from "@tabler/icons-react";
+import { IconPhoto, IconUserCircle } from "@tabler/icons-react";
 import { SETTINGS_ROUTE } from "./apiEndpoints";
 
 export const initialSiteConfig = {
@@ -20,6 +20,11 @@ export const initialSiteConfig = {
   ),
   ENABLE_HISTORY: JSON.parse(process.env.REACT_APP_ENABLE_HISTORY ?? "false"),
   ENABLE_CHATS: JSON.parse(process.env.REACT_APP_ENABLE_CHATS ?? "false"),
+  GOOGLE_ANALYTICS_ENABLE: JSON.parse(
+    process.env.REACT_APP_GOOGLE_ANALYTICS_ENABLE ?? "false"
+  ),
+  GOOGLE_ANALYTICS_CODE: process.env.REACT_APP_GOOGLE_ANALYTICS_CODE ?? "",
+  CHAT_ROUTE: process.env.REACT_APP_CHAT_ROUTE ?? "chat",
 };
 
 export const BRAND_NAME = initialSiteConfig.BRAND_NAME;
@@ -35,6 +40,7 @@ export const KNOWLEDGE_BASE_EDIT_LABEL =
   initialSiteConfig.KNOWLEDGE_BASE_EDIT_LABEL;
 export const KNOWLEDGE_BASE_ROUTE = initialSiteConfig.KNOWLEDGE_BASE_ROUTE;
 export const ENABLE_KNOWLEDGE_BASES = initialSiteConfig.ENABLE_KNOWLEDGE_BASES;
+export const CHAT_ROUTE = initialSiteConfig.CHAT_ROUTE;
 
 console.log(initialSiteConfig.ENABLE_KNOWLEDGE_BASES);
 
@@ -425,3 +431,12 @@ export const PROFILE_PROFILE_DROPDOWN_TAB = {
     // },
   ],
 };
+
+export const getStandardImageUploadAction = (overrideProps = {}) => ({
+  id: "upload-image",
+  actionType: "imageUpload",
+  icon: IconPhoto,
+  tooltip: "Upload Image",
+  position: "left",
+  ...overrideProps,
+});

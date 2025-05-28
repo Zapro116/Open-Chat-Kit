@@ -6,14 +6,6 @@ const useKnowledgeBaseStore = create((set) => ({
   description: "",
   content: "",
   files: [],
-  selectedModel: "gpt-4",
-  webSearchEnabled: false,
-  setWebSearchEnabled: (webSearchEnabled) => set({ webSearchEnabled }),
-  message: "",
-  setMessage: (message) => set({ message }),
-
-  context: null,
-  setContext: (context) => set({ context: context }),
   // Form state
   isSubmitting: false,
   error: null,
@@ -22,10 +14,6 @@ const useKnowledgeBaseStore = create((set) => ({
   selectedProvider: null,
   providerConfigs: {
     quip: {
-      cloneUrl: "",
-      personalAccessToken: "",
-    },
-    google_docs: {
       cloneUrl: "",
       personalAccessToken: "",
     },

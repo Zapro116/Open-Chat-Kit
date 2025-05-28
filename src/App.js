@@ -11,10 +11,15 @@ import {
   SIGNUP_ROUTE,
   ADMIN_ROUTE,
 } from "./utils/apiEndpoints";
-import { KNOWLEDGE_BASE_ROUTE, PROJECT_ROUTE } from "./utils/contants";
+import {
+  CHAT_ROUTE,
+  KNOWLEDGE_BASE_ROUTE,
+  PROJECT_ROUTE,
+} from "./utils/contants";
 import KnowledgeBaseDetails from "./components/KnowledgeBase/KnowledgeBaseDetails";
 import ProjectDetails from "./components/Project/ProjectDetails";
 import Settings from "./components/Settings/Settings";
+import ChatPanel from "./components/ChatPanel/ChatPanel";
 
 function App() {
   return (
@@ -33,6 +38,7 @@ function App() {
           element={<ProjectDetails />}
         />
         <Route path={SETTINGS_ROUTE} element={<Settings />} />
+        <Route path={`/${CHAT_ROUTE}/:chat_id`} element={<ChatPanel />} />
       </Routes>
     </Router>
   );
