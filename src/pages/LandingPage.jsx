@@ -17,8 +17,10 @@ import {
 } from "../utils/contants";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import useChatStore from "../store/chatStore";
-import { logPageView } from "../utils/analytics";
+//import { logPageView } from "../utils/analytics";
 import useModelStore from "../store/modelStore";
+import { handleSendMessage } from "../service/ChatService";
+import { useNavigate } from "react-router-dom";
 
 // Helper functions to generate standard action configurations
 
@@ -31,51 +33,31 @@ function LandingPage() {
   const {
     webSearchEnabled,
     setWebSearchEnabled,
-    message,
-    setMessage,
+    promptText,
+    setPromptText,
     context,
     setContext,
     setFiles,
   } = useChatStore();
   const { selectedModel } = useModelStore();
+  const navigate = useNavigate();
 
   const randomPrompts = useMemo(() => getRandomPrompts(), []);
 
-  useEffect(() => {
-    logPageView();
-  }, []);
+  // useEffect(() => {
+  //   logPageView();
+  // }, []);
 
-  const handleSendMessage = async (message, attachments) => {
-    console.log("Message:", message);
-    console.log("Attachments:", attachments);
-    setFiles(attachments);
-    console.log(`Message: ${message}\nAttachments: ${attachments.length}`);
-    const { token } = await getToken();
-    const payload = {
-      action_id: 1,
-      data: [message],
-      model: selectedModel,
-      stream: false,
-      rag: "url_scrape",
-      user_id: user?.id,
-      requested_by: user?.emailAddresses?.emailAddress ?? "",
-      metadata: {
-        additionalProp1: {},
-      },
-      product: "school_demo",
-      thread_id: "",
-      regenerate: false,
-    };
-    const response = await fetch("https://localhost:8081/v2.0/ask", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    console.log("Response:", data);
+  const handleEnter = async (message, attachments) => {
+    //navigate
+    try {
+      const token = await getToken({
+        template: "neon2",
+      });
+      await handleSendMessage(message, attachments, token, navigate);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleWebSearchClick = () => {
@@ -103,9 +85,9 @@ function LandingPage() {
           </p>
 
           <Input
-            message={message}
-            setMessage={setMessage}
-            onSendMessage={handleSendMessage}
+            message={promptText}
+            setMessage={setPromptText}
+            onSendMessage={handleEnter}
             placeholder="How can I help you today?"
             className="dark bg-bgCardColor border border-borderDefault rounded-lg w-2/3"
             textAreaClassName="bg-transparent text-textDefault !border-transparent focus:!ring-0 rounded-md"
