@@ -2,8 +2,6 @@ import React from "react";
 import { IconPhoto, IconUserCircle } from "@tabler/icons-react";
 import { SETTINGS_ROUTE } from "./apiEndpoints";
 
-export const baseCerebrumUrl = "http://localhost:8081";
-
 export const initialSiteConfig = {
   BRAND_NAME: process.env.REACT_APP_BRAND_NAME,
   LOGO_URL: process.env.REACT_APP_LOGO_URL,

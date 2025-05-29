@@ -1,8 +1,10 @@
 import { create } from "zustand";
 
 const useModelStore = create((set) => ({
-  selectedModel: "gpt-4o",
+  selectedModel: "",
   setSelectedModel: (model) => set({ selectedModel: model }),
+  models: [],
+  setModels: (models) => set({ models }),
 }));
 
 export default useModelStore;

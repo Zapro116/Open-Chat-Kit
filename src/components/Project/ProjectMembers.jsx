@@ -10,6 +10,8 @@ import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { Button, Select, Loader } from "@mantine/core";
 import useModalStore from "../../store/modalStore";
+import { deleteTeamMember, updateTeamMembers } from "../../api/projectApi";
+import { notifications } from "@mantine/notifications";
 /**
  * ProjectMembers component for displaying and managing project members
  * @param {Array} members - List of project members
@@ -28,7 +30,7 @@ export const ProjectMembers = ({
   const { user } = useUser();
   const { openModal, closeModal, modals } = useModalStore();
   const [teamId, setTeamId] = useState("");
-
+  const [deletingMember, setDeletingMember] = useState(false);
   const OWNER_SLUG = "owner";
 
   // Handle add member button click
@@ -44,32 +46,64 @@ export const ProjectMembers = ({
   }, []);
 
   const handleDeleteMember = async (member) => {
-    const token = await getToken({
-      template: "neon2",
-    });
-    // const deletedUser = await deleteTeamMember(token, params.id, member.id);
-    // if (deletedUser.data.success) {
-    //   const membersData = await loadTeamMembers(token);
-    //   setMembers(membersData ?? []);
-    // }
+    try {
+      setDeletingMember(true);
+      const token = await getToken({
+        template: "neon2",
+      });
+      const deletedUser = await deleteTeamMember(
+        token,
+        params.project_id,
+        member.id
+      );
+      if (deletedUser.data.success) {
+        const membersData = await loadTeamMembers(token);
+        setMembers(membersData ?? []);
+        notifications.show({
+          title: "Member removed successfully",
+          color: "green",
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } else {
+        notifications.show({
+          title: "Failed to remove member",
+          message: deletedUser.data?.errors ?? "Failed to remove member",
+          color: "red",
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      notifications.show({
+        title: "Failed to remove member",
+        message: err.message ?? "Failed to remove member",
+        color: "red",
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } finally {
+      setDeletingMember(false);
+    }
   };
 
   const saveUpdatedRoles = async () => {
     try {
-      // const token = await getToken({
-      //   template: "neon",
-      // });
-      // const payload = Object.entries(updatedUsers).map(([userId, role]) => ({
-      //   user_id: userId,
-      //   role_slug: role,
-      // }));
-      // await updateTeamMembers(token, params.id, {
-      //   members: payload,
-      // });
-      // const membersData = await loadTeamMembers(token);
-      // setMembers(membersData ?? []);
-      // setEditMode(false);
-      // setUpdatedUsers({});
+      const token = await getToken({
+        template: "neon2",
+      });
+      const payload = Object.entries(updatedUsers).map(([userId, role]) => ({
+        user_id: userId,
+        role_slug: role,
+      }));
+      const response = await updateTeamMembers(token, params.project_id, {
+        members: payload,
+      });
+      console.log(response);
+      await loadTeamMembers(token);
+      setEditMode(false);
+      setUpdatedUsers({});
     } catch (err) {
       console.log(err);
     }
@@ -148,7 +182,7 @@ export const ProjectMembers = ({
             ) && (
               <Button
                 variant="transparent"
-                className="px-1 text-textDefault hover:text-textDefault"
+                className="px-1 !text-textDefault hover:text-textDefault"
                 classNames={{
                   label: "text-xs",
                   inner: "h-fit",
@@ -209,8 +243,11 @@ export const ProjectMembers = ({
                       <span
                         className="cursor-pointer"
                         onClick={() =>
-                          !teamMembersLoading && handleDeleteMember(member)
+                          !teamMembersLoading &&
+                          !deletingMember &&
+                          handleDeleteMember(member)
                         }
+                        disabled={teamMembersLoading || deletingMember}
                       >
                         <IconTrash size={16} stroke={2} />
                       </span>

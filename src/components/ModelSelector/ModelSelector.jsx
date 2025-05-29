@@ -5,8 +5,8 @@ import { useAuth } from "@clerk/clerk-react";
 import { getModels } from "../../api/websiteApi";
 
 const ModelSelector = () => {
-  const { selectedModel, setSelectedModel } = useModelStore();
-  const [models, setModels] = useState([]);
+  const { selectedModel, setSelectedModel, models, setModels } =
+    useModelStore();
   const [loading, setLoading] = useState(false);
   const { getToken } = useAuth();
 
@@ -16,6 +16,9 @@ const ModelSelector = () => {
       { label: "gpt-3.5-turbo", value: "gpt-3.5-turbo" },
       { label: "claude-3-5-sonnet", value: "claude-3-5-sonnet" },
     ];
+    if (models.length > 0) {
+      return;
+    }
     try {
       setLoading(true);
 
@@ -31,6 +34,7 @@ const ModelSelector = () => {
           accept_image: model?.accept_image,
         }));
       setModels(transformedModels ?? backupModels);
+      setSelectedModel(transformedModels[0]?.value ?? backupModels[0]?.value);
     } catch (error) {
       console.error(error);
       setModels(backupModels);

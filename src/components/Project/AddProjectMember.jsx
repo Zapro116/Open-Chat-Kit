@@ -5,14 +5,18 @@ import { IconSearch } from "@tabler/icons-react";
 import { getOrgMembers } from "../../api/websiteApi";
 import { useAuth } from "@clerk/clerk-react";
 import { useParams } from "react-router-dom";
+import { addMembersToProject } from "../../api/projectApi";
+import { notifications } from "@mantine/notifications";
 
-function AddProjectMember() {
+function AddProjectMember({ loadTeamMembers }) {
   const { closeModal, modals } = useModalStore();
   const [search, setSearch] = useState("");
   const { getToken } = useAuth();
   const { project_id } = useParams();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [addingMembers, setAddingMembers] = useState(false);
 
   const fetchMembers = async (signal) => {
     try {
@@ -48,8 +52,71 @@ function AddProjectMember() {
     if (modals.addProjectMemberModal) {
       fetchMembers(abortController.signal);
     }
-    return () => abortController.abort();
+    return () => {
+      abortController.abort();
+      setSelectedMembers([]);
+    };
   }, [search, modals.addProjectMemberModal]);
+
+  const handleAddMembers = async () => {
+    try {
+      setAddingMembers(true);
+      const token = await getToken({ template: "neon2" });
+      const addMembersParams = selectedMembers.map((user) => ({
+        user_id: user.id,
+        role_slug: "member",
+      }));
+      const response = await addMembersToProject(
+        token,
+        project_id,
+        addMembersParams
+      );
+      if (response.data.success) {
+        closeModal("addProjectMemberModal");
+        notifications.show({
+          title: "Members added successfully",
+          message: "Members added successfully",
+          color: "green",
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setSelectedMembers([]);
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
+        loadTeamMembers();
+      } else {
+        notifications.show({
+          title: "Failed to add members",
+          message: response.data?.errors ?? "Failed to add members",
+          color: "red",
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      notifications.show({
+        title: "Failed to add members",
+        message: err.message ?? "Failed to add members",
+        color: "red",
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } finally {
+      setAddingMembers(false);
+    }
+  };
+
+  const toggleMemberSelection = (member) => {
+    setSelectedMembers((prevSelectedMembers) => {
+      const isSelected = prevSelectedMembers.some((m) => m.id === member.id);
+
+      if (isSelected) {
+        return prevSelectedMembers.filter((m) => m.id !== member.id);
+      } else {
+        return [...prevSelectedMembers, member];
+      }
+    });
+  };
 
   return (
     <Modal
@@ -79,6 +146,10 @@ function AddProjectMember() {
               label={`${member.firstName?.trim()} ${member.lastName?.trim()}`}
               className="ml-2"
               color="var(--pagination-tabs-bg-active-color)"
+              checked={selectedMembers.some(
+                (selectedMember) => selectedMember.id === member.id
+              )}
+              onChange={() => toggleMemberSelection(member)}
             />
           ))
         )}
@@ -87,6 +158,9 @@ function AddProjectMember() {
         <Button
           disabled={members.length === 0 || loading}
           color="var(--pagination-tabs-bg-active-color)"
+          onClick={handleAddMembers}
+          loading={addingMembers}
+          loaderProps={{ type: "dots" }}
         >
           Add
         </Button>
