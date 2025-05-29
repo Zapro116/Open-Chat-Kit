@@ -24,3 +24,10 @@ export const chatASKApi = async (token, requestBody, controller) => {
     signal: controller?.signal,
   });
 };
+
+export const fetchThreadMessagesApi = async (token, chatThreadid) => {
+  const response = await cerebrumAxios(token).get(
+    `/v2.0/threads/thread/${chatThreadid}/messages/`
+  );
+  return response;
+};

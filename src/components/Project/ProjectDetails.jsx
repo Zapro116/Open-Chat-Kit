@@ -19,6 +19,7 @@ import ContextModal from "../ContextModal/ContextModal";
 import { MultiSelectKnowledgeModal } from "../KnowledgeBase/MultiSelectKnowledgeModal";
 import { HOME_ROUTE } from "../../utils/apiEndpoints";
 import AddProjectMember from "./AddProjectMember";
+import { DEFAULT_CLERK_TEMPLATE } from "../../utils/contants";
 
 const OWNER_SLUG = "owner";
 
@@ -82,7 +83,7 @@ function ProjectDetails() {
 
       // Get the authentication token
       const token = await getToken({
-        template: "neon2",
+        template: DEFAULT_CLERK_TEMPLATE,
       });
 
       // Use the API function to fetch projects

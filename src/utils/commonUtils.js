@@ -111,3 +111,7 @@ export function addChatCodeData(code, fileName, messageIndex) {
 
   return attachmentCode;
 }
+
+export function getDisplayTextFromMessage(dbDisplayContent) {
+  return dbDisplayContent.split("question_meta:")[0].trim();
+}

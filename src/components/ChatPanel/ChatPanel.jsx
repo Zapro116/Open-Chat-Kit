@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useChatStore from "../../store/chatStore";
 import {
+  DEFAULT_CLERK_TEMPLATE,
   ENABLE_KNOWLEDGE_BASES,
   getStandardImageUploadAction,
 } from "../../utils/contants";
@@ -11,8 +12,12 @@ import ModelSelector from "../ModelSelector/ModelSelector";
 import { useMantineColorScheme } from "@mantine/core";
 import Navbar from "../Navbar/Navbar";
 import "./ChatPanel.scss";
-import { handleSendMessage } from "../../service/ChatService";
+import {
+  handleSendMessage,
+  populateChatWithThreadMessage,
+} from "../../service/ChatService";
 import { useAuth, useUser } from "@clerk/clerk-react";
+import { fetchThreadMessages } from "../../service/ThreadService";
 
 function ChatPanel() {
   const {
@@ -23,16 +28,19 @@ function ChatPanel() {
     setContext,
     promptText,
     setPromptText,
+    setWebSearchEnabled,
+    currentThreadId,
+    setCurrentThreadId,
   } = useChatStore();
   const { colorScheme } = useMantineColorScheme();
-  const { chatId } = useParams();
+  const { chat_id } = useParams();
   const { user } = useUser();
   const { getToken } = useAuth();
 
   const handleSend = async (message, attachments) => {
     try {
       const token = await getToken({
-        template: "neon2",
+        template: DEFAULT_CLERK_TEMPLATE,
       });
       await handleSendMessage(
         message,
@@ -46,7 +54,30 @@ function ChatPanel() {
     }
   };
 
-  const handleWebSearchClick = () => {};
+  const handleWebSearchClick = () => {
+    setWebSearchEnabled(!webSearchEnabled);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (chat_id !== currentThreadId) {
+        const token = await getToken({
+          template: DEFAULT_CLERK_TEMPLATE,
+        });
+        const threadMessages = await fetchThreadMessages(token, chat_id);
+
+        if (threadMessages) {
+          populateChatWithThreadMessage(threadMessages);
+        }
+      }
+    };
+    // if (chat_id === currentThreadId) {
+    //   return;
+    // }
+    // setCurrentThreadId(chat_id);
+
+    fetchData();
+  }, [chat_id]);
 
   return (
     <div className="relative h-full">

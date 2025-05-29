@@ -51,29 +51,6 @@ export function extractJsonObjectsFromStreamUtil(stream) {
   return jsonObjects;
 }
 
-export function processTypeLastAIMessage(
-  jsonObject,
-  getCurrentChatLength,
-  getMessages,
-  setMessages
-) {
-  const {
-    id: aiMessageDBConversationId,
-    parent_message_id: aiMessageParentId,
-  } = jsonObject.payload;
-
-  const latestAiMessageIndex = getCurrentChatLength() - 1;
-  const messages = getMessages();
-  const aiChatMessage = messages[latestAiMessageIndex];
-
-  if (aiChatMessage) {
-    aiChatMessage.dbConversationId = aiMessageDBConversationId;
-    aiChatMessage.parentId = aiMessageParentId;
-    messages[latestAiMessageIndex] = aiChatMessage;
-    setMessages(messages);
-  }
-}
-
 export function processTypeData(
   jsonObject,
   responseData,
@@ -83,7 +60,7 @@ export function processTypeData(
   const text = jsonObject.payload.content;
   if (text) {
     responseData.answer += text;
-    console.log(messages[messages.length - 1].content);
+    //console.log(messages[messages.length - 1].content);
 
     if (messages) {
       const prevContent = messages[messages.length - 1].content;
@@ -96,3 +73,57 @@ export function processTypeData(
     }
   }
 }
+
+export function processTypeLastUserMessage(
+  jsonObject,
+  responseData,
+  messages,
+  setMessages
+) {
+  const latestUserMessageIndex = messages.length - 2;
+
+  if (latestUserMessageIndex >= 0) {
+    const currentMessages = messages;
+    const userMessage = currentMessages[latestUserMessageIndex];
+    userMessage.dbConversationId = parseInt(jsonObject.payload.content);
+    currentMessages[latestUserMessageIndex] = userMessage;
+    setMessages(currentMessages);
+  }
+}
+
+export function processTypeLastAIMessage(
+  jsonObject,
+  responseData,
+  messages,
+  setMessages
+) {
+  const latestAiMessageIndex = messages.length - 1;
+
+  const aiChatMessage = messages[latestAiMessageIndex];
+  const userChatMessage = messages[latestAiMessageIndex - 1];
+
+  if (aiChatMessage) {
+    aiChatMessage.dbConversationId = jsonObject.payload.content;
+    aiChatMessage.parentId = userChatMessage.dbConversationId;
+    messages[latestAiMessageIndex] = aiChatMessage;
+    setMessages(messages);
+  }
+  console.log(messages);
+}
+
+export const convertFilesToBase64 = async (files) => {
+  return Promise.all(
+    files.map((file) => {
+      return (
+        new Promise() <
+        string >
+        ((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        })
+      );
+    })
+  );
+};

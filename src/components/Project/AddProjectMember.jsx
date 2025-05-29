@@ -5,8 +5,11 @@ import { IconSearch } from "@tabler/icons-react";
 import { getOrgMembers } from "../../api/websiteApi";
 import { useAuth } from "@clerk/clerk-react";
 import { useParams } from "react-router-dom";
+
 import { addMembersToProject } from "../../api/projectApi";
 import { notifications } from "@mantine/notifications";
+
+import { DEFAULT_CLERK_TEMPLATE } from "../../utils/contants";
 
 function AddProjectMember({ loadTeamMembers }) {
   const { closeModal, modals } = useModalStore();
@@ -21,8 +24,9 @@ function AddProjectMember({ loadTeamMembers }) {
   const fetchMembers = async (signal) => {
     try {
       setLoading(true);
-      const token = await getToken({
-        template: "neon2",
+
+      const { token } = await getToken({
+        template: DEFAULT_CLERK_TEMPLATE,
       });
 
       if (!token) {

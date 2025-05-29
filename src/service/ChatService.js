@@ -1,6 +1,7 @@
 import { chatASKApi } from "../api/websiteApi";
 import useChatStore from "../store/chatStore";
 import useModelStore from "../store/modelStore";
+import { getDisplayTextFromMessage } from "../Utils/commonUtils";
 import {
   ASSISTANT_ROLE,
   CHAT_ROUTE,
@@ -9,8 +10,11 @@ import {
   USER_ROLE,
 } from "../utils/contants";
 import {
+  convertFilesToBase64,
   extractJsonObjectsFromStreamUtil,
   processTypeData,
+  processTypeLastAIMessage,
+  processTypeLastUserMessage,
 } from "../Utils/StreamUtils";
 
 const handleSendMessage = async (
@@ -32,55 +36,48 @@ const handleSendMessage = async (
   } = useChatStore.getState();
   setController(new AbortController());
 
-  console.log(message);
-  console.log(promptText);
+  // if (promptText !== message) {
+  //   setPromptText(message);
+  // }
+  setPromptText("");
 
-  if (promptText !== message) {
-    setPromptText(message);
-  }
-
-  const latestMessageId = messages?.length ? messages?.length + 1 : 1;
   const userMessage = {
-    id: latestMessageId,
+    id: Math.floor((new Date().getMilliseconds() + Math.random()) * 100000),
     content: message,
     dbConversationId: null,
     parentId: null,
     commands: null,
-    //isStreaming:false,
+    isStreaming: false,
     lastIndex: null,
     role: USER_ROLE,
   };
   const assistantMessage = {
-    id: latestMessageId + 1,
+    id: Math.floor((new Date().getMilliseconds() + Math.random()) * 100000),
     content: "",
     dbConversationId: null,
     parentId: null,
     commands: null,
-    //isStreaming:false,
+    isStreaming: false,
     lastIndex: null,
     role: ASSISTANT_ROLE,
   };
 
-  // appendMessage(userMessage);
-  const exisitingMessages = messages;
+  let exisitingMessages = messages;
   exisitingMessages.push(userMessage);
+  const requestBody = await createRequestBody(
+    exisitingMessages,
+    currentThreadId,
+    false,
+    selectedModel,
+    email
+  );
   exisitingMessages.push(assistantMessage);
   setMessages(exisitingMessages);
-  console.log(messages);
 
   try {
-    const requestBody = await createRequestBody(
-      messages,
-      currentThreadId,
-      false,
-      selectedModel,
-      email
-    );
-    console.log(requestBody);
     const { controller } = useChatStore.getState();
 
     const response = await chatASKApi(token, requestBody, controller);
-    console.log(response.status);
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder("utf-8");
@@ -127,12 +124,14 @@ export async function populateResponseFromStream(
   const parsedJsonArray = extractJsonObjectsFromStreamUtil(lines);
   const { setCurrentThreadId, currentThreadId } = useChatStore.getState();
   for (const jsonObject of parsedJsonArray) {
+    console.log(jsonObject);
+
     // Handle thread UUID
     if (jsonObject?.type === "thread_uuid" && jsonObject?.payload?.content) {
       const threadIdFromStream = jsonObject?.payload?.content;
       if (threadIdFromStream !== currentThreadId) {
         setCurrentThreadId(jsonObject?.payload?.content);
-        console.log(jsonObject);
+
         navigate(`/${CHAT_ROUTE}/${jsonObject?.payload?.content}`, {
           replace: true,
         });
@@ -144,49 +143,23 @@ export async function populateResponseFromStream(
       jsonObject?.type === "last_user_message_id" &&
       jsonObject?.payload?.content
     ) {
-      //   const params = {
-      //     getCurrentChatLength,
-      //     getMessages,
-      //     jsonObject,
-      //     setMessages,
-      //   };
-      //   processTypeLastUserMessage(params);
+      processTypeLastUserMessage(
+        jsonObject,
+        responseData,
+        messages,
+        setMessages
+      );
     }
 
     // Handle error messages
     if (jsonObject?.type === "error") {
-      //   const params = {
-      //     getMessages,
-      //     setIsRunning,
-      //     setMessages,
-      //     responseData,
-      //     jsonObject,
-      //   };
       //   processTypeError(params);
     }
 
     // Handle last AI message
-    if (jsonObject?.type === "last_ai_message" && jsonObject?.payload) {
+    if (jsonObject?.type === "last_ai_message_id" && jsonObject?.payload) {
       // // Handle data content
-      // if (jsonObject?.type === "data" && jsonObject?.payload?.content) {
-      //   const params = {
-      //     getCurrentActiveFileNameInCanvas,
-      //     getCurrentChatLength,
-      //     getDisplayLanguage,
-      //     getMessages,
-      //     getOpenedFilesInCanvas,
-      //     jsonObject,
-      //     responseData,
-      //     setCodeContent,
-      //     setCurrentActiveFileNameInCanvas,
-      //     setCurrentMermaidCodeData,
-      //     setDisplayCanvasPanel,
-      //     setDisplayLanguage,
-      //     setMessages,
-      //     setOpenedFilesInCanvas,
-      //     updateAssistantContent,
-      //   };
-      //   processTypeData(params);
+      processTypeLastAIMessage(jsonObject, responseData, messages, setMessages);
     }
     if (jsonObject?.type === "data" && jsonObject?.payload?.content) {
       processTypeData(jsonObject, responseData, messages, setMessages);
@@ -207,8 +180,7 @@ async function createRequestBody(
   email
 ) {
   const { selectedModel } = useModelStore.getState();
-  const { promptText, setPromptText, webSearchEnabled, getFiles } =
-    useChatStore.getState();
+  const { webSearchEnabled, getFiles } = useChatStore.getState();
 
   const uploadedImages = getFiles();
 
@@ -324,25 +296,45 @@ async function createRequestBody(
   };
 }
 
-export const convertFilesToBase64 = async (files) => {
-  return Promise.all(
-    files.map((file) => {
-      return (
-        new Promise() <
-        string >
-        ((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        })
-      );
-    })
-  );
-};
+function populateChatWithThreadMessage(threadMessages) {
+  const { setMessages } = useChatStore.getState();
+  const messageArray = [];
+  let messageIndex = 1;
+  for (let i = 0; i < threadMessages.length; i++) {
+    const displayText = getDisplayTextFromMessage(
+      threadMessages[i].display_text
+    );
+    const message = {
+      id: messageIndex,
+      content: displayText,
+      dbConversationId: threadMessages[i].id,
+      parentId: threadMessages[i].parent_message_id,
+      role: threadMessages[i].role,
+      lastIndex: null,
+      isStreaming: false,
+      commands: null,
+    };
 
+    messageArray.push(message);
+    messageIndex++;
+  }
+  setMessages(messageArray);
+}
+
+function clearCurrentChatData() {
+  const { setInitialState } = useChatStore.getState();
+  try {
+    setInitialState();
+  } catch (e) {
+    console.log(e);
+  }
+}
 function getMessageTextContent(chatMessage) {
   return chatMessage?.content ? chatMessage?.content : "";
 }
 
-export { handleSendMessage };
+export {
+  handleSendMessage,
+  clearCurrentChatData,
+  populateChatWithThreadMessage,
+};

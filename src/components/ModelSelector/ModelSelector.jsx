@@ -3,6 +3,7 @@ import { Loader, Select } from "@mantine/core";
 import useModelStore from "../../store/modelStore";
 import { useAuth } from "@clerk/clerk-react";
 import { getModels } from "../../api/websiteApi";
+import { DEFAULT_CLERK_TEMPLATE } from "../../utils/contants";
 
 const ModelSelector = () => {
   const { selectedModel, setSelectedModel, models, setModels } =
@@ -23,7 +24,7 @@ const ModelSelector = () => {
       setLoading(true);
 
       const token = await getToken({
-        template: "neon2",
+        template: DEFAULT_CLERK_TEMPLATE,
       });
       const response = await getModels(token);
       const transformedModels = response.data?.data?.models

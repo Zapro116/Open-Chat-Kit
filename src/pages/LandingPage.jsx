@@ -11,6 +11,7 @@ import { useMantineColorScheme } from "@mantine/core";
 import ContextModal from "../components/ContextModal/ContextModal";
 import useModalStore from "../store/modalStore";
 import {
+  DEFAULT_CLERK_TEMPLATE,
   ENABLE_CHATS,
   ENABLE_KNOWLEDGE_BASES,
   getStandardImageUploadAction,
@@ -52,7 +53,7 @@ function LandingPage() {
     //navigate
     try {
       const token = await getToken({
-        template: "neon2",
+        template: DEFAULT_CLERK_TEMPLATE,
       });
       await handleSendMessage(
         message,
