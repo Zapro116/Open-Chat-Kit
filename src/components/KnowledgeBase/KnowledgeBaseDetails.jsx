@@ -92,7 +92,7 @@ function KnowledgeBaseDetails() {
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full bg-bgCardColor">
       <Navbar />
       <div className="container mx-auto px-4 py-4 knowledge-base-details">
         {/* Header with back button and knowledge base name */}

@@ -103,3 +103,25 @@ export const deleteProject = async (token, team_id, signal) => {
   );
   return response;
 };
+
+export const updateTeamMembers = async (token, team_id, params) => {
+  const response = await locksmithAxios(token).patch(
+    `/v1.0/teams/${team_id}/members`,
+    params
+  );
+  return response;
+};
+
+export const addMembersToProject = async (token, team_id, params) => {
+  if (!team_id) return;
+  return locksmithAxios(token).post(`/v1.0/teams/${team_id}/members`, {
+    members: params,
+  });
+};
+
+export const deleteTeamMember = async (token, team_id, member_id) => {
+  if (!team_id || !member_id) return;
+  return locksmithAxios(token).delete(
+    `/v1.0/teams/${team_id}/members/${member_id}`
+  );
+};

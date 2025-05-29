@@ -46,6 +46,11 @@ function ProjectDetails() {
   const navigate = useNavigate();
 
   const loadTeamMembers = async (token) => {
+    if (!token) {
+      token = await getToken({
+        template: "neon2",
+      });
+    }
     let membersData;
     try {
       setTeamMembersLoading(true);
@@ -57,6 +62,7 @@ function ProjectDetails() {
         lastName: member.clerk_user.lastName,
         id: member.user_id,
       }));
+      setMembers(membersData);
     } catch (err) {
       console.log(err);
       membersData = [];
@@ -87,8 +93,6 @@ function ProjectDetails() {
       );
 
       const membersData = await loadTeamMembers(token);
-
-      console.log({ projectData });
 
       if (projectData) {
         setProject(projectData);
@@ -187,7 +191,7 @@ function ProjectDetails() {
         const abortController = new AbortController();
 
         // Get the authentication token
-        const { token } = await getToken({
+        const token = await getToken({
           template: "neon2",
         });
 
@@ -239,7 +243,7 @@ function ProjectDetails() {
   );
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative bg-bgCardColor">
       <Navbar />
       <div className="container mx-auto px-4 py-4  project-details">
         {/* Header with project name and add button */}
@@ -351,7 +355,7 @@ function ProjectDetails() {
         onClose={() => closeModal("multiSelectKnowledgeModal")}
         onSubmit={() => {}}
       />
-      <AddProjectMember />
+      <AddProjectMember loadTeamMembers={loadTeamMembers} />
     </div>
   );
 }
