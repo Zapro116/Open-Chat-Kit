@@ -52,6 +52,9 @@ export const LOCKSMITH_BASE_URL = "http://localhost:8082/";
 export const WAYNE_BASE_URL = "http://localhost:8083/";
 export const DEFAULT_CLERK_TEMPLATE = "neon2";
 
+export const DEFAULT_LIMIT_TOKEN_STATUS_CODE = 4029;
+
+
 export const historyData = {
   April: [
     {

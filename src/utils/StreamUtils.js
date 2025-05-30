@@ -1,12 +1,4 @@
-import {
-  addChatCodeData,
-  countBackticks,
-  extractLanguage,
-  getFileExtension,
-  getLatestBlacktickIndexForCodeBlock,
-  hasNonBackticksOrNewlines,
-  removeBackticks,
-} from "./commonUtils";
+import { DEFAULT_LIMIT_TOKEN_STATUS_CODE } from "./contants";
 
 export function processTypeError(
   jsonObject,
