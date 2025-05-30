@@ -1,15 +1,21 @@
 import React, { useEffect } from "react";
-import { Accordion, Button, Flex, useMantineColorScheme } from "@mantine/core";
+import {
+  Accordion,
+  Button,
+  Flex,
+  Loader,
+  useMantineColorScheme,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconMenu2, IconMoon, IconSunHigh } from "@tabler/icons-react";
 import Sidebar from "../Sidebar/Sidebar";
 import List from "../List/List";
 import {
   BRAND_NAME,
+  DEFAULT_CLERK_TEMPLATE,
   ENABLE_HISTORY,
   ENABLE_KNOWLEDGE_BASES,
   ENABLE_PROJECTS,
-  historyData,
   KNOWLEDGE_BASE_LABEL,
   LOGO_URL,
   PROFILE_PROFILE_DROPDOWN_TAB,
@@ -23,25 +29,64 @@ import {
   SignedOut,
   useAuth,
   UserButton,
+  useUser,
 } from "@clerk/clerk-react";
 import { AccordionControl } from "../AccordianControl/AccordionControl";
 import Projects from "../Project/Projects";
 import KnowledgeBase from "../KnowledgeBase/KnowledgeBase";
 import { AddProjectModal } from "../Project/AddProjectModal";
 import { clearCurrentChatData } from "../../service/ChatService";
+import { getHistoryData } from "../../api/websiteApi";
+import useHistoryStore from "../../store/historyStore";
 
 function Navbar() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const [opened, { open, close }] = useDisclosure(false);
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
-
+  const { isSignedIn, getToken } = useAuth();
+  const {
+    historyData,
+    selectedHistory,
+    setSelectedHistory,
+    setHistoryData,
+    setHistoryLoading,
+    historyLoading,
+  } = useHistoryStore();
+  const { user } = useUser();
   useEffect(() => {
     if (LOGO_URL) {
       const img = new Image();
       img.src = LOGO_URL;
     }
   }, [LOGO_URL]);
+
+  const loadHistoryData = async (search = "") => {
+    try {
+      setHistoryLoading(true);
+      const token = await getToken({
+        template: DEFAULT_CLERK_TEMPLATE,
+      });
+      console.log({ user });
+      const params = {
+        page: 1,
+        search: search,
+        user_email: user?.primaryEmailAddress?.emailAddress ?? "",
+        product: "open-chat-kit",
+        page_size: 100,
+      };
+      const historyData = await getHistoryData(token, params);
+      console.log({ historyData });
+      setHistoryData(historyData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadHistoryData();
+  }, []);
 
   const handleColorSchemeToggle = () => {
     const newColorScheme = colorScheme === "light" ? "dark" : "light";
@@ -94,10 +139,15 @@ function Navbar() {
                 </Accordion>
               )}
             </div>
-            {ENABLE_HISTORY &&
+            {ENABLE_HISTORY && historyLoading ? (
+              <div className="flex justify-center items-center h-full backdrop-blur-sm">
+                <Loader type="oval" />
+              </div>
+            ) : (
               Object.entries(historyData).map(([month, itemObjects]) => (
                 <div key={month} className="mb-3">
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1 mb-1.5">
+                  {month}
+                  {/* <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1 mb-1.5">
                     {month}
                   </p>
                   <List
@@ -113,9 +163,10 @@ function Navbar() {
                       ),
                     }))}
                     listStyleType="none"
-                  />
+                  /> */}
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </Sidebar>
         {LOGO_URL && (

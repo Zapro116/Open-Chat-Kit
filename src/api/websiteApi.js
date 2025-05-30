@@ -31,3 +31,10 @@ export const fetchThreadMessagesApi = async (token, chatThreadid) => {
   );
   return response;
 };
+
+export const getHistoryData = async (token, params) => {
+  const response = await cerebrumAxios(token).get("/v2.0/threads", {
+    params,
+  });
+  return response;
+};

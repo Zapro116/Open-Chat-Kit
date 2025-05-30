@@ -1,5 +1,15 @@
 require("dotenv").config();
 
+// Log all environment variables
+console.log("Environment Variables:");
+console.log("=====================");
+Object.keys(process.env)
+  .filter((key) => key.startsWith("REACT_APP_"))
+  .forEach((key) => {
+    console.log(`${key}: ${process.env[key]}`);
+  });
+console.log("=====================");
+
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -12,6 +22,37 @@ const webpack = require("webpack");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
+// Create a new webpack.EnvironmentPlugin instance with all environment variables
+const envPlugin = new webpack.EnvironmentPlugin({
+  NODE_ENV: process.env.NODE_ENV || "development",
+  REACT_APP_CLERK_PUBLISHABLE_KEY:
+    process.env.REACT_APP_CLERK_PUBLISHABLE_KEY || "",
+  REACT_APP_LOGO_URL: process.env.REACT_APP_LOGO_URL || "",
+  REACT_APP_BRAND_NAME: process.env.REACT_APP_BRAND_NAME || "Rimberio School",
+  REACT_APP_PROJECTS_LABEL: process.env.REACT_APP_PROJECTS_LABEL || "Projects",
+  REACT_APP_EDIT_PROJECTS_LABEL:
+    process.env.REACT_APP_EDIT_PROJECTS_LABEL || "Project",
+  REACT_APP_PROJECTS_ROUTE: process.env.REACT_APP_PROJECTS_ROUTE || "project",
+  REACT_APP_ENABLE_PROJECTS: process.env.REACT_APP_ENABLE_PROJECTS || "false",
+  REACT_APP_KNOWLEDGE_BASE_LABEL:
+    process.env.REACT_APP_KNOWLEDGE_BASE_LABEL || "Knowledge Bases",
+  REACT_APP_EDIT_KNOWLEDGE_BASE_LABEL:
+    process.env.REACT_APP_EDIT_KNOWLEDGE_BASE_LABEL || "Knowledge Base",
+  REACT_APP_KNOWLEDGE_BASE_ROUTE:
+    process.env.REACT_APP_KNOWLEDGE_BASE_ROUTE || "knowledge",
+  REACT_APP_ENABLE_KNOWLEDGE_BASES:
+    process.env.REACT_APP_ENABLE_KNOWLEDGE_BASES || "false",
+  REACT_APP_ENABLE_CHATS: process.env.REACT_APP_ENABLE_CHATS || "false",
+  REACT_APP_CHAT_ROUTE: process.env.REACT_APP_CHAT_ROUTE || "chat",
+  REACT_APP_ENABLE_HISTORY: process.env.REACT_APP_ENABLE_HISTORY || "false",
+  REACT_APP_GOOGLE_ANALYTICS_ENABLE:
+    process.env.REACT_APP_GOOGLE_ANALYTICS_ENABLE || "false",
+  REACT_APP_GOOGLE_ANALYTICS_CODE:
+    process.env.REACT_APP_GOOGLE_ANALYTICS_CODE || "",
+});
+
+console.log("envPlugin", envPlugin);
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === "production";
@@ -52,22 +93,7 @@ module.exports = (env, argv) => {
           },
         },
         {
-          test: /\.scss$/,
-          use: [
-            isProduction ? MiniCssExtractPlugin.loader : "style-loader",
-            {
-              loader: "css-loader",
-              options: {
-                sourceMap: true,
-                importLoaders: 2,
-              },
-            },
-            "postcss-loader", // Moved before sass-loader for better compatibility
-            "sass-loader",
-          ],
-        },
-        {
-          test: /\.css$/,
+          test: /\.(scss|css)$/,
           use: [
             isProduction ? MiniCssExtractPlugin.loader : "style-loader",
             {
@@ -78,6 +104,7 @@ module.exports = (env, argv) => {
               },
             },
             "postcss-loader",
+            "sass-loader",
           ],
         },
         {
@@ -88,7 +115,7 @@ module.exports = (env, argv) => {
           },
           parser: {
             dataUrlCondition: {
-              maxSize: 8 * 1024, // 8kb
+              maxSize: 8 * 1024,
             },
           },
         },
@@ -106,34 +133,26 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: "./public/index.html",
         filename: "index.html",
-        minify: isProduction
-          ? {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeRedundantAttributes: true,
-              useShortDoctype: true,
-              removeEmptyAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              keepClosingSlash: true,
-              minifyJS: true,
-              minifyCSS: true,
-              minifyURLs: true,
-            }
-          : false,
+        minify: isProduction && {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true,
+        },
       }),
       new CopyWebpackPlugin({
         patterns: [
           {
             from: "public",
             to: ".",
-            filter: (resourcePath) => {
-              return (
-                resourcePath.endsWith(".png") ||
-                resourcePath.endsWith(".jpg") ||
-                resourcePath.endsWith(".svg") ||
-                resourcePath.endsWith(".gif") ||
-                resourcePath.endsWith(".ico")
-              );
+            globOptions: {
+              ignore: ["**/index.html"],
             },
           },
         ],
@@ -144,24 +163,9 @@ module.exports = (env, argv) => {
           chunkFilename: "[id].[contenthash].css",
         }),
       new CleanWebpackPlugin(),
-      new webpack.DefinePlugin({
-        "process.env.NODE_ENV": JSON.stringify(
-          isProduction ? "production" : "development"
-        ),
-        ...Object.keys(process.env)
-          .filter((key) => key.startsWith("REACT_APP_"))
-          .reduce((env, key) => {
-            env[`process.env.${key}`] = JSON.stringify(process.env[key]);
-            return env;
-          }, {}),
-        __DEV__: !isProduction,
-      }),
-      ...(isProduction
-        ? []
-        : [
-            new webpack.HotModuleReplacementPlugin(),
-            new ReactRefreshWebpackPlugin(),
-          ]),
+      envPlugin,
+      !isProduction && new webpack.HotModuleReplacementPlugin(),
+      !isProduction && new ReactRefreshWebpackPlugin(),
       isProduction &&
         new CompressionPlugin({
           filename: "[path][base].br",
@@ -172,55 +176,30 @@ module.exports = (env, argv) => {
           minRatio: 0.8,
           deleteOriginalAssets: false,
         }),
-      isProduction &&
-        new CompressionPlugin({
-          filename: "[path][base].gz",
-          algorithm: "gzip",
-          test: /\.(js|css|html|svg)$/,
-          threshold: 10240,
-          minRatio: 0.8,
-          deleteOriginalAssets: false,
-        }),
       shouldAnalyze &&
         new BundleAnalyzerPlugin({
           analyzerMode: isProduction ? "static" : "server",
-          openAnalyzer: isProduction ? false : true,
+          openAnalyzer: !isProduction,
           generateStatsFile: true,
           statsFilename: "stats.json",
           reportFilename: "report.html",
         }),
     ].filter(Boolean),
     optimization: {
-      usedExports: true,
       minimize: isProduction,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
-            parse: {
-              ecma: 8,
-            },
             compress: {
-              ecma: 5,
-              warnings: false,
-              comparisons: false,
-              inline: 2,
               drop_console: true,
             },
-            mangle: {
-              safari10: true,
-            },
             output: {
-              ecma: 5,
               comments: false,
-              ascii_only: true,
             },
           },
-          parallel: true,
-          extractComments: false,
         }),
         new CssMinimizerPlugin(),
       ],
-      runtimeChunk: "single",
       splitChunks: {
         chunks: "all",
         cacheGroups: {
@@ -240,13 +219,11 @@ module.exports = (env, argv) => {
       hot: true,
       open: true,
       historyApiFallback: true,
-      allowedHosts: "all",
       client: {
         overlay: {
           errors: true,
           warnings: false,
         },
-        progress: true,
       },
     },
     resolve: {
@@ -269,6 +246,6 @@ module.exports = (env, argv) => {
       maxAssetSize: 250000,
     },
     mode: isProduction ? "production" : "development",
-    devtool: isProduction ? "hidden-source-map" : "eval-source-map",
+    devtool: isProduction ? "source-map" : "eval-source-map",
   };
 };
