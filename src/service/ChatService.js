@@ -1,7 +1,7 @@
 import { chatASKApi } from "../api/websiteApi";
 import useChatStore from "../store/chatStore";
 import useModelStore from "../store/modelStore";
-import { getDisplayTextFromMessage } from "../Utils/commonUtils";
+import { getDisplayTextFromMessage } from "../utils/commonUtils";
 import {
   ASSISTANT_ROLE,
   CHAT_ROUTE,
@@ -15,7 +15,7 @@ import {
   processTypeData,
   processTypeLastAIMessage,
   processTypeLastUserMessage,
-} from "../Utils/StreamUtils";
+} from "../utils/StreamUtils";
 
 const handleSendMessage = async (
   message,

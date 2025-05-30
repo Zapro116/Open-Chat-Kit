@@ -48,7 +48,8 @@ export const ENABLE_HISTORY = initialSiteConfig.ENABLE_HISTORY;
 export const ENABLE_CHATS = initialSiteConfig.ENABLE_CHATS;
 
 export const CEREBRUM_BASE_URL = "http://localhost:8081/";
-export const LOCKSMITH_BASE_URL = "http://localhost:8083/";
+export const LOCKSMITH_BASE_URL = "http://localhost:8082/";
+export const WAYNE_BASE_URL = "http://localhost:8083/";
 export const DEFAULT_CLERK_TEMPLATE = "neon2";
 
 export const historyData = {

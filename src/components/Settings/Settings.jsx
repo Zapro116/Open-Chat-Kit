@@ -7,36 +7,8 @@ import {
 } from "@tabler/icons-react";
 import Navbar from "../Navbar/Navbar";
 import { logPageView } from "../../utils/analytics";
-
-// Mock API call functions
-const fetchActivePlan = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        planName: "Basic Plan",
-        price: "$0/monthly",
-        usage: "limited",
-      });
-    }, 1000);
-  });
-};
-
-const fetchInvoices = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Simulate having one invoice for demonstration if needed, or keep empty
-      resolve([
-        // {
-        //   id: '1',
-        //   date: 'Oct 12, 2023',
-        //   amount: '$50.00',
-        //   status: 'Paid',
-        //   renewalDate: 'Nov 12, 2023',
-        // },
-      ]);
-    }, 1500);
-  });
-};
+import { getPlan, getUsage } from "../../api/settings";
+import { Loader } from "@mantine/core";
 
 function Settings() {
   const [activePlan, setActivePlan] = useState(null);
@@ -44,23 +16,43 @@ function Settings() {
   const [loadingPlan, setLoadingPlan] = useState(true);
   const [loadingInvoices, setLoadingInvoices] = useState(true);
   const [activeTab, setActiveTab] = useState("billing"); // 'billing' or 'usage'
+  const [usage, setUsage] = useState([]);
+  const [loadingUsage, setLoadingUsage] = useState(true);
 
   useEffect(() => {
     logPageView();
   }, []);
 
-  useEffect(() => {
-    setLoadingPlan(true);
-    fetchActivePlan().then((data) => {
-      setActivePlan(data);
+  const fetchActivePlan = async () => {
+    try {
+      setLoadingPlan(true);
+      const plan = await getPlan();
+      setActivePlan(plan.data.data);
       setLoadingPlan(false);
-    });
+    } catch (error) {
+      console.error("Error fetching active plan:", error);
+    } finally {
+      setLoadingPlan(false);
+    }
+  };
 
-    setLoadingInvoices(true);
-    fetchInvoices().then((data) => {
-      setInvoices(data);
-      setLoadingInvoices(false);
-    });
+  const fetchInvoices = async () => {
+    try {
+      setLoadingUsage(true);
+      // const invoices = await getInvoices();
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const invoices = await getUsage();
+      setUsage(invoices.data);
+    } catch (error) {
+      console.error("Error fetching usage:", error);
+    } finally {
+      setLoadingUsage(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchActivePlan();
+    fetchInvoices();
   }, []);
 
   return (
@@ -115,21 +107,23 @@ function Settings() {
               <div className="bg-bgCardColor p-6 rounded-xl shadow-lg border border-borderDefault !mt-4">
                 <div className="flex justify-between items-start gap-6">
                   <div className="flex-grow">
-                    <h4 className="text-sm text-textDefault mb-1">
+                    <h4 className="text-sm text-textDimmedColor mb-1">
                       Current Active Plan
                     </h4>
                     {loadingPlan ? (
                       <div className="space-y-2 mt-2">
-                        <div className="h-8 bg-bgCardColor rounded w-3/4 animate-pulse"></div>
-                        <div className="h-6 bg-bgCardColor rounded w-1/2 animate-pulse"></div>
+                        <Loader
+                          type="dots"
+                          color="var(--pagination-tabs-bg-active-color)"
+                        />
                       </div>
                     ) : activePlan ? (
                       <>
                         <p className="text-3xl font-semibold text-textDefault">
-                          {activePlan.planName}
+                          {activePlan.plan_name}
                         </p>
-                        <p className="text-textDefault mt-1">
-                          {activePlan.price}
+                        <p className="text-textDimmedColor mt-1">
+                          ${activePlan.amount}/{activePlan.billing_cycle}
                         </p>
                       </>
                     ) : (
@@ -138,7 +132,7 @@ function Settings() {
                       </p>
                     )}
                   </div>
-                  <div className="bg-bgCardColor/80 p-5 rounded-lg text-sm max-w-sm flex items-start space-x-3 border border-borderDefault">
+                  <div className="bg-bgBodyColor p-3 rounded-lg text-sm max-w-sm flex items-start space-x-3 border border-borderDefault">
                     <IconInfoCircle
                       size={24}
                       className="text-textDefault flex-shrink-0 mt-0.5"
@@ -186,10 +180,11 @@ function Settings() {
                     {loadingInvoices ? (
                       <tr>
                         <td colSpan={5} className="text-center py-16">
-                          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-textPurple mx-auto"></div>
-                          <p className="mt-3 text-textDimmedColor">
-                            Loading invoices...
-                          </p>
+                          <Loader
+                            type="dots"
+                            color="var(--pagination-tabs-bg-active-color)"
+                            className="mx-auto w-full"
+                          />
                         </td>
                       </tr>
                     ) : invoices.length === 0 ? (
@@ -215,7 +210,7 @@ function Settings() {
                           className="border-b border-borderDefault/50 hover:bg-bgSelectedColor/30 transition-colors duration-100"
                         >
                           <td className="py-4 px-3 text-textDimmedColor">
-                            {invoice.date}
+                            {invoice.created_at}
                           </td>
                           <td className="py-4 px-3 text-textDimmedColor">
                             {invoice.amount}
@@ -223,9 +218,9 @@ function Settings() {
                           <td className="py-4 px-3">
                             <span
                               className={`px-2.5 py-1 text-xs font-medium rounded-full ${
-                                invoice.status === "Paid"
+                                invoice.status === "active"
                                   ? "bg-green-500/20 text-green-400"
-                                  : invoice.status === "Pending"
+                                  : invoice.status === "pending"
                                   ? "bg-yellow-500/20 text-yellow-400"
                                   : "bg-red-500/20 text-red-400"
                               }`}
@@ -234,7 +229,7 @@ function Settings() {
                             </span>
                           </td>
                           <td className="py-4 px-3 text-textDimmedColor">
-                            {invoice.renewalDate}
+                            {invoice.reset_period}
                           </td>
                           <td className="py-4 px-3 text-right">
                             <button className="text-textPurple hover:text-textLightPurple font-medium hover:underline">
@@ -255,18 +250,64 @@ function Settings() {
               <h3 className="text-xs font-semibold text-textDefault uppercase tracking-wider mb-5">
                 ORGANIZATION / USAGE
               </h3>
-              <div className="bg-bgCardColor p-8 rounded-xl shadow-lg border border-borderDefault">
-                <p className="text-xl text-textDefault">Usage Information</p>
-                <p className="text-textDefault mt-2">
-                  Details about your organization's usage will be displayed
-                  here.
-                </p>
-                {/* Placeholder for usage charts/data */}
-                <div className="mt-6 border border-dashed border-borderDefault rounded-lg p-10 text-center">
-                  <p className="text-textDefault">
-                    Usage data visualization coming soon.
-                  </p>
-                </div>
+              <div className="bg-bgCardColor p-8 rounded-xl shadow-lg border border-borderDefault text-center">
+                {loadingUsage ? (
+                  <Loader
+                    type="dots"
+                    color="var(--pagination-tabs-bg-active-color)"
+                    className="mx-auto w-full"
+                  />
+                ) : usage && usage.length > 0 ? (
+                  usage.map((item, index) => {
+                    const percentage =
+                      item.request_limit > 0
+                        ? (item.current_value / item.request_limit) * 100
+                        : 0;
+
+                    return (
+                      <div
+                        key={index} // Assuming items don't have a unique ID, using index. Prefer item.id if available.
+                        className="bg-bgCardColor p-6 rounded-xl shadow-lg border border-borderDefault"
+                      >
+                        <div className="flex justify-between items-center mb-1">
+                          <p className="text-lg font-semibold text-textDefault">
+                            {item.name || "Usage Metric"}
+                          </p>
+                          <p className="text-sm text-textDimmedColor">
+                            {percentage.toFixed(0)}%
+                          </p>
+                        </div>
+                        <p className="text-sm text-textDimmedColor mb-1 flex">
+                          {item.current_value} / {item.request_limit} used
+                        </p>
+                        <p className="text-xs text-textDimmedColor mb-3 flex">
+                          {item.description ||
+                            "Description of this usage metric."}
+                        </p>
+                        <div className="w-full bg-gray-700 rounded-full h-2.5">
+                          <div
+                            className="bg-textPurple h-2.5 rounded-full"
+                            style={{ width: `${percentage}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="bg-bgCardColor p-8 rounded-xl shadow-lg border border-borderDefault text-center">
+                    <IconZoomCancel
+                      size={72}
+                      className="mx-auto text-textPurple opacity-70 mb-3"
+                      strokeWidth={1.5}
+                    />
+                    <p className="text-xl font-semibold text-textDimmedColor">
+                      No Usage Data Found
+                    </p>
+                    <p className="text-sm text-textDimmedColor mt-1">
+                      There is no usage data to display at this time.
+                    </p>
+                  </div>
+                )}
               </div>
             </section>
           )}
