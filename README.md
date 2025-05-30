@@ -1,4 +1,6 @@
-# School Demo App
+# Open Chat Kit
+
+#### Template :  School Demo App
 
 A robust starting point for building modern web applications with React. This project is configured with key technologies to provide a solid foundation for development:
 
