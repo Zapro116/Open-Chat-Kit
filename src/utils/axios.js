@@ -1,5 +1,9 @@
 import axios from "axios";
-import { CEREBRUM_BASE_URL, LOCKSMITH_BASE_URL } from "./contants";
+import {
+  CEREBRUM_BASE_URL,
+  LOCKSMITH_BASE_URL,
+  WAYNE_BASE_URL,
+} from "./contants";
 
 // Create an Axios instance
 const cerebrumAxios = (token) =>
@@ -22,4 +26,12 @@ const locksmithAxios = (token) =>
     },
   });
 
-export { cerebrumAxios, locksmithAxios };
+export const wayneAxios = (token) =>
+  axios.create({
+    baseURL: WAYNE_BASE_URL,
+    timeout: 10000,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
