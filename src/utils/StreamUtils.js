@@ -8,6 +8,27 @@ import {
   removeBackticks,
 } from "./commonUtils";
 
+export function processTypeError(
+  jsonObject,
+  responseData,
+  messages,
+  setMessages
+) {
+  const lastMessage = messages[messages.length - 1];
+
+  if (lastMessage) {
+    if (jsonObject?.status_code === DEFAULT_LIMIT_TOKEN_STATUS_CODE) {
+      lastMessage.content = jsonObject?.message;
+    } else {
+      lastMessage.content = jsonObject?.payload?.content;
+    }
+    messages[messages.length - 1] = lastMessage;
+  }
+
+  setMessages(messages);
+  // setIsRunning(false);
+}
+
 export function extractJsonObjectsFromStreamUtil(stream) {
   const jsonObjects = [];
   let hasCountStarted = false;

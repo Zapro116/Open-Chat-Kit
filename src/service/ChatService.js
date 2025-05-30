@@ -13,6 +13,7 @@ import {
   convertFilesToBase64,
   extractJsonObjectsFromStreamUtil,
   processTypeData,
+  processTypeError,
   processTypeLastAIMessage,
   processTypeLastUserMessage,
 } from "../utils/StreamUtils";
@@ -153,7 +154,7 @@ export async function populateResponseFromStream(
 
     // Handle error messages
     if (jsonObject?.type === "error") {
-      //   processTypeError(params);
+      processTypeError(jsonObject, responseData, messages, setMessages);
     }
 
     // Handle last AI message
@@ -167,7 +168,7 @@ export async function populateResponseFromStream(
 
     // Handle error_code = MODEL_REQUEST_LIMIT_REACHED
     if (jsonObject?.error_code === "MODEL_REQUEST_LIMIT_REACHED") {
-      //   processTypeError(params);
+      processTypeError(jsonObject, responseData, messages, setMessages);
     }
   }
 }

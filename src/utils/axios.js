@@ -6,7 +6,7 @@ import {
 } from "./contants";
 
 // Create an Axios instance
-const cerebrumAxios = (token) =>
+export const cerebrumAxios = (token) =>
   axios.create({
     baseURL: CEREBRUM_BASE_URL, // Replace with your API's base URL
     timeout: 10000, // Optional: set a timeout for requests
@@ -16,7 +16,7 @@ const cerebrumAxios = (token) =>
     },
   });
 
-const locksmithAxios = (token) =>
+export const locksmithAxios = (token) =>
   axios.create({
     baseURL: LOCKSMITH_BASE_URL, // Replace with your API's base URL
     timeout: 10000, // Optional: set a timeout for requests

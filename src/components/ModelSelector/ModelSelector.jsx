@@ -12,21 +12,29 @@ const ModelSelector = () => {
   const { getToken } = useAuth();
 
   const fetchModels = async () => {
-    const backupModels = [
-      { label: "gpt-4o", value: "gpt-4o" },
-      { label: "gpt-3.5-turbo", value: "gpt-3.5-turbo" },
-      { label: "claude-3-5-sonnet", value: "claude-3-5-sonnet" },
-    ];
+    // const backupModels = [
+    //   { label: "gpt-4o", value: "gpt-4o" },
+    //   { label: "gpt-3.5-turbo", value: "gpt-3.5-turbo" },
+    //   { label: "claude-3-5-sonnet", value: "claude-3-5-sonnet" },
+    // ];
+    console.log("models.length", models.length);
     if (models.length > 0) {
       return;
     }
     try {
       setLoading(true);
+      console.log("models.length 22", models.length);
 
       const token = await getToken({
         template: DEFAULT_CLERK_TEMPLATE,
       });
+
+      console.log("token", token);
+
       const response = await getModels(token);
+
+      console.log("response", response);
+
       const transformedModels = response.data?.data?.models
         ?.filter((model) => model.enabled)
         .map((model) => ({
@@ -34,11 +42,10 @@ const ModelSelector = () => {
           label: model?.name,
           accept_image: model?.accept_image,
         }));
-      setModels(transformedModels ?? backupModels);
-      setSelectedModel(transformedModels[0]?.value ?? backupModels[0]?.value);
+      setModels(transformedModels ?? []);
+      setSelectedModel(transformedModels[0]?.value ?? "");
     } catch (error) {
       console.error(error);
-      setModels(backupModels);
     } finally {
       setLoading(false);
     }
