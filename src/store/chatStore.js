@@ -46,6 +46,17 @@ const useChatStore = create((set, get) => ({
   getController: () => {
     return get().controller;
   },
+
+  setInitialState: () => {
+    set({
+      messages: [],
+      promptText: "",
+      files: [],
+      isRunning: false,
+      controller: null,
+      currentThreadId: null,
+    });
+  },
 }));
 
 export default useChatStore;

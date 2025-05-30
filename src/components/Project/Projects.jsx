@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ListItem from "../ListItem/ListItem";
 import { IconFolder } from "@tabler/icons-react";
-import { PROJECT_ROUTE } from "../../utils/contants";
+import { DEFAULT_CLERK_TEMPLATE, PROJECT_ROUTE } from "../../utils/contants";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import {
@@ -24,7 +24,7 @@ function Projects() {
     try {
       setIsLoading(true);
       const token = await getToken({
-        template: "neon2",
+        template: DEFAULT_CLERK_TEMPLATE,
       });
       const response = await getProjects(token);
       console.log({ response });
@@ -87,7 +87,7 @@ function Projects() {
   const handleDeleteProject = async () => {
     try {
       const token = await getToken({
-        template: "neon2",
+        template: DEFAULT_CLERK_TEMPLATE,
       });
       const response = await apiDeleteProject(token, deleteProject.team_id);
       if (response.data.status === "success") {

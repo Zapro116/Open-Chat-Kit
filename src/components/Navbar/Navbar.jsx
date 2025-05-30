@@ -28,6 +28,7 @@ import { AccordionControl } from "../AccordianControl/AccordionControl";
 import Projects from "../Project/Projects";
 import KnowledgeBase from "../KnowledgeBase/KnowledgeBase";
 import { AddProjectModal } from "../Project/AddProjectModal";
+import { clearCurrentChatData } from "../../service/ChatService";
 
 function Navbar() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
@@ -45,6 +46,11 @@ function Navbar() {
   const handleColorSchemeToggle = () => {
     const newColorScheme = colorScheme === "light" ? "dark" : "light";
     setColorScheme(newColorScheme);
+  };
+
+  const handleHomeClick = () => {
+    clearCurrentChatData();
+    navigate(HOME_ROUTE);
   };
 
   return (
@@ -119,7 +125,7 @@ function Navbar() {
             alt="Fynix Logo"
             className="h-10 cursor-pointer"
             loading="lazy"
-            onClick={() => navigate(HOME_ROUTE)}
+            onClick={handleHomeClick}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "fallback-logo.png"; // TODO: add a fallback image
@@ -128,7 +134,7 @@ function Navbar() {
         )}
         <p
           className="font-bold text-xl cursor-pointer"
-          onClick={() => navigate(HOME_ROUTE)}
+          onClick={handleHomeClick}
         >
           {BRAND_NAME}
         </p>

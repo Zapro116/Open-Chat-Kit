@@ -42,13 +42,14 @@ export const KNOWLEDGE_BASE_ROUTE = initialSiteConfig.KNOWLEDGE_BASE_ROUTE;
 export const ENABLE_KNOWLEDGE_BASES = initialSiteConfig.ENABLE_KNOWLEDGE_BASES;
 export const CHAT_ROUTE = initialSiteConfig.CHAT_ROUTE;
 
-console.log(initialSiteConfig.ENABLE_KNOWLEDGE_BASES);
+//console.log(initialSiteConfig.ENABLE_KNOWLEDGE_BASES);
 
 export const ENABLE_HISTORY = initialSiteConfig.ENABLE_HISTORY;
 export const ENABLE_CHATS = initialSiteConfig.ENABLE_CHATS;
 
 export const CEREBRUM_BASE_URL = "http://localhost:8081/";
 export const LOCKSMITH_BASE_URL = "http://localhost:8083/";
+export const DEFAULT_CLERK_TEMPLATE = "neon2";
 
 export const historyData = {
   April: [

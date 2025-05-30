@@ -3,7 +3,11 @@ import { Button, Modal } from "@mantine/core";
 import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import useModalStore from "../../store/modalStore"; // Import the store
-import { PROJECT_EDIT_LABEL, PROJECT_ROUTE } from "../../utils/contants";
+import {
+  DEFAULT_CLERK_TEMPLATE,
+  PROJECT_EDIT_LABEL,
+  PROJECT_ROUTE,
+} from "../../utils/contants";
 import { createProject as apiCreateProject } from "../../api/projectApi";
 
 const initialFormState = {
@@ -107,7 +111,7 @@ export const AddProjectModal = () => {
     async (data, abortSignal) => {
       try {
         const token = await getToken({
-          template: "neon2",
+          template: DEFAULT_CLERK_TEMPLATE,
         });
 
         // Use the API function to create a new project
