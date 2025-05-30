@@ -1,13 +1,3 @@
-import {
-  addChatCodeData,
-  countBackticks,
-  extractLanguage,
-  getFileExtension,
-  getLatestBlacktickIndexForCodeBlock,
-  hasNonBackticksOrNewlines,
-  removeBackticks,
-} from "./commonUtils";
-
 export function processTypeError(
   jsonObject,
   responseData,
