@@ -75,8 +75,7 @@ function Navbar() {
         page_size: 100,
       };
       const historyData = await getHistoryData(token, params);
-      console.log({ historyData });
-      setHistoryData(historyData);
+      setHistoryData(historyData.data?.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -144,28 +143,16 @@ function Navbar() {
                 <Loader type="oval" />
               </div>
             ) : (
-              Object.entries(historyData).map(([month, itemObjects]) => (
-                <div key={month} className="mb-3">
-                  {month}
-                  {/* <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1 mb-1.5">
-                    {month}
-                  </p>
-                  <List
-                    items={itemObjects.map((item) => ({
-                      key: item.id,
-                      label: (
-                        <div
-                          className={`flex items-center p-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-sm ${item.className}`}
-                        >
-                          <span className="mr-2">{item.icon}</span>
-                          <span>{item.content}</span>
-                        </div>
-                      ),
-                    }))}
-                    listStyleType="none"
-                  /> */}
-                </div>
-              ))
+              <div className="flex flex-col gap-2">
+                {historyData?.threads?.map((item) => (
+                  <div
+                    key={item.uuid}
+                    className="p-2 rounded-md !bg-bgBodyColor hover:!bg-bgSelectedColor cursor-pointer"
+                  >
+                    {item.title}
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </Sidebar>

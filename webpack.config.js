@@ -50,6 +50,12 @@ const envPlugin = new webpack.EnvironmentPlugin({
     process.env.REACT_APP_GOOGLE_ANALYTICS_ENABLE || "false",
   REACT_APP_GOOGLE_ANALYTICS_CODE:
     process.env.REACT_APP_GOOGLE_ANALYTICS_CODE || "",
+  REACT_APP_BASE_CEREBRUM_URL:
+    process.env.REACT_APP_BASE_CEREBRUM_URL || "http://localhost:8081/",
+  REACT_APP_BASE_LOCKSMIITH_URL:
+    process.env.REACT_APP_BASE_LOCKSMIITH_URL || "http://localhost:8082/",
+  REACT_APP_BASE_WAYNE_URL:
+    process.env.REACT_APP_BASE_WAYNE_URL || "http://localhost:8083/",
 });
 
 module.exports = (env, argv) => {

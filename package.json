@@ -1,5 +1,5 @@
 {
-  "name": "react-base-app",
+  "name": "open-chat-kit",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,10 +7,9 @@
     "build": "webpack --mode production",
     "analyze": "webpack --mode production --analyze"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Hariom Chaurasia",
+  "license": "MIT",
+  "description": "Open Chat Kit. An open source chat application template built with React, Mantine, and Clerk, for building AI enabled chat applications.",
   "dependencies": {
     "@clerk/clerk-react": "^5.31.4",
     "@mantine/core": "^8.0.1",
@@ -23,6 +22,12 @@
     "copy-webpack-plugin": "^13.0.0",
     "core-js": "^3.0.0",
     "dotenv": "^16.5.0",
+    "express": "^4.18.2",
+    "express-static-gzip": "^2.1.7",
+    "frameguard": "^3.1.0",
+    "helmet": "^7.1.0",
+    "http-proxy-middleware": "^2.0.6",
+    "lodash": "^4.17.21",
     "path-browserify": "^1.0.1",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
@@ -58,5 +63,17 @@
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.2.1"
-  }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "react",
+    "docker",
+    "express",
+    "convict",
+    "webpack",
+    "docker-compose"
+  ]
 }

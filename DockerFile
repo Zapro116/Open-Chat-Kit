@@ -1,12 +1,12 @@
-# Stage 1: Build the React application
+# Multi-stage Docker build for React application
 FROM node:18-alpine as builder
 
 WORKDIR /app
 
-# Increase memory for Node.js
+# Increase memory for Node.js build process
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-# Add build arguments
+# Add build arguments for React environment variables
 ARG REACT_APP_CLERK_PUBLISHABLE_KEY
 ARG REACT_APP_LOGO_URL
 ARG REACT_APP_BRAND_NAME
@@ -23,6 +23,9 @@ ARG REACT_APP_CHAT_ROUTE
 ARG REACT_APP_ENABLE_HISTORY
 ARG REACT_APP_GOOGLE_ANALYTICS_ENABLE
 ARG REACT_APP_GOOGLE_ANALYTICS_CODE
+ARG REACT_APP_BASE_CEREBRUM_URL
+ARG REACT_APP_BASE_LOCKSMIITH_URL
+ARG REACT_APP_BASE_WAYNE_URL
 
 # Set environment variables from build args
 ENV REACT_APP_CLERK_PUBLISHABLE_KEY=$REACT_APP_CLERK_PUBLISHABLE_KEY
@@ -41,12 +44,15 @@ ENV REACT_APP_CHAT_ROUTE=$REACT_APP_CHAT_ROUTE
 ENV REACT_APP_ENABLE_HISTORY=$REACT_APP_ENABLE_HISTORY
 ENV REACT_APP_GOOGLE_ANALYTICS_ENABLE=$REACT_APP_GOOGLE_ANALYTICS_ENABLE
 ENV REACT_APP_GOOGLE_ANALYTICS_CODE=$REACT_APP_GOOGLE_ANALYTICS_CODE
+ENV REACT_APP_BASE_CEREBRUM_URL=$REACT_APP_BASE_CEREBRUM_URL
+ENV REACT_APP_BASE_LOCKSMIITH_URL=$REACT_APP_BASE_LOCKSMIITH_URL
+ENV REACT_APP_BASE_WAYNE_URL=$REACT_APP_BASE_WAYNE_URL
 
-# Copy package files
+# Copy package files first for better Docker layer caching
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies (including dev dependencies for build)
+RUN npm ci && npm cache clean --force
 
 # Copy source code
 COPY . .
@@ -54,15 +60,46 @@ COPY . .
 # Build the React application
 RUN npm run build
 
-# Stage 2: Serve the application with Nginx
-FROM nginx:1.24-alpine
+# Stage 2: Production runtime
+FROM node:18-alpine
 
-# Copy the build output
-COPY --from=builder /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
 
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S reactapp -u 1001
+
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy built application from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Copy server files
+COPY server.js config.js ./
+
+# Create SSL directory (optional, for development)
+RUN mkdir -p ssl
+
+# Change ownership to non-root user
+RUN chown -R reactapp:nodejs /app
+
+# Switch to non-root user
+USER reactapp
+
+# Expose the application port
 EXPOSE 4000
 
-CMD ["nginx", "-g", "daemon off;"]
+# Add healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:4000/_healthz', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "server.js"]
