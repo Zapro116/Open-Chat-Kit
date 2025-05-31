@@ -52,8 +52,6 @@ const envPlugin = new webpack.EnvironmentPlugin({
     process.env.REACT_APP_GOOGLE_ANALYTICS_CODE || "",
 });
 
-console.log("envPlugin", envPlugin);
-
 module.exports = (env, argv) => {
   const isProduction = argv.mode === "production";
   const shouldAnalyze = process.env.ANALYZE === "true";
@@ -164,6 +162,9 @@ module.exports = (env, argv) => {
         }),
       new CleanWebpackPlugin(),
       envPlugin,
+      new webpack.ProvidePlugin({
+        process: "process/browser",
+      }),
       !isProduction && new webpack.HotModuleReplacementPlugin(),
       !isProduction && new ReactRefreshWebpackPlugin(),
       isProduction &&
@@ -235,6 +236,19 @@ module.exports = (env, argv) => {
           "node_modules/gotham/src/BillingApp.jsx"
         ),
         "@public": path.resolve(__dirname, "node_modules/gotham/src/public"),
+      },
+      fallback: {
+        path: require.resolve("path-browserify"),
+        util: require.resolve("util/"),
+        process: require.resolve("process"),
+        fs: false,
+        crypto: false,
+        stream: false,
+        buffer: false,
+        http: false,
+        https: false,
+        zlib: false,
+        url: false,
       },
     },
     cache: {

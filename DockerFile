@@ -1,9 +1,12 @@
 # Stage 1: Build the React application
-FROM node:lts-alpine as builder
+FROM node:18-alpine as builder
 
 WORKDIR /app
 
-# Declare build arguments for environment variables
+# Increase memory for Node.js
+ENV NODE_OPTIONS=--max-old-space-size=8192
+
+# Add build arguments
 ARG REACT_APP_CLERK_PUBLISHABLE_KEY
 ARG REACT_APP_LOGO_URL
 ARG REACT_APP_BRAND_NAME
@@ -20,9 +23,8 @@ ARG REACT_APP_CHAT_ROUTE
 ARG REACT_APP_ENABLE_HISTORY
 ARG REACT_APP_GOOGLE_ANALYTICS_ENABLE
 ARG REACT_APP_GOOGLE_ANALYTICS_CODE
-ARG ANALYZE
 
-# Set environment variables from build arguments for the build process
+# Set environment variables from build args
 ENV REACT_APP_CLERK_PUBLISHABLE_KEY=$REACT_APP_CLERK_PUBLISHABLE_KEY
 ENV REACT_APP_LOGO_URL=$REACT_APP_LOGO_URL
 ENV REACT_APP_BRAND_NAME=$REACT_APP_BRAND_NAME
@@ -39,23 +41,23 @@ ENV REACT_APP_CHAT_ROUTE=$REACT_APP_CHAT_ROUTE
 ENV REACT_APP_ENABLE_HISTORY=$REACT_APP_ENABLE_HISTORY
 ENV REACT_APP_GOOGLE_ANALYTICS_ENABLE=$REACT_APP_GOOGLE_ANALYTICS_ENABLE
 ENV REACT_APP_GOOGLE_ANALYTICS_CODE=$REACT_APP_GOOGLE_ANALYTICS_CODE
-ENV ANALYZE=$ANALYZE
 
-# Increase memory for Node.js
-ENV NODE_OPTIONS=--max-old-space-size=8192
+# Copy package files
+COPY package*.json ./
 
-COPY package.json ./
-COPY package-lock.json ./
-
+# Install dependencies
 RUN npm install
 
+# Copy source code
 COPY . .
 
+# Build the React application
 RUN npm run build
 
 # Stage 2: Serve the application with Nginx
-FROM nginx:stable-alpine
+FROM nginx:1.24-alpine
 
+# Copy the build output
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy custom Nginx configuration
