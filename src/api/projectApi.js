@@ -1,9 +1,33 @@
 import { locksmithAxios } from "../utils/axios";
 
 export const getProjects = async (token, signal) => {
-  const response = await locksmithAxios(token).get(`/v1.0/teams`, {
-    signal,
-  });
+  // const response = await locksmithAxios(token).get(`/v1.0/teams`, {
+  //   signal,
+  // });
+
+  const response = {
+    data: {
+      identifier: "7884eada-72fd-4d66-97a7-9b45b3263920",
+      success: true,
+      message: null,
+      errors: null,
+      data: [
+        {
+          team_id: "1f0299e9-4c52-6930-9d19-0a3b3b00f6f3",
+          org_id: "org_2wM6P0x3exs5fK4VVX4VY2EtqYA",
+          team_slug: "hariom-test-1f0299e9",
+          description: null,
+          name: "hariom test",
+          created_by: "user_2wD66rW2AmhN3RmnBgBei12129j",
+          user_role: {
+            role_id: "1f023f96-4d4d-64d6-af4e-667101ab3f1e",
+            role_name: "Owner",
+            role_slug: "owner",
+          },
+        },
+      ],
+    },
+  };
   return response;
 };
 
@@ -124,4 +148,10 @@ export const deleteTeamMember = async (token, team_id, member_id) => {
   return locksmithAxios(token).delete(
     `/v1.0/teams/${team_id}/members/${member_id}`
   );
+};
+
+export const updateProject = async (token, team_id, params, signal) => {
+  return locksmithAxios(token).patch(`/v1.0/teams/${team_id}`, params, {
+    signal,
+  });
 };

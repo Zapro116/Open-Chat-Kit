@@ -9,6 +9,7 @@ import {
   deleteProject as apiDeleteProject,
 } from "../../api/projectApi";
 import DeleteProjectModal from "./DeleteProjectModal";
+import EditProjectModal from "./EditProjectModal";
 import { notifications } from "@mantine/notifications";
 
 function Projects() {
@@ -17,6 +18,9 @@ function Projects() {
   const [error, setError] = useState(null);
   const { getToken } = useAuth();
   const [deleteProject, setDeleteProject] = useState(null);
+  const [editProject, setEditProject] = useState(null);
+
+  console.log({ editProject });
 
   const navigate = useNavigate();
 
@@ -27,43 +31,6 @@ function Projects() {
         template: DEFAULT_CLERK_TEMPLATE,
       });
       const response = await getProjects(token);
-      console.log({ response });
-
-      //   data: {
-      //     identifier: "c295d657-388b-425c-a426-281fc7a16c91",
-      //     success: true,
-      //     message: null,
-      //     errors: null,
-      //     data: [
-      //       {
-      //         team_id: "1f02a611-7cfe-6dae-bdbd-2a194859d419",
-      //         org_id: "org_2wM6P0x3exs5fK4VVX4VY2EtqYA",
-      //         team_slug: "testing-00-1f02a611",
-      //         description: null,
-      //         name: "Testing 00",
-      //         created_by: "user_2wD66rW2AmhN3RmnBgBei12129j",
-      //         user_role: {
-      //           role_id: "1f023f96-4d4d-64d6-af4e-667101ab3f1e",
-      //           role_name: "Owner",
-      //           role_slug: "owner",
-      //         },
-      //       },
-      //       {
-      //         team_id: "1f0299e9-4c52-6930-9d19-0a3b3b00f6f3",
-      //         org_id: "org_2wM6P0x3exs5fK4VVX4VY2EtqYA",
-      //         team_slug: "hariom-test-1f0299e9",
-      //         description: null,
-      //         name: "hariom test",
-      //         created_by: "user_2wD66rW2AmhN3RmnBgBei12129j",
-      //         user_role: {
-      //           role_id: "1f023f96-4d4d-64d6-af4e-667101ab3f1e",
-      //           role_name: "Owner",
-      //           role_slug: "owner",
-      //         },
-      //       },
-      //     ],
-      //   },
-      // };
       setProjects(response.data?.data ?? []);
     } catch (error) {
       setError(error);
@@ -122,8 +89,9 @@ function Projects() {
             onClick={() => {
               navigate(`/${PROJECT_ROUTE}/${project.team_id}`);
             }}
+            knowledge={project}
             onEdit={(project) => {
-              console.log("edit", project);
+              setEditProject(project);
             }}
             onDelete={() => {
               setDeleteProject(project);
@@ -141,6 +109,18 @@ function Projects() {
           setOpened={setDeleteProject}
           project={deleteProject}
           onDelete={handleDeleteProject}
+        />
+      )}
+      {editProject && (
+        <EditProjectModal
+          project={editProject}
+          onClose={() => {
+            setEditProject(null);
+          }}
+          onEditSubmit={() => {
+            fetchProjects();
+            setEditProject(null);
+          }}
         />
       )}
     </div>
