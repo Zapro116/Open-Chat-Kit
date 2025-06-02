@@ -4,6 +4,7 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AdminPage from "./pages/AdminPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import {
   HOME_ROUTE,
   LOGIN_ROUTE,
@@ -39,6 +40,7 @@ function App() {
         />
         <Route path={SETTINGS_ROUTE} element={<Settings />} />
         <Route path={`/${CHAT_ROUTE}/:chat_id`} element={<ChatPanel />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
