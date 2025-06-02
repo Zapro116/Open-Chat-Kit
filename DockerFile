@@ -80,7 +80,7 @@ RUN npm ci --only=production && npm cache clean --force
 COPY --from=builder /app/dist ./dist
 
 # Copy server files
-COPY server.js config.js ./
+COPY server.js config.js security-config.js ./
 
 # Create SSL directory (optional, for development)
 RUN mkdir -p ssl
@@ -96,7 +96,7 @@ EXPOSE 4000
 
 # Add healthcheck
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:4000/_healthz', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+  CMD node -e "require('http').get('http://127.0.0.1:4000/_healthz', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]

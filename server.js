@@ -7,8 +7,15 @@ const https = require("https");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const helmet = require("helmet");
 
-// Import configuration
+// Import configuration and security
 const { conf } = require("./config");
+const {
+  configRateLimit,
+  apiRateLimit,
+  configSecurityMiddleware,
+  createSecureConfigHandler,
+} = require("./security-config");
+
 const BROWSER_CONFIG = conf.get("BROWSER_CONFIG");
 
 const app = express();
@@ -32,61 +39,16 @@ app.use((req, res, next) => {
 // Trust proxy for correct client IP in load balancer scenarios
 app.set("trust proxy", 1);
 
-// Inject environment variables into index.html
-const injectConfig = () => {
-  try {
-    const indexPath = path.resolve("./dist/index.html");
+// Apply API rate limiting to all /api routes
+app.use("/api", apiRateLimit);
 
-    if (fs.existsSync(indexPath)) {
-      let indexHTML = fs.readFileSync(indexPath, { encoding: "utf8" });
-
-      const configScript = `<script>window._conf=${JSON.stringify(
-        BROWSER_CONFIG
-      )};</script>`;
-
-      console.log(
-        "🔧 Injecting configuration:",
-        JSON.stringify(BROWSER_CONFIG, null, 2)
-      );
-
-      // Replace placeholder or inject before closing head tag
-      if (indexHTML.includes("<!-- CONFIG_PLACEHOLDER -->")) {
-        // Replace placeholder with actual config
-        indexHTML = indexHTML.replace(
-          "<!-- CONFIG_PLACEHOLDER -->",
-          configScript
-        );
-        console.log("✓ Replaced CONFIG_PLACEHOLDER with configuration");
-      } else if (indexHTML.includes("window._conf=")) {
-        // Replace existing config
-        indexHTML = indexHTML.replace(
-          /<script>window\._conf=.*?<\/script>/,
-          configScript
-        );
-        console.log("✓ Replaced existing configuration in index.html");
-      } else {
-        // Inject new config before closing head tag
-        indexHTML = indexHTML.replace(
-          /(<\/head>)/,
-          `${configScript}
-          $1`
-        );
-        console.log("✓ Injected new configuration into index.html");
-      }
-
-      fs.writeFileSync(indexPath, indexHTML);
-      console.log("✓ Configuration injected into index.html");
-    } else {
-      console.warn("⚠ index.html not found at ./dist/index.html");
-    }
-  } catch (err) {
-    console.error("❌ Error processing index.html:", err.message);
-    console.error("Stack trace:", err.stack);
-  }
-};
-
-// Inject configuration on startup
-injectConfig();
+// Secure configuration endpoint
+app.get(
+  "/api/config",
+  configRateLimit,
+  configSecurityMiddleware(BROWSER_CONFIG),
+  createSecureConfigHandler(BROWSER_CONFIG)
+);
 
 // Health check endpoints
 app.get("/_readyz", (req, res) => {
@@ -216,6 +178,9 @@ const startServer = () => {
         console.log(
           `📊 Health check: https://localhost:${BROWSER_CONFIG.PORT}/_healthz`
         );
+        console.log(
+          `⚙️  Config API: https://localhost:${BROWSER_CONFIG.PORT}/api/config`
+        );
       });
     } catch (err) {
       console.warn(
@@ -229,6 +194,9 @@ const startServer = () => {
         console.log(
           `📊 Health check: http://localhost:${BROWSER_CONFIG.PORT}/_healthz`
         );
+        console.log(
+          `⚙️  Config API: http://localhost:${BROWSER_CONFIG.PORT}/api/config`
+        );
       });
     }
   } else {
@@ -239,6 +207,9 @@ const startServer = () => {
       );
       console.log(
         `📊 Health check: http://localhost:${BROWSER_CONFIG.PORT}/_healthz`
+      );
+      console.log(
+        `⚙️  Config API: http://localhost:${BROWSER_CONFIG.PORT}/api/config`
       );
       console.log(`🌍 Environment: ${BROWSER_CONFIG.ENV}`);
     });

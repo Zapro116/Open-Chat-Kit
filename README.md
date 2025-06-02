@@ -1,12 +1,19 @@
 # Open Chat Kit - School Demo App
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![Security](https://img.shields.io/badge/Security-Enhanced-green.svg)](https://github.com/your-repo)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com)
 
 ## 📋 Table of Contents
 
 - [**Overview**](#overview)
 - [**Built With**](#built-with)
 - [**Features**](#features)
+- [**Security Features**](#security-features)
+- [**Configuration API**](#configuration-api)
+  - [Accessing Configurations](#accessing-configurations)
+  - [Security & Rate Limiting](#security--rate-limiting)
+  - [API Response Examples](#api-response-examples)
 - [**Tech Stack**](#tech-stack)
   - [Frontend](#frontend)
   - [Build Tools & Utilities](#build-tools--utilities)
@@ -19,29 +26,32 @@
   - [4. Running the Application](#4-running-the-application)
     - [Development Mode (Webpack Dev Server)](#development-mode-webpack-dev-server)
     - [Production Mode (Docker)](#production-mode-docker)
+- [**API Documentation**](#api-documentation)
 - [**Available Scripts**](#available-scripts)
 - [**Dockerization Details**](#dockerization-details)
 - [**Environment Variables Reference**](#environment-variables-reference)
+- [**Security Considerations**](#security-considerations)
 - [**Contributing**](#contributing)
 - [**License**](#license)
 
 ## 📝 Overview
 
-Open Chat Kit: School Demo App is a robust, full-stack template designed to accelerate the development of modern web applications. It provides a comprehensive starting point by integrating key technologies and best practices, allowing developers to focus on building features rather than boilerplate setup. This template is particularly well-suited for educational applications or platforms requiring user management, rich UIs, and scalable state management.
+Open Chat Kit: School Demo App is a robust, full-stack template designed to accelerate the development of modern web applications with **enterprise-grade security**. It provides a comprehensive starting point by integrating key technologies, security best practices, and a secure configuration management system, allowing developers to focus on building features rather than boilerplate setup.
 
-The application leverages React for a dynamic user interface, Clerk for secure authentication, Mantine for UI components, Zustand for state management, and Tailwind CSS for styling. The backend and deployment are containerized using Docker and Nginx, ensuring consistency across different environments.
+The application leverages React for a dynamic user interface, Clerk for secure authentication, Mantine for UI components, Zustand for state management, and Tailwind CSS for styling. The backend features a **secure configuration API** with rate limiting, automated tool blocking, and environment-specific filtering to protect sensitive data.
 
 ### ✨ Key Benefits
 
-| Benefit                  | Description                                                                                          |
-| ------------------------ | ---------------------------------------------------------------------------------------------------- |
-| 🔑 **Authentication**    | Secure, pre-configured user management using Clerk, saving significant setup time.                   |
-| 🧩 **Modern UI**         | Built with Mantine UI for a rich set of accessible and customizable React components out-of-the-box. |
-| 🔄 **State Management**  | Efficient and scalable global state managed by Zustand, simplifying complex state interactions.      |
-| 🚀 **Rapid Development** | Pre-configured with Webpack, Babel, Tailwind CSS, and PostCSS for an optimized development workflow. |
-| 🐳 **Containerized**     | Docker and Nginx setup ensures consistent environments from development to production.               |
-| ⚙️ **Configurable**      | Easily customizable through environment variables for branding, feature flags, and API keys.         |
-| 🛣️ **Routing**           | Client-side routing handled by React Router for seamless single-page application (SPA) navigation.   |
+| Benefit                    | Description                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 🔐 **Enterprise Security** | Multi-layered security with rate limiting, origin validation, and automated tool blocking.           |
+| 🔑 **Authentication**      | Secure, pre-configured user management using Clerk, saving significant setup time.                   |
+| ⚙️ **Secure Config API**   | Protected configuration endpoint with environment-specific filtering and access controls.            |
+| 🧩 **Modern UI**           | Built with Mantine UI for a rich set of accessible and customizable React components out-of-the-box. |
+| 🔄 **State Management**    | Efficient and scalable global state managed by Zustand, simplifying complex state interactions.      |
+| 🚀 **Rapid Development**   | Pre-configured with Webpack, Babel, Tailwind CSS, and PostCSS for an optimized development workflow. |
+| 🐳 **Containerized**       | Docker and Nginx setup ensures consistent environments from development to production.               |
+| 🛣️ **Routing**             | Client-side routing handled by React Router for seamless single-page application (SPA) navigation.   |
 
 ## Built With
 
@@ -59,20 +69,197 @@ This project is built with a modern and robust set of technologies:
   <a href="https://www.docker.com/" target="_blank"><img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"></a>
   <a href="https://www.nginx.com/" target="_blank"><img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white" alt="Nginx"></a>
   <a href="https://nodejs.org/" target="_blank"><img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"></a>
+  <a href="https://expressjs.com/" target="_blank"><img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express"></a>
 </p>
 
 ## Features
 
-- **User Authentication:** Secure and easy-to-integrate user management powered by [Clerk](https://clerk.com/).
-- **Modern UI Components:** A rich set of accessible and customizable React components from [Mantine UI](https://mantine.dev/).
-- **State Management:** Efficient and scalable state management with [Zustand](https://zustand-bearbose.pmnd.rs/).
-- **Client-Side Routing:** Seamless page transitions and navigation handled by [React Router](https://reactrouter.com/).
-- **API Communication:** Simplified HTTP requests using [Axios](https://axios-http.com/).
-- **Utility-First Styling:** Flexible and maintainable styling with [Tailwind CSS](https://tailwindcss.com/).
-- **Module Bundling:** Optimized asset bundling via [Webpack](https://webpack.js.org/).
-- **Dockerized Environment:** Consistent development and deployment environments using [Docker](https://www.docker.com/) and [Nginx](https://www.nginx.com/).
-- **Environment Configuration:** Easy management of application settings through `.env` files.
-- **Google Analytics Integration:** Optional integration for tracking user interactions.
+- **🔐 Secure Configuration API:** Protected endpoint with rate limiting and environment-specific filtering
+- **🔑 User Authentication:** Secure and easy-to-integrate user management powered by [Clerk](https://clerk.com/)
+- **🛡️ Multi-Layer Security:** Rate limiting, origin validation, and automated tool blocking
+- **🧩 Modern UI Components:** A rich set of accessible and customizable React components from [Mantine UI](https://mantine.dev/)
+- **🔄 State Management:** Efficient and scalable state management with [Zustand](https://zustand-bearbose.pmnd.rs/)
+- **🛣️ Client-Side Routing:** Seamless page transitions and navigation handled by [React Router](https://reactrouter.com/)
+- **📡 API Communication:** Simplified HTTP requests using [Axios](https://axios-http.com/)
+- **🎨 Utility-First Styling:** Flexible and maintainable styling with [Tailwind CSS](https://tailwindcss.com/)
+- **📦 Module Bundling:** Optimized asset bundling via [Webpack](https://webpack.js.org/)
+- **🐳 Dockerized Environment:** Consistent development and deployment environments using [Docker](https://www.docker.com/) and [Nginx](https://www.nginx.com/)
+- **⚙️ Environment Configuration:** Secure management of application settings through protected API endpoints
+- **📊 Google Analytics Integration:** Optional integration for tracking user interactions
+- **🚀 Health Monitoring:** Built-in health check endpoints for monitoring application status
+
+## Security Features
+
+This application implements **enterprise-grade security** measures to protect sensitive configuration data and prevent unauthorized access:
+
+### 🛡️ **Configuration Security**
+
+- **Automated Tool Blocking:** Blocks curl, wget, Postman, and other automated tools in production
+- **Rate Limiting:** 5 requests per minute for config endpoint, 100 requests per 15 minutes for API
+- **Origin Validation:** Validates request origins to prevent cross-site access
+- **Environment-Specific Filtering:** Different configuration exposure based on environment
+- **Security Headers:** Comprehensive security headers including CSP, X-Frame-Options, etc.
+
+### 🔒 **Data Protection**
+
+- **Sensitive Key Filtering:** API keys and secrets filtered out in production
+- **IP-Based Access Control:** Different permissions based on request source
+- **Request Logging:** All configuration access attempts are logged for security monitoring
+- **Cache Control:** Proper cache headers to prevent sensitive data caching
+
+### 📊 **Monitoring & Compliance**
+
+- **Access Logging:** Detailed logs of all configuration access attempts
+- **Security Metrics:** Built-in endpoints for monitoring security events
+- **Error Handling:** Secure error responses that don't leak sensitive information
+
+## Configuration API
+
+The application provides a **secure configuration API** that dynamically serves application settings based on the environment and request context.
+
+### Accessing Configurations
+
+#### **Endpoint:** `GET /api/config`
+
+**Base URL:** `http://localhost:4000/api/config` (development) or `https://your-domain.com/api/config` (production)
+
+#### **JavaScript/Frontend Access:**
+
+```javascript
+// Using fetch API
+const config = await fetch("/api/config")
+  .then((response) => response.json())
+  .catch((error) => console.error("Config load failed:", error));
+
+// Using axios
+import axios from "axios";
+const config = await axios.get("/api/config").then((res) => res.data);
+
+// React hook example
+import { useState, useEffect } from "react";
+
+const useConfig = () => {
+  const [config, setConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/config")
+      .then((res) => res.json())
+      .then((data) => {
+        setConfig(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
+  }, []);
+
+  return { config, loading, error };
+};
+```
+
+#### **Browser Access:**
+
+Navigate to `http://localhost:4000/api/config` in your browser to view the current configuration (will show filtered config based on environment).
+
+### Security & Rate Limiting
+
+#### **Rate Limits:**
+
+- **Config Endpoint:** 5 requests per minute per IP
+- **General API:** 100 requests per 15 minutes per IP
+- **Health Checks:** Excluded from rate limiting
+
+#### **Access Control:**
+
+| Request Type             | Production Behavior          | Development Behavior     |
+| ------------------------ | ---------------------------- | ------------------------ |
+| **Browser Requests**     | ✅ Allowed (filtered config) | ✅ Allowed (full config) |
+| **curl/wget/automation** | ❌ Blocked                   | ✅ Allowed               |
+| **Unauthorized Origins** | ❌ Blocked                   | ⚠️ Warning logged        |
+| **Localhost/Internal**   | ✅ Allowed (enhanced config) | ✅ Allowed (full config) |
+
+#### **Response Headers:**
+
+```http
+X-Config-Version: 2.0
+X-Security-Level: high|medium
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Cache-Control: private, max-age=300
+```
+
+### API Response Examples
+
+#### **Production Environment (Browser Request):**
+
+```json
+{
+  "ENV": "production",
+  "REACT_APP_BRAND_NAME": "Your School Name",
+  "REACT_APP_PROJECTS_LABEL": "Projects",
+  "REACT_APP_ENABLE_PROJECTS": true,
+  "REACT_APP_KNOWLEDGE_BASE_LABEL": "Knowledge Base",
+  "REACT_APP_ENABLE_KNOWLEDGE_BASES": true,
+  "REACT_APP_ENABLE_CHATS": true,
+  "REACT_APP_CHAT_ROUTE": "c",
+  "REACT_APP_ENABLE_HISTORY": true,
+  "REACT_APP_LOGO_URL": "https://your-logo-url.com/logo.png"
+}
+```
+
+#### **Development Environment:**
+
+```json
+{
+  "ENV": "development",
+  "REACT_APP_BRAND_NAME": "Your School Name",
+  "REACT_APP_CLERK_PUBLISHABLE_KEY": "pk_test_...",
+  "REACT_APP_LOGO_URL": "https://your-logo-url.com/logo.png",
+  "REACT_APP_GOOGLE_ANALYTICS_CODE": "G-XXXXXXXXXX",
+  "REACT_APP_BASE_CEREBRUM_URL": "http://localhost:8081/",
+  "REACT_APP_BASE_LOCKSMIITH_URL": "http://localhost:8082/",
+  "REACT_APP_BASE_WAYNE_URL": "http://localhost:8083/",
+  "_meta": {
+    "requestIP": "127.0.0.1",
+    "timestamp": "2024-06-01T18:30:00.000Z",
+    "userAgent": "Mozilla/5.0...",
+    "filtered": true
+  }
+}
+```
+
+#### **Blocked Request (Automated Tool):**
+
+```json
+{
+  "error": "Access Denied",
+  "message": "Configuration access not available for automated tools",
+  "code": "AUTOMATED_ACCESS_BLOCKED"
+}
+```
+
+#### **Rate Limited Request:**
+
+```json
+{
+  "error": "Rate limit exceeded",
+  "message": "Configuration access is rate limited for security",
+  "retryAfter": 60
+}
+```
+
+#### **Unauthorized Origin:**
+
+```json
+{
+  "error": "Access Denied",
+  "message": "Configuration access not allowed from this origin",
+  "code": "ORIGIN_NOT_ALLOWED"
+}
+```
 
 ## Tech Stack
 
@@ -195,6 +382,110 @@ This method builds a production-ready Docker image and runs it using Docker Comp
 
 The application will be served by Nginx and available at `http://localhost:4000` (as per `docker-compose.yml` and `nginx.conf` port configurations).
 
+## API Documentation
+
+The application provides several API endpoints for different purposes:
+
+### Configuration Endpoints
+
+#### `GET /api/config`
+
+**Purpose:** Secure configuration endpoint for frontend applications  
+**Authentication:** None required  
+**Rate Limit:** 5 requests/minute  
+**Security:** Environment-specific filtering, automated tool blocking
+
+**Request Headers:**
+
+```http
+Accept: application/json
+User-Agent: <browser-user-agent>
+Origin: <allowed-origin> # Required for production CORS validation
+```
+
+**Response:** JSON object with filtered configuration based on environment
+
+---
+
+### Health Check Endpoints
+
+#### `GET /_healthz`
+
+**Purpose:** Application health status  
+**Rate Limit:** None
+
+**Response:**
+
+```json
+{
+  "status": "healthy",
+  "timestamp": "2024-06-01T18:30:00.000Z",
+  "uptime": 1234.567,
+  "memory": {
+    "rss": 45678912,
+    "heapTotal": 25165824,
+    "heapUsed": 15678912,
+    "external": 1234567
+  },
+  "environment": "production"
+}
+```
+
+#### `GET /_readyz`
+
+**Purpose:** Readiness probe for load balancers  
+**Rate Limit:** None
+
+**Response:**
+
+```json
+{
+  "status": "ready",
+  "timestamp": "2024-06-01T18:30:00.000Z",
+  "environment": "production"
+}
+```
+
+#### `GET /_metrics`
+
+**Purpose:** Application metrics and performance data  
+**Rate Limit:** None
+
+**Response:**
+
+```json
+{
+  "uptime": 1234.567,
+  "memory": { "rss": 45678912, "heapTotal": 25165824 },
+  "cpu": { "user": 1234567, "system": 234567 },
+  "environment": "production",
+  "timestamp": "2024-06-01T18:30:00.000Z"
+}
+```
+
+---
+
+### Error Responses
+
+All API endpoints return consistent error response format:
+
+```json
+{
+  "error": "Error Type",
+  "message": "Human readable error message",
+  "code": "ERROR_CODE", // Optional
+  "timestamp": "2024-06-01T18:30:00.000Z"
+}
+```
+
+**Common HTTP Status Codes:**
+
+- `200` - Success
+- `403` - Access Denied (blocked by security middleware)
+- `429` - Rate Limited
+- `500` - Internal Server Error
+- `502` - Bad Gateway (proxy errors)
+
 ## Available Scripts
 
 In the project directory, you can run the following scripts:
@@ -254,6 +545,142 @@ The application uses the following environment variables. These can be set in a 
 | `REACT_APP_ENABLE_HISTORY`            | Set to `true` to enable history-related features.            | `false`               | No       |
 | `REACT_APP_GOOGLE_ANALYTICS_ENABLE`   | Set to `true` to enable Google Analytics.                    | `false`               | No       |
 | `REACT_APP_GOOGLE_ANALYTICS_CODE`     | Your Google Analytics Measurement ID (e.g., `G-XXXXXXXXXX`). | ""                    | No       |
+
+## Security Considerations
+
+This application implements multiple layers of security to protect against common web vulnerabilities and attacks:
+
+### 🔐 **Configuration Security**
+
+**Problem:** Exposing sensitive configuration data (API keys, secrets, internal URLs) through public endpoints poses significant security risks.
+
+**Solution:** Multi-layered security approach:
+
+1. **Environment-Specific Filtering**
+
+   - Production: Only UI-related configuration exposed
+   - Development: Full configuration available for debugging
+   - Localhost: Enhanced configuration for local development
+
+2. **Automated Tool Detection & Blocking**
+
+   - Blocks curl, wget, Postman, Insomnia, and other automation tools
+   - User-Agent pattern matching with comprehensive detection
+   - Prevents scripted attacks and unauthorized data harvesting
+
+3. **Rate Limiting**
+
+   - Config endpoint: 5 requests/minute per IP
+   - General API: 100 requests/15 minutes per IP
+   - Prevents brute force and DoS attacks
+
+4. **Origin Validation**
+   - CORS protection with allowlist of authorized domains
+   - Prevents cross-site access to configuration data
+   - Configurable for different environments
+
+### 🛡️ **HTTP Security Headers**
+
+The application implements comprehensive security headers:
+
+```http
+# Content Security
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: DENY
+
+# Cache Control
+Cache-Control: private, no-cache, no-store, must-revalidate
+
+# CORS and Referrer
+Referrer-Policy: strict-origin-when-cross-origin
+Access-Control-Allow-Origin: <configured-origins>
+
+# Custom Security Headers
+X-Config-Version: 2.0
+X-Security-Level: high|medium
+```
+
+### 🚨 **Security Monitoring**
+
+**Logging & Monitoring:**
+
+- All configuration access attempts logged with IP, User-Agent, and timestamp
+- Failed authentication attempts tracked
+- Rate limit violations recorded
+- Automated tool access attempts flagged
+
+**Example Security Log:**
+
+```bash
+🔍 Config access: IP=192.168.1.100, ENV=production, UA=curl/7.68.0...
+❌ Config access blocked: Automated tool detected - curl/7.68.0
+```
+
+### ⚡ **Performance Security**
+
+**Docker Security:**
+
+- Non-root user execution (user: `reactapp`)
+- Minimal Alpine Linux base images
+- Multi-stage builds to reduce attack surface
+- Health checks for container monitoring
+
+**Network Security:**
+
+- Nginx reverse proxy configuration
+- Proper port exposure (only 4000)
+- Internal communication protection
+
+### 🔧 **Deployment Security Best Practices**
+
+1. **Environment Variables**
+
+   - Never commit `.env` files to version control
+   - Use secure secret management in production
+   - Rotate API keys regularly
+
+2. **HTTPS Configuration**
+
+   - SSL/TLS certificates for production
+   - HTTPS redirect configuration
+   - Secure cookie settings
+
+3. **Monitoring & Alerting**
+
+   - Set up monitoring for failed requests
+   - Alert on unusual access patterns
+   - Monitor rate limit violations
+
+4. **Access Control**
+   - Implement proper firewall rules
+   - Use VPN for admin access
+   - Regular security audits
+
+### 🎯 **Security Testing**
+
+**Recommended Security Tests:**
+
+```bash
+# Test rate limiting
+for i in {1..10}; do curl http://localhost:4000/api/config; done
+
+# Test automated tool blocking
+curl -H "User-Agent: curl/7.68.0" http://localhost:4000/api/config
+
+# Test origin validation
+curl -H "Origin: https://malicious-site.com" http://localhost:4000/api/config
+
+# Test with browser user agent
+curl -H "User-Agent: Mozilla/5.0..." http://localhost:4000/api/config
+```
+
+**Expected Results:**
+
+- Rate limiting: 403 after 5 requests in 1 minute
+- Automated tools: 403 with "AUTOMATED_ACCESS_BLOCKED"
+- Invalid origins: 403 with "ORIGIN_NOT_ALLOWED"
+- Browser requests: 200 with filtered configuration
 
 ## Contributing
 
