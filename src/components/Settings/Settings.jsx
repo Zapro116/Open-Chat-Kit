@@ -9,12 +9,13 @@ import Navbar from "../Navbar/Navbar";
 import { logPageView } from "../../utils/analytics";
 import { getPlan, getUsage } from "../../api/settings";
 import { Loader } from "@mantine/core";
+import { PLANS_PRICING_ROUTE } from "../../utils/contants";
 
 function Settings() {
   const [activePlan, setActivePlan] = useState(null);
   const [invoices, setInvoices] = useState([]);
   const [loadingPlan, setLoadingPlan] = useState(true);
-  const [loadingInvoices, setLoadingInvoices] = useState(true);
+  const [loadingInvoices, setLoadingInvoices] = useState(false);
   const [activeTab, setActiveTab] = useState("billing"); // 'billing' or 'usage'
   const [usage, setUsage] = useState([]);
   const [loadingUsage, setLoadingUsage] = useState(true);
@@ -39,8 +40,6 @@ function Settings() {
   const fetchInvoices = async () => {
     try {
       setLoadingUsage(true);
-      // const invoices = await getInvoices();
-      await new Promise((resolve) => setTimeout(resolve, 1500));
       const invoices = await getUsage();
       setUsage(invoices.data);
     } catch (error) {
@@ -146,7 +145,12 @@ function Settings() {
                         quota. To work seamlessly, upgrade to an enterprise
                         plan.
                       </p>
-                      <button className="bg-textPurple hover:bg-textLightPurple text-white font-semibold py-2 px-4 rounded-md text-sm w-full transition-colors duration-150">
+                      <button
+                        className="bg-textPurple hover:bg-textLightPurple text-textDefault font-semibold py-2 px-4 rounded-md text-sm w-full transition-colors duration-150"
+                        onClick={() => {
+                          navigate(PLANS_PRICING_ROUTE);
+                        }}
+                      >
                         Upgrade Plan
                       </button>
                     </div>

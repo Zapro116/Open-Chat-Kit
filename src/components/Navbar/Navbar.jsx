@@ -9,6 +9,7 @@ import {
   Text,
   Box,
   ActionIcon,
+  Popover,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -16,11 +17,13 @@ import {
   IconMoon,
   IconSunHigh,
   IconDots,
+  IconTrash,
 } from "@tabler/icons-react";
 import Sidebar from "../Sidebar/Sidebar";
 import List from "../List/List";
 import {
   BRAND_NAME,
+  CHAT_ROUTE,
   DEFAULT_CLERK_TEMPLATE,
   ENABLE_HISTORY,
   ENABLE_KNOWLEDGE_BASES,
@@ -29,6 +32,7 @@ import {
   LOGO_URL,
   PROFILE_PROFILE_DROPDOWN_TAB,
   PROJECT_LABEL,
+  PLANS_PRICING_ROUTE,
 } from "../../utils/contants";
 import { useNavigate } from "react-router-dom";
 import { HOME_ROUTE, LOGIN_ROUTE } from "../../utils/apiEndpoints";
@@ -45,11 +49,12 @@ import Projects from "../Project/Projects";
 import KnowledgeBase from "../KnowledgeBase/KnowledgeBase";
 import { AddProjectModal } from "../Project/AddProjectModal";
 import { clearCurrentChatData } from "../../service/ChatService";
-import { getHistoryData } from "../../api/websiteApi";
+import { deleteThread, getHistoryData } from "../../api/websiteApi";
 import useHistoryStore from "../../store/historyStore";
 import "./Navbar.scss";
+import { notifications } from "@mantine/notifications";
 // Custom HistoryItem component similar to FolderItem
-const HistoryItem = ({ title, uuid, onClick, onMoreOptions }) => {
+const HistoryItem = ({ title, uuid, onClick, handleDeleteHistory }) => {
   const [isHovered, setIsHovered] = useState(false);
   return (
     <Box style={{ width: "100%", maxWidth: "400px" }}>
@@ -59,25 +64,46 @@ const HistoryItem = ({ title, uuid, onClick, onMoreOptions }) => {
         className={`hover:!bg-bgSelectedColor bg-bgBodyColor cursor-pointer rounded-md `}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => onClick && onClick(uuid)}
+        onClick={(e) => {
+          onClick && onClick(uuid);
+          e.stopPropagation();
+        }}
       >
         <Group>
           <Text size="sm" truncate style={{ maxWidth: "250px" }}>
             {title}
           </Text>
         </Group>
-        {isHovered && onMoreOptions && (
-          <ActionIcon
-            variant="subtle"
-            color="gray"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onMoreOptions(uuid);
-            }}
-          >
-            <IconDots size={16} />
-          </ActionIcon>
+        {isHovered && (
+          <Popover position="bottom-end">
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Popover.Target>
+                <ActionIcon
+                  variant="subtle"
+                  color="gray"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <IconDots size={16} />
+                </ActionIcon>
+              </Popover.Target>
+              <Popover.Dropdown
+                className="flex gap-2 items-center !px-2 !py-2 rounded-md bg-bgBodyColor text-sm cursor-pointer text-textDangerColor"
+                onClick={(e) => {
+                  handleDeleteHistory(uuid, title);
+                  e.stopPropagation();
+                }}
+              >
+                Delete <IconTrash size={16} />
+              </Popover.Dropdown>
+            </div>
+          </Popover>
         )}
       </Group>
     </Box>
@@ -141,11 +167,35 @@ function Navbar() {
     navigate(HOME_ROUTE);
   };
 
-  const handleHistoryItemClick = (uuid) => {
-    if (selectedHistory){
-      
+  const handleHistoryItemClick = (item) => {
+    setSelectedHistory(item);
+    item.uuid && navigate(`/${CHAT_ROUTE}/${item.uuid}`, { replace: true });
+  };
+
+  const handleDeleteHistory = async (uuid, title) => {
+    try {
+      const token = await getToken({
+        template: DEFAULT_CLERK_TEMPLATE,
+      });
+      const response = await deleteThread(
+        token,
+        uuid,
+        user?.primaryEmailAddress?.emailAddress ?? "",
+        title
+      );
+      if (response.status === 200) {
+        loadHistoryData();
+        notifications.show({
+          title: "Success",
+          message: "History item deleted successfully",
+          color: "green",
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      console.error(`Failed to delete thread: ${error}`);
     }
-    
   };
 
   return (
@@ -203,13 +253,11 @@ function Navbar() {
                       title={item.title}
                       uuid={item.uuid}
                       onClick={(uuid) => {
-                        // Handle history item click
-                        setSelectedHistory(item);
-                        close(); // Close the sidebar
+                        handleHistoryItemClick(item);
+                        close();
                       }}
-                      onMoreOptions={(uuid) => {
-                        // Handle more options click
-                        console.log("More options for:", uuid);
+                      handleDeleteHistory={(uuid, title) => {
+                        handleDeleteHistory(uuid, title);
                       }}
                     />
                   )) || []
