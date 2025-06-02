@@ -20,8 +20,6 @@ function Projects() {
   const [deleteProject, setDeleteProject] = useState(null);
   const [editProject, setEditProject] = useState(null);
 
-  console.log({ editProject });
-
   const navigate = useNavigate();
 
   const fetchProjects = async () => {

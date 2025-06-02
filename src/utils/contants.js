@@ -10,7 +10,7 @@ const getEnvVar = (envKey, defaultValue = "") => {
   if (
     typeof window !== "undefined" &&
     window._conf &&
-    window._conf[envKey] !== undefined && 
+    window._conf[envKey] !== undefined &&
     window._conf[envKey] !== ""
   ) {
     return window._conf[envKey];
@@ -125,9 +125,6 @@ export const initialSiteConfig = {
   CHAT_ROUTE: getEnvVar("REACT_APP_CHAT_ROUTE", "chat"),
 };
 
-// Debug log for development
-console.log("🔧 Final initialSiteConfig:", initialSiteConfig);
-
 // Export individual constants
 export const BRAND_NAME = initialSiteConfig.BRAND_NAME;
 export const LOGO_URL = initialSiteConfig.LOGO_URL;
@@ -190,3 +187,5 @@ export const ASSISTANT_ROLE = "assistant";
 export const USER_ROLE = "user";
 export const DEFAULT_MODEL_SLUG_NAME = "gpt-4o";
 export const DEFAULT_PRODUCT_NAME = "co_pilot";
+
+export const PLANS_PRICING_ROUTE = "plans-pricing";

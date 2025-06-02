@@ -17,23 +17,16 @@ const ModelSelector = () => {
     //   { label: "gpt-3.5-turbo", value: "gpt-3.5-turbo" },
     //   { label: "claude-3-5-sonnet", value: "claude-3-5-sonnet" },
     // ];
-    console.log("models.length", models.length);
     if (models.length > 0) {
       return;
     }
     try {
       setLoading(true);
-      console.log("models.length 22", models.length);
-
       const token = await getToken({
         template: DEFAULT_CLERK_TEMPLATE,
       });
 
-      console.log("token", token);
-
       const response = await getModels(token);
-
-      console.log("response", response);
 
       const transformedModels = response.data?.data?.models
         ?.filter((model) => model.enabled)
@@ -76,3 +69,4 @@ const ModelSelector = () => {
 };
 
 export default ModelSelector;
+[]

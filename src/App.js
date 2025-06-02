@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AdminPage from "./pages/AdminPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PlansPricingPage from "./pages/PlansPricingPage";
 import {
   HOME_ROUTE,
   LOGIN_ROUTE,
@@ -16,6 +17,7 @@ import {
   CHAT_ROUTE,
   KNOWLEDGE_BASE_ROUTE,
   PROJECT_ROUTE,
+  PLANS_PRICING_ROUTE,
 } from "./utils/contants";
 import KnowledgeBaseDetails from "./components/KnowledgeBase/KnowledgeBaseDetails";
 import ProjectDetails from "./components/Project/ProjectDetails";
@@ -40,6 +42,10 @@ function App() {
         />
         <Route path={SETTINGS_ROUTE} element={<Settings />} />
         <Route path={`/${CHAT_ROUTE}/:chat_id`} element={<ChatPanel />} />
+        <Route
+          path={`/${PLANS_PRICING_ROUTE}`}
+          element={<PlansPricingPage />}
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
