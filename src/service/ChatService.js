@@ -51,6 +51,7 @@ const handleSendMessage = async (
     isStreaming: false,
     lastIndex: null,
     role: USER_ROLE,
+    
   };
   const assistantMessage = {
     id: Math.floor((new Date().getMilliseconds() + Math.random()) * 100000),

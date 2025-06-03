@@ -41,7 +41,7 @@ export const getHistoryData = async (token, params) => {
 };
 
 export const deleteThread = async (token, id, email, threadTitle) => {
-  const response = await cerebrumAxios(token).delete(`v2.0/threads/${id}/`, {
+  const response = await cerebrumAxios(token).delete(`/v1.0/threads/${id}/`, {
     data: {
       title: threadTitle ? threadTitle : "",
       user_email: email,
