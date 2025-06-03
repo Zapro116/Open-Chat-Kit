@@ -83,8 +83,8 @@ function ChatPanel() {
     <div className="relative h-full">
       <Navbar />
       <div className="flex flex-col h-[inherit] bg-bgCardColor">
-        <div className="flex flex-col pt-[72px] h-full relative">
-          <div className="flex-1 flex justify-center">
+        <div className="flex flex-col pt-[72px] h-[inherit] overflow-hidden relative">
+          <div className="flex justify-center chat-wrapper overflow-y-auto">
             <div className="flex flex-col gap-2.5 w-2/3 py-2">
               {messages?.map((message) => {
                 return (

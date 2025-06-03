@@ -10,6 +10,7 @@ import { logPageView } from "../../utils/analytics";
 import { getPlan, getUsage } from "../../api/settings";
 import { Loader } from "@mantine/core";
 import { PLANS_PRICING_ROUTE } from "../../utils/contants";
+import { useNavigate } from "react-router-dom";
 
 function Settings() {
   const [activePlan, setActivePlan] = useState(null);
@@ -19,6 +20,8 @@ function Settings() {
   const [activeTab, setActiveTab] = useState("billing"); // 'billing' or 'usage'
   const [usage, setUsage] = useState([]);
   const [loadingUsage, setLoadingUsage] = useState(true);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     logPageView();

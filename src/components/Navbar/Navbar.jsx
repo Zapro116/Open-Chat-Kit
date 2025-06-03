@@ -33,6 +33,7 @@ import {
   PROFILE_PROFILE_DROPDOWN_TAB,
   PROJECT_LABEL,
   PLANS_PRICING_ROUTE,
+  PRODUCT_LABEL,
 } from "../../utils/contants";
 import { useNavigate } from "react-router-dom";
 import { HOME_ROUTE, LOGIN_ROUTE } from "../../utils/apiEndpoints";
@@ -137,15 +138,18 @@ function Navbar() {
       const token = await getToken({
         template: DEFAULT_CLERK_TEMPLATE,
       });
+      if (!token || !user?.primaryEmailAddress?.emailAddress) {
+        return;
+      }
       const params = {
         page: 1,
         search: search,
         user_email: user?.primaryEmailAddress?.emailAddress ?? "",
-        product: "open-chat-kit",
+        product: PRODUCT_LABEL,
         page_size: 100,
       };
       const historyData = await getHistoryData(token, params);
-      setHistoryData(historyData.data?.data);
+      setHistoryData({});
     } catch (error) {
       console.error(error);
     } finally {
@@ -154,8 +158,8 @@ function Navbar() {
   };
 
   useEffect(() => {
-    loadHistoryData();
-  }, []);
+    if (opened) loadHistoryData();
+  }, [opened]);
 
   const handleColorSchemeToggle = () => {
     const newColorScheme = colorScheme === "light" ? "dark" : "light";
@@ -177,6 +181,7 @@ function Navbar() {
       const token = await getToken({
         template: DEFAULT_CLERK_TEMPLATE,
       });
+
       const response = await deleteThread(
         token,
         uuid,
@@ -244,27 +249,29 @@ function Navbar() {
               <div className="flex justify-center items-center h-full backdrop-blur-sm">
                 <Loader type="oval" />
               </div>
-            ) : (
+            ) : Object.keys(historyData).length > 0 ? (
               <List
-                items={
-                  historyData?.threads?.map((item) => (
-                    <HistoryItem
-                      key={item.uuid}
-                      title={item.title}
-                      uuid={item.uuid}
-                      onClick={(uuid) => {
-                        handleHistoryItemClick(item);
-                        close();
-                      }}
-                      handleDeleteHistory={(uuid, title) => {
-                        handleDeleteHistory(uuid, title);
-                      }}
-                    />
-                  )) || []
-                }
+                items={historyData?.threads?.map((item) => (
+                  <HistoryItem
+                    key={item.uuid}
+                    title={item.title}
+                    uuid={item.uuid}
+                    onClick={(uuid) => {
+                      handleHistoryItemClick(item);
+                      close();
+                    }}
+                    handleDeleteHistory={(uuid, title) => {
+                      handleDeleteHistory(uuid, title);
+                    }}
+                  />
+                ))}
                 spacing={0}
                 listStyleType="none"
               />
+            ) : (
+              <div className="flex justify-center items-center h-[400px]">
+                <Text className="text-textDefault">No conversations found</Text>
+              </div>
             )}
           </div>
         </Sidebar>

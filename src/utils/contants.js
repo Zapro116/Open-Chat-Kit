@@ -188,4 +188,6 @@ export const USER_ROLE = "user";
 export const DEFAULT_MODEL_SLUG_NAME = "gpt-4o";
 export const DEFAULT_PRODUCT_NAME = "co_pilot";
 
-export const PLANS_PRICING_ROUTE = "plans-pricing";
+export const PLANS_PRICING_ROUTE = "/plans-pricing";
+
+export const PRODUCT_LABEL = "co_pilot";
