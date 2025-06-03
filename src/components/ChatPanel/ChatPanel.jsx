@@ -18,6 +18,7 @@ import {
 } from "../../service/ChatService";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { fetchThreadMessages } from "../../service/ThreadService";
+import { MarkdownRender } from "../Markdown/MarkdownRender";
 
 function ChatPanel() {
   const {
@@ -101,7 +102,11 @@ function ChatPanel() {
                           : "ml-auto bg-bgBodyColor"
                       }`}
                     >
-                      {message.content}
+                      {message.role === "assistant" ? (
+                        <MarkdownRender markdown={message.content} />
+                      ) : (
+                        message.content
+                      )}
                     </div>
                   </div>
                 );
