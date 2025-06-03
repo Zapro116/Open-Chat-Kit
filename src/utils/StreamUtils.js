@@ -121,22 +121,17 @@ export function processTypeLastAIMessage(
     messages[latestAiMessageIndex] = aiChatMessage;
     setMessages(messages);
   }
-  console.log(messages);
 }
 
 export const convertFilesToBase64 = async (files) => {
   return Promise.all(
     files.map((file) => {
-      return (
-        new Promise() <
-        string >
-        ((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        })
-      );
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
     })
   );
 };

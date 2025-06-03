@@ -42,6 +42,18 @@ const handleSendMessage = async (
   // }
   setPromptText("");
 
+  const userMessageAttachment = {
+    images: [],
+    pdf: [],
+    files: [],
+  };
+
+  for (const attachment of attachments) {
+    if (attachment.type.indexOf("image") !== -1) {
+      userMessageAttachment.images.push(attachment);
+    }
+  }
+
   const userMessage = {
     id: Math.floor((new Date().getMilliseconds() + Math.random()) * 100000),
     content: message,
@@ -51,8 +63,9 @@ const handleSendMessage = async (
     isStreaming: false,
     lastIndex: null,
     role: USER_ROLE,
-    
+    attachments: userMessageAttachment,
   };
+
   const assistantMessage = {
     id: Math.floor((new Date().getMilliseconds() + Math.random()) * 100000),
     content: "",
@@ -73,6 +86,7 @@ const handleSendMessage = async (
     selectedModel,
     email
   );
+
   exisitingMessages.push(assistantMessage);
   setMessages(exisitingMessages);
 
@@ -126,7 +140,7 @@ export async function populateResponseFromStream(
   const parsedJsonArray = extractJsonObjectsFromStreamUtil(lines);
   const { setCurrentThreadId, currentThreadId } = useChatStore.getState();
   for (const jsonObject of parsedJsonArray) {
-    console.log(jsonObject);
+    // console.log(jsonObject);
 
     // Handle thread UUID
     if (jsonObject?.type === "thread_uuid" && jsonObject?.payload?.content) {
@@ -181,33 +195,22 @@ async function createRequestBody(
   modelName,
   email
 ) {
+  console.log(messages.length);
+
   const { selectedModel } = useModelStore.getState();
   const { webSearchEnabled, getFiles } = useChatStore.getState();
-
-  const uploadedImages = getFiles();
-
-  const messageIndex =
-    messages.length > 1 ? messages.length - 2 : messages.length - 1;
-
-  let latestUserMessage = messages[messageIndex];
-  for (let i = messages.length - 1; i >= 0; i--) {
-    if (messages[i].role === USER_ROLE) {
-      latestUserMessage = messages[i];
-      break;
-    }
-  }
-  const prompt = latestUserMessage.content;
-
   let messagesArray = [];
-
   let uploadedImagesBase64 = [];
 
-  if (uploadedImages.length == 0) {
-    const latestUserMessage = messages[messages.length - 1];
+  const messageIndex = messages.length - 1;
 
-    uploadedImagesBase64 = latestUserMessage?.images || [];
-  } else {
-    uploadedImagesBase64 = await convertFilesToBase64(uploadedImages || []);
+  let latestUserMessage = messages[messageIndex];
+  const prompt = latestUserMessage.content;
+
+  if (latestUserMessage.attachments.images.length > 0) {
+    uploadedImagesBase64 = await convertFilesToBase64(
+      latestUserMessage.attachments.images || []
+    );
   }
 
   for (let i = 0; i < messages.length; i++) {
