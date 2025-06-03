@@ -149,7 +149,7 @@ function Navbar() {
         page_size: 100,
       };
       const historyData = await getHistoryData(token, params);
-      setHistoryData({});
+      setHistoryData(historyData.data?.data ?? {});
     } catch (error) {
       console.error(error);
     } finally {
