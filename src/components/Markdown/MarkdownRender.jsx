@@ -12,12 +12,11 @@ import {
 //   buttonsList,
 //   dropdownItemsList,
 // } from "@src/component/Tabs/ChatTabPage/promptAnswer/codeRender/CodeRender";
-//import { useLoaderStore } from "@src/component/Loader/useLoaderStore";
+
 import "../Markdown/Markdown.css";
 import { useMantineColorScheme } from "@mantine/core";
 
 export const MarkdownRender = ({ markdown = "" }) => {
-  //  const { currentTheme } = useLoaderStore();
   const { colorScheme } = useMantineColorScheme();
 
   const components = useMemo(
