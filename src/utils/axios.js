@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  ALAMANAC_BASE_URL,
   CEREBRUM_BASE_URL,
   LOCKSMITH_BASE_URL,
   WAYNE_BASE_URL,
@@ -33,5 +34,16 @@ export const wayneAxios = (token) =>
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
+    },
+  });
+
+export const alamanacAxios = (token) =>
+  axios.create({
+    baseURL: ALAMANAC_BASE_URL,
+    timeout: 10000,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "ngrok-skip-browser-warning": "true",
     },
   });

@@ -1,6 +1,7 @@
 import React, {
   useState,
   useRef,
+  useEffect,
   // useCallback, FC, ChangeEvent, KeyboardEvent are TS-specific, not needed in JS or handled by JSDoc
 } from "react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -117,8 +118,15 @@ function Input({
   message = "",
   setMessage = () => {},
 }) {
+  const textareaRef = useRef(null);
   const [attachments, setAttachments] = useState([]);
   const fileInputRef = useRef(null); // Combined file input ref
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [message]);
 
   /** @param {React.ChangeEvent<HTMLTextAreaElement>} event */
   const handleMessageChange = (event) => {
@@ -247,6 +255,7 @@ function Input({
       )}
 
       <TextareaAutosize
+        ref={textareaRef}
         value={message}
         onChange={handleMessageChange}
         onKeyDown={handleKeyDown}

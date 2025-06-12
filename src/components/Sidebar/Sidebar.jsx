@@ -37,6 +37,7 @@ function Sidebar(props) {
     showTriggerButton,
     styles,
     classNames,
+    triggerButtonClassNames,
   } = { ...defaultProps, ...props };
 
   if (opened === undefined || open === undefined || close === undefined) {
@@ -67,7 +68,11 @@ function Sidebar(props) {
       </Drawer>
 
       {showTriggerButton && (
-        <Button variant="default" onClick={open}>
+        <Button
+          variant="default"
+          onClick={open}
+          classNames={triggerButtonClassNames}
+        >
           {triggerButtonLabel}
         </Button>
       )}

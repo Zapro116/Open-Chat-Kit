@@ -18,6 +18,7 @@ import {
   IconSunHigh,
   IconDots,
   IconTrash,
+  IconLayoutSidebarLeftExpand,
 } from "@tabler/icons-react";
 import Sidebar from "../Sidebar/Sidebar";
 import List from "../List/List";
@@ -188,6 +189,7 @@ function Navbar() {
         user?.primaryEmailAddress?.emailAddress ?? "",
         title
       );
+      console.log({ response });
       if (response.status === 200) {
         loadHistoryData();
         notifications.show({
@@ -214,8 +216,13 @@ function Navbar() {
           classNames={{ inner: "history-container" }}
           title="History"
           triggerButtonLabel={
-            <IconMenu2 size={20} stroke={2} className="w-fit" />
+            <IconLayoutSidebarLeftExpand
+              size={40}
+              stroke={2}
+              className="w-fit"
+            />
           }
+          triggerButtonClassNames={{ root: "!border-0 !p-0 !bg-transparent" }}
         >
           <div className="p-2 flex flex-col gap-3">
             <div className="history-content overflow-y-auto">
@@ -249,7 +256,7 @@ function Navbar() {
               <div className="flex justify-center items-center h-full backdrop-blur-sm">
                 <Loader type="oval" />
               </div>
-            ) : Object.keys(historyData).length > 0 ? (
+            ) : historyData?.threads?.length > 0 ? (
               <List
                 items={historyData?.threads?.map((item) => (
                   <HistoryItem

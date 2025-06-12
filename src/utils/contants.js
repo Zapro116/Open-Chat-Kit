@@ -157,6 +157,10 @@ export const WAYNE_BASE_URL = getEnvVar(
   "REACT_APP_BASE_WAYNE_URL",
   "http://localhost:8083/"
 );
+export const ALAMANAC_BASE_URL = getEnvVar(
+  "REACT_APP_BASE_ALAMANAC_URL",
+  "http://localhost:8084/"
+);
 
 export const DEFAULT_CLERK_TEMPLATE = "neon2";
 

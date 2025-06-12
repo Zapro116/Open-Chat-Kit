@@ -5,7 +5,11 @@ import { getKnowledgeBases } from "../../api/knowledgeBaseApi";
 import { EditKnowledgeModal } from "./EditKnowledgeModal";
 import DeleteKnowledgeModal from "./DeleteKnowledgeModal";
 import { useNavigate } from "react-router-dom";
-import { KNOWLEDGE_BASE_ROUTE } from "../../utils/contants";
+import {
+  DEFAULT_CLERK_TEMPLATE,
+  KNOWLEDGE_BASE_ROUTE,
+} from "../../utils/contants";
+import { useAuth } from "@clerk/clerk-react";
 
 function KnowledgeBase() {
   const [knowledgeBase, setKnowledgeBase] = useState([]);
@@ -13,6 +17,7 @@ function KnowledgeBase() {
   const [error, setError] = useState(null);
   const [editKnowledge, setEditKnowledge] = useState(null);
   const [deleteKnowledge, setDeleteKnowledge] = useState(null);
+  const { getToken } = useAuth();
 
   const navigate = useNavigate();
 
@@ -20,12 +25,15 @@ function KnowledgeBase() {
     try {
       //   const response = await axios.get(API_ENDPOINTS.PROJECTS);
       setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const response = await getKnowledgeBases();
+      const token = getToken({
+        template: DEFAULT_CLERK_TEMPLATE,
+      });
+      const response = await getKnowledgeBases(token);
       console.log({ response });
       setKnowledgeBase(response);
     } catch (error) {
-      setError(error);
+      console.log({ error });
+      // setError(error);
     } finally {
       setIsLoading(false);
     }

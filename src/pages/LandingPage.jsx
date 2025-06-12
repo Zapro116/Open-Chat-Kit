@@ -1,6 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Input from "../components/Input/Input"; // Assuming Input.jsx is in src/components/Input/
-import { IconPhoto, IconWorld, IconBook, IconX } from "@tabler/icons-react";
+import {
+  IconPhoto,
+  IconWorld,
+  IconBook,
+  IconX,
+  IconBrandX,
+  IconBrandGithub,
+  IconBrandLinkedin,
+} from "@tabler/icons-react";
 import Navbar from "../components/Navbar/Navbar";
 import ModelSelector from "../components/ModelSelector/ModelSelector";
 import { QuickStartPrompts } from "../components/QuickStarterprompts/QuickStartPrompts";
@@ -170,6 +178,43 @@ function LandingPage() {
                 }}
                 columns={3}
               />
+            </div>
+          </div>
+        </div>
+        <div className="absolute bottom-8 w-full flex justify-center text-sm text-textDimmedColor cursor-default">
+          <div className="relative w-full flex justify-center">
+            <div className="absolute">
+              By using this service you agree to the&nbsp;
+              <span className="cursor-pointer">Terms</span>
+              &nbsp;and&nbsp;
+              <span className="cursor-pointer">Privacy</span>.
+            </div>
+            <div className="absolute right-4 flex gap-2 items-center">
+              <span>Follow us on</span>
+              <span>
+                <IconBrandX
+                  color="var(--text-dark-dimmed-color)"
+                  size={16}
+                  stroke="2"
+                  className="cursor-pointer"
+                />
+              </span>
+              <span>
+                <IconBrandGithub
+                  color="var(--text-dark-dimmed-color)"
+                  size={16}
+                  stroke="2"
+                  className="cursor-pointer"
+                />
+              </span>
+              <span>
+                <IconBrandLinkedin
+                  color="var(--text-dark-dimmed-color)"
+                  size={16}
+                  stroke="2"
+                  className="cursor-pointer"
+                />
+              </span>
             </div>
           </div>
         </div>

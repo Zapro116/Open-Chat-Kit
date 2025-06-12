@@ -237,7 +237,7 @@ export const AddProjectModal = () => {
             onClick={handleSubmit}
             loading={loading}
             loaderProps={{ type: "oval" }}
-            className="px-4 py-2 text-sm text-white bg-backgroundPrimary hover:bg-backgroundPrimary rounded focus:outline-white"
+            className="px-4 py-2 text-sm text-white !bg-textPurple hover:!bg-textLightPurple rounded focus:outline-white"
           >
             Create
           </Button>
