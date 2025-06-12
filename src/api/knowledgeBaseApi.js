@@ -6,14 +6,7 @@ export const getKnowledgeBases = async (token, signal) => {
     kb_ids: [],
   };
 
-  //   const response = await ingestionBaseAxios(token).post(
-  //     `/kb/status`,
-  //     payload,
-  //     {
-  //       signal: signal,
-  //     }
-  //   );
-  const response = await alamanacAxios(token).post(`/kb/status`, payload, {
+  const response = await alamanacAxios(token).post(`v1.0/kb/status`, payload, {
     signal,
   });
 
@@ -260,58 +253,55 @@ export const fetchKnowledgeBaseStatus = async (token, kbId, signal) => {
       return null;
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Use the ingestionBaseAxios to call the kb/status endpoint
-    // const response = await ingestionBaseAxios(token).post(
-    //   `/kb/status`,
-    //   {
-    //     team_id: "",
-    //     kb_ids: [kbId],
-    //   },
-    //   {
-    //     signal: signal,
-    //   }
-    // );
-
-    const response = {
-      data: {
-        identifier: "7a8dfe2e-0f2f-4be4-b2b9-c22fd9d1cb83",
-        success: true,
-        errors: null,
-        data: {
-          knowledge_bases: {
-            personal: [
-              {
-                kb_id: 133,
-                name: "Devops",
-                state: "update_error",
-                update_token: false,
-                created_at: "2025-05-12T16:22:57.656803Z",
-                last_indexed_at: "2025-05-12T16:22:57.908417Z",
-                ingestion_status: "failed",
-                success_percentage: 0,
-                is_enabled: true,
-                is_creator: true,
-                is_updatable: false,
-                integration: {
-                  id: 1,
-                  type: "azure_devops",
-                  name: "Azure DevOps",
-                  image_name: "azure_devops.svg",
-                  integration_help_url:
-                    "https://docs.fynix.ai/fynix-code-assistant/knowledge-source/connect-repositories/#-connecting-azure-devops-to-fynix-pat-token-and-clone-url",
-                },
-              },
-            ],
-            team: [],
-            organization: [],
-          },
-        },
-        failed_entries: null,
-        pagination: null,
+    const response = await alamanacAxios(token).post(
+      `v1.0/kb/status`,
+      {
+        team_id: "",
+        kb_ids: [kbId],
       },
-    };
+      {
+        signal,
+      }
+    );
+
+    // const response = {
+    //   data: {
+    //     identifier: "7a8dfe2e-0f2f-4be4-b2b9-c22fd9d1cb83",
+    //     success: true,
+    //     errors: null,
+    //     data: {
+    //       knowledge_bases: {
+    //         personal: [
+    //           {
+    //             kb_id: 133,
+    //             name: "Devops",
+    //             state: "update_error",
+    //             update_token: false,
+    //             created_at: "2025-05-12T16:22:57.656803Z",
+    //             last_indexed_at: "2025-05-12T16:22:57.908417Z",
+    //             ingestion_status: "failed",
+    //             success_percentage: 0,
+    //             is_enabled: true,
+    //             is_creator: true,
+    //             is_updatable: false,
+    //             integration: {
+    //               id: 1,
+    //               type: "azure_devops",
+    //               name: "Azure DevOps",
+    //               image_name: "azure_devops.svg",
+    //               integration_help_url:
+    //                 "https://docs.fynix.ai/fynix-code-assistant/knowledge-source/connect-repositories/#-connecting-azure-devops-to-fynix-pat-token-and-clone-url",
+    //             },
+    //           },
+    //         ],
+    //         team: [],
+    //         organization: [],
+    //       },
+    //     },
+    //     failed_entries: null,
+    //     pagination: null,
+    //   },
+    // };
 
     // Process the API response
     if (
@@ -349,57 +339,55 @@ export const fetchKnowledgeBaseStatus = async (token, kbId, signal) => {
 
 export const fetchTeamKnowledgeBases = async (token, teamId, signal) => {
   try {
-    // Use the ingestionBaseAxios to call the kb/status endpoint
-    //   const response = await ingestionBaseAxios(token).post(
-    //     `/kb/status`,
-    //     {
-    //       team_id: teamId,
-    //       kb_ids: [],
-    //     },
-    //     {
-    //       signal: signal,
-    //     }
-    //   );
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const response = {
-      data: {
-        identifier: "2fd540cb-ecf4-4f65-905f-350704d16f0e",
-        success: true,
-        errors: null,
-        data: {
-          knowledge_bases: {
-            personal: [],
-            team: [
-              {
-                kb_id: 138,
-                name: "Azure 2",
-                state: "update_error",
-                update_token: false,
-                created_at: "2025-05-12T16:55:39.117935Z",
-                last_indexed_at: "2025-05-12T16:55:39.342820Z",
-                ingestion_status: "failed",
-                success_percentage: 0,
-                is_enabled: true,
-                is_creator: true,
-                is_updatable: false,
-                integration: {
-                  id: 1,
-                  type: "azure_devops",
-                  name: "Azure DevOps",
-                  image_name: "azure_devops.svg",
-                  integration_help_url:
-                    "https://docs.fynix.ai/fynix-code-assistant/knowledge-source/connect-repositories/#-connecting-azure-devops-to-fynix-pat-token-and-clone-url",
-                },
-              },
-            ],
-            organization: [],
-          },
-        },
-        failed_entries: null,
-        pagination: null,
+    const response = await alamanacAxios(token).post(
+      `v1.0/kb/status`,
+      {
+        team_id: teamId,
+        kb_ids: [],
       },
-    };
+      {
+        signal,
+      }
+    );
+
+    // const response = {
+    //   data: {
+    //     identifier: "2fd540cb-ecf4-4f65-905f-350704d16f0e",
+    //     success: true,
+    //     errors: null,
+    //     data: {
+    //       knowledge_bases: {
+    //         personal: [],
+    //         team: [
+    //           {
+    //             kb_id: 138,
+    //             name: "Azure 2",
+    //             state: "update_error",
+    //             update_token: false,
+    //             created_at: "2025-05-12T16:55:39.117935Z",
+    //             last_indexed_at: "2025-05-12T16:55:39.342820Z",
+    //             ingestion_status: "failed",
+    //             success_percentage: 0,
+    //             is_enabled: true,
+    //             is_creator: true,
+    //             is_updatable: false,
+    //             integration: {
+    //               id: 1,
+    //               type: "azure_devops",
+    //               name: "Azure DevOps",
+    //               image_name: "azure_devops.svg",
+    //               integration_help_url:
+    //                 "https://docs.fynix.ai/fynix-code-assistant/knowledge-source/connect-repositories/#-connecting-azure-devops-to-fynix-pat-token-and-clone-url",
+    //             },
+    //           },
+    //         ],
+    //         organization: [],
+    //       },
+    //     },
+    //     failed_entries: null,
+    //     pagination: null,
+    //   },
+    // };
 
     // Process the API response
     if (

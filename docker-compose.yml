@@ -23,6 +23,7 @@ services:
         - REACT_APP_BASE_CEREBRUM_URL=${REACT_APP_BASE_CEREBRUM_URL:-http://localhost:8081/}
         - REACT_APP_BASE_LOCKSMIITH_URL=${REACT_APP_BASE_LOCKSMIITH_URL:-http://localhost:8082/}
         - REACT_APP_BASE_WAYNE_URL=${REACT_APP_BASE_WAYNE_URL:-http://localhost:8083/}
+        - REACT_APP_BASE_ALAMANAC_URL=${REACT_APP_BASE_ALAMANAC_URL:-http://localhost:8084/}
     container_name: open-chat-kit
     environment:
       - PORT=${PORT:-4000}
@@ -47,6 +48,7 @@ services:
       - REACT_APP_BASE_CEREBRUM_URL=http://localhost:8081/
       - REACT_APP_BASE_LOCKSMIITH_URL=http://localhost:8082/
       - REACT_APP_BASE_WAYNE_URL=http://localhost:8083/
+      - REACT_APP_BASE_ALAMANAC_URL=http://localhost:8084/
     ports:
       - "4000:4000" # Map container's port 80 to host's port 4000
     restart: unless-stopped

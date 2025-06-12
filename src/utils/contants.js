@@ -74,6 +74,9 @@ const getEnvVar = (envKey, defaultValue = "") => {
     case "REACT_APP_BASE_WAYNE_URL":
       value = process.env.REACT_APP_BASE_WAYNE_URL || defaultValue;
       break;
+    case "REACT_APP_BASE_ALAMANAC_URL":
+      value = process.env.REACT_APP_BASE_ALAMANAC_URL || defaultValue;
+      break;
     default:
       value = defaultValue;
   }
