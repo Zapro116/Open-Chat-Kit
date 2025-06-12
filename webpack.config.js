@@ -1,15 +1,5 @@
 require("dotenv").config();
 
-// Log all environment variables
-console.log("Environment Variables:");
-console.log("=====================");
-Object.keys(process.env)
-  .filter((key) => key.startsWith("REACT_APP_"))
-  .forEach((key) => {
-    console.log(`${key}: ${process.env[key]}`);
-  });
-console.log("=====================");
-
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -56,6 +46,8 @@ const envPlugin = new webpack.EnvironmentPlugin({
     process.env.REACT_APP_BASE_LOCKSMIITH_URL || "http://localhost:8082/",
   REACT_APP_BASE_WAYNE_URL:
     process.env.REACT_APP_BASE_WAYNE_URL || "http://localhost:8083/",
+  REACT_APP_BASE_ALAMANAC_URL:
+    process.env.REACT_APP_BASE_ALAMANAC_URL || "http://localhost:8084/",
 });
 
 module.exports = (env, argv) => {
